@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¡ÓRALE! — The Mexican Spanish Codex</title>
+<meta name="description" content="A fully local, single-file HTML app for learning conversational Mexican Spanish in 26 weeks. Illuminated manuscript meets Mexican arcade.">
+<meta name="theme-color" content="#10141c">
+
+<!-- ============================================================
+   FONTS — two ways to run this:
+
+   (A) SELF-HOSTED (matches the app's offline-first ethos) — DEFAULT.
+       Drop the .woff2 files into ./fonts/ (see fonts/README.md for the
+       exact download list + filenames). The @font-face block below loads them.
+
+   (B) INSTANT PREVIEW via Google Fonts CDN — no downloads needed.
+       Uncomment the two <link> lines just below. Requires internet.
+       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+       <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+   Strong fallback stacks below mean the deck looks correct (Palatino / system-ui /
+   mono — the app's own stacks) even before any font is added.
+============================================================ -->
+<style>
+/* ---- self-hosted @font-face (option A). Harmless if files are absent: falls back. ---- */
+/* Accepts either .woff2 or the plain .ttf straight from fonts.google.com — drop whichever you have. */
+@font-face{font-family:"Fraunces";src:url("./fonts/Fraunces.woff2") format("woff2"),url("./fonts/Fraunces.ttf") format("truetype");font-weight:100 900;font-display:swap;font-style:normal}
+@font-face{font-family:"Fraunces";src:url("./fonts/Fraunces-Italic.woff2") format("woff2"),url("./fonts/Fraunces-Italic.ttf") format("truetype");font-weight:100 900;font-display:swap;font-style:italic}
+@font-face{font-family:"Inter";src:url("./fonts/Inter.woff2") format("woff2"),url("./fonts/Inter.ttf") format("truetype");font-weight:100 900;font-display:swap;font-style:normal}
+@font-face{font-family:"Space Mono";src:url("./fonts/SpaceMono-Regular.woff2") format("woff2"),url("./fonts/SpaceMono-Regular.ttf") format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"Space Mono";src:url("./fonts/SpaceMono-Bold.woff2") format("woff2"),url("./fonts/SpaceMono-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+
+:root{
+  /* palette lifted verbatim from app/orale.html tokens */
+  --ink:#10141c; --ink2:#181e29; --ink3:#222a38; --line:#2e3746;
+  --bone:#e9e4d8; --dim:#8b94a6; --faint:#5a6375;
+  --rosa:#e4007c; --mari:#f2a33c; --tala:#3e8fb0; --lima:#8fbf4d; --rojo:#e05252;
+  --parch:#f1e7d0; --parch2:#e7d9ba; --sepia:#4a3a22; --sepia2:#7a6440;
+  --cant:#d98e4a;
+  --ac:var(--mari);
+  --ff-display:"Fraunces","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --ff-body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --ff-mono:"Space Mono",ui-monospace,"Cascadia Mono",Consolas,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  background:var(--ink);color:var(--bone);font-family:var(--ff-body);
+  line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+
+/* ---------- scroll-snap deck ---------- */
+.deck{height:100vh;overflow-y:scroll;scroll-snap-type:y proximity;scroll-behavior:smooth}
+section{
+  position:relative;min-height:100vh;scroll-snap-align:start;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:96px clamp(20px,7vw,120px);overflow:hidden;
+  transition:background .8s ease;
+}
+.wrap{max-width:1040px;margin:0 auto;width:100%;position:relative;z-index:2}
+
+/* zone accent per section */
+.z-panel{--ac:var(--mari)}
+.z-learn{--ac:var(--tala)}
+.z-arena{--ac:var(--rosa)}
+.z-codex{--ac:var(--sepia2)}
+.z-cantina{--ac:var(--cant)}
+.z-lima{--ac:var(--lima)}
+
+/* soft accent glow that tints each screen */
+section::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1100px 620px at 78% -8%, color-mix(in srgb, var(--ac) 20%, transparent), transparent 60%),
+    radial-gradient(900px 560px at -6% 112%, color-mix(in srgb, var(--ac) 13%, transparent), transparent 60%);
+  opacity:.9;transition:background .8s ease;
+}
+/* faint hairline seam between screens */
+section + section{border-top:1px solid var(--line)}
+
+/* ---------- drifting glyph field ---------- */
+.glyphs{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:.5}
+.glyphs span{
+  position:absolute;font-family:var(--ff-display);color:var(--ac);
+  opacity:.10;font-size:clamp(90px,16vw,240px);line-height:1;
+  animation:drift linear infinite;user-select:none;
+}
+@keyframes drift{
+  0%{transform:translateY(14px) rotate(0deg)}
+  50%{transform:translateY(-14px) rotate(6deg)}
+  100%{transform:translateY(14px) rotate(0deg)}
+}
+
+/* ---------- type ---------- */
+.kicker{
+  font-family:var(--ff-mono);font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--ac);margin-bottom:22px;display:inline-flex;gap:.7em;align-items:center;
+}
+.kicker::before{content:"◆";opacity:.9}
+h1{font-family:var(--ff-display);font-weight:900;line-height:.95;letter-spacing:-.01em;
+   font-size:clamp(3.2rem,11vw,8.6rem)}
+h2{font-family:var(--ff-display);font-weight:800;line-height:1.02;letter-spacing:-.01em;
+   font-size:clamp(2.1rem,6vw,4.2rem);margin-bottom:.5em}
+h3{font-family:var(--ff-display);font-weight:700;font-size:1.5rem;margin-bottom:.35em}
+.es{font-family:var(--ff-display);font-style:italic}
+.lead{font-size:clamp(1.05rem,2vw,1.5rem);color:var(--bone);max-width:44ch}
+.lead.wide{max-width:60ch}
+.muted{color:var(--dim)}
+.accent{color:var(--ac)}
+p + p{margin-top:1em}
+strong{color:#fff;font-weight:700}
+.underglow{box-shadow:0 2px 0 var(--ac)}
+
+/* ---------- hero ---------- */
+.hero h1{margin-bottom:.12em}
+.hero .brand em{font-style:normal;color:var(--rosa)}
+.tagline{font-family:var(--ff-display);font-style:italic;font-size:clamp(1.3rem,3.4vw,2.2rem);
+  color:var(--bone);margin:.2em 0 1.1em}
+.hero-sub{font-size:clamp(1rem,1.8vw,1.2rem);color:var(--dim);max-width:52ch}
+
+/* ---------- chips / meta ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.chip{
+  font-family:var(--ff-mono);font-size:.76rem;letter-spacing:.06em;
+  border:1px solid var(--line);border-radius:999px;padding:9px 15px;color:var(--bone);
+  background:color-mix(in srgb, var(--ink2) 70%, transparent);backdrop-filter:blur(4px);
+}
+.chip b{color:var(--ac)}
+
+/* ---------- stat band ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:34px}
+.stat{
+  border:1px solid var(--line);border-radius:16px;padding:20px 18px;
+  background:color-mix(in srgb, var(--ink2) 60%, transparent);
+}
+.stat .n{font-family:var(--ff-display);font-weight:800;font-size:clamp(2rem,4.6vw,3rem);
+  color:var(--ac);line-height:1}
+.stat .l{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);margin-top:8px}
+
+/* ---------- generic card grid ---------- */
+.grid{display:grid;gap:16px;margin-top:34px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{
+  border:1px solid var(--line);border-radius:18px;padding:24px;
+  background:color-mix(in srgb, var(--ink2) 62%, transparent);
+  transition:border-color .35s ease, transform .35s ease;
+}
+.card:hover{border-color:var(--ac);transform:translateY(-3px)}
+.card .ico{font-family:var(--ff-display);font-size:1.7rem;color:var(--ac);display:block;margin-bottom:.35em}
+.card p{color:var(--dim);font-size:.96rem}
+
+/* ---------- method timeline ---------- */
+.method{display:grid;gap:12px;margin-top:32px}
+.mrow{display:grid;grid-template-columns:70px 1fr;gap:18px;align-items:center;
+  border:1px solid var(--line);border-radius:14px;padding:14px 18px;
+  background:color-mix(in srgb, var(--ink2) 55%, transparent)}
+.mrow .min{font-family:var(--ff-display);font-weight:800;font-size:1.7rem;color:var(--ac);text-align:right}
+.mrow .min small{display:block;font-family:var(--ff-mono);font-size:.6rem;letter-spacing:.12em;color:var(--faint)}
+.mrow b{color:var(--bone)}
+.mrow span{color:var(--dim);font-size:.92rem}
+
+/* ---------- zone strip ---------- */
+.zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:32px}
+.zone{border:1px solid var(--line);border-radius:16px;padding:20px 16px;text-align:center;
+  background:color-mix(in srgb, var(--ink2) 55%, transparent);transition:transform .3s, border-color .3s}
+.zone:hover{transform:translateY(-4px)}
+.zone .g{font-family:var(--ff-display);font-size:2.1rem;display:block;line-height:1;margin-bottom:.2em}
+.zone .nm{font-family:var(--ff-display);font-style:italic;font-size:1.15rem}
+.zone .en{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:6px}
+.z1{border-bottom:3px solid var(--mari)} .z1 .g{color:var(--mari)}
+.z2{border-bottom:3px solid var(--tala)} .z2 .g{color:var(--tala)}
+.z3{border-bottom:3px solid var(--rosa)} .z3 .g{color:var(--rosa)}
+.z4{border-bottom:3px solid var(--sepia2)} .z4 .g{color:var(--sepia2)}
+.z5{border-bottom:3px solid var(--cant)} .z5 .g{color:var(--cant)}
+
+/* ---------- códice = parchment flip ---------- */
+.parchment{background:var(--parch);color:var(--sepia)}
+.parchment::before{
+  background:
+    radial-gradient(1000px 600px at 82% -6%, color-mix(in srgb,var(--sepia2) 16%,transparent),transparent 60%),
+    radial-gradient(700px 500px at -4% 108%, color-mix(in srgb,var(--sepia2) 12%,transparent),transparent 60%);
+}
+.parchment .kicker{color:var(--sepia2)}
+.parchment .kicker::before{content:"❧"}
+.parchment h2, .parchment h3{color:var(--sepia)}
+.parchment .lead{color:#5a4326}
+.parchment .muted{color:var(--sepia2)}
+.parchment .glyphs span{color:var(--sepia2);opacity:.09}
+.parchment .card{background:color-mix(in srgb,var(--parch2) 55%,transparent);border-color:#d8c295}
+.parchment .card p{color:#6a5330}
+.parchment .card .ico{color:var(--sepia2)}
+.parchment .anselmo{
+  border-left:3px solid var(--sepia2);background:color-mix(in srgb,var(--parch2) 70%,transparent);
+}
+.parchment .anselmo .who{color:var(--sepia2)}
+.parchment .anselmo p{color:var(--sepia)}
+
+/* ---------- Anselmo bubble ---------- */
+.anselmo{
+  margin-top:32px;max-width:60ch;border-left:3px solid var(--ac);border-radius:0 14px 14px 0;
+  padding:16px 20px;background:color-mix(in srgb,var(--ink2) 62%,transparent);
+}
+.anselmo .who{font-family:var(--ff-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ac);margin-bottom:6px}
+.anselmo p{font-family:var(--ff-display);font-style:italic;font-size:1.12rem;color:var(--bone)}
+
+/* ---------- architecture list ---------- */
+.arch{display:grid;gap:14px;margin-top:32px}
+.arow{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+  padding-bottom:14px;border-bottom:1px solid var(--line)}
+.arow .g{font-family:var(--ff-display);font-size:1.3rem;color:var(--ac);line-height:1.4}
+.arow b{color:var(--bone)} .arow span{color:var(--dim);font-size:.94rem;display:block;margin-top:2px}
+
+/* ---------- code sample ---------- */
+.code{margin-top:26px;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  background:#0b0f16;max-width:640px}
+.code .bar{font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.1em;color:var(--faint);
+  padding:9px 16px;border-bottom:1px solid var(--line);text-transform:uppercase}
+.code pre{padding:16px;overflow-x:auto;font-family:var(--ff-mono);font-size:.82rem;line-height:1.7;color:var(--bone)}
+.code .c{color:var(--faint)} .code .k{color:var(--tala)} .code .v{color:var(--mari)} .code .s{color:var(--lima)}
+
+/* ---------- CTA / final ---------- */
+.cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.btn{font-family:var(--ff-mono);font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:15px 26px;border-radius:12px;border:1px solid var(--ac);color:var(--ink);
+  background:var(--ac);transition:transform .2s, box-shadow .3s;display:inline-flex;gap:.6em;align-items:center}
+.btn.ghost{background:transparent;color:var(--ac)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px color-mix(in srgb,var(--ac) 40%,transparent)}
+.repo{margin-top:30px;border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:560px;
+  background:#0b0f16}
+.repo .bar{font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.1em;color:var(--faint);
+  padding:9px 16px;border-bottom:1px solid var(--line)}
+.repo pre{padding:16px;font-family:var(--ff-mono);font-size:.8rem;line-height:1.7;color:var(--dim)}
+.repo .f{color:var(--bone)}
+
+/* ---------- progress rail ---------- */
+.rail{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:40;
+  display:flex;flex-direction:column;gap:11px}
+.rail a{width:9px;height:9px;border-radius:50%;border:1px solid var(--faint);
+  transition:all .3s;display:block}
+.rail a.on{background:var(--ac);border-color:var(--ac);transform:scale(1.35)}
+@media(max-width:760px){.rail{display:none}}
+
+/* ---------- reveal animation ---------- */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease, transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}
+.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}.reveal.d5{transition-delay:.4s}
+
+/* ---------- footer note ---------- */
+.foot{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.08em;color:var(--faint);margin-top:40px}
+.foot a{color:var(--ac)}
+
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important}
+  .glyphs span{animation:none}
+  .reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+<nav class="rail" aria-label="Section progress">
+  <a href="#s1" class="on" aria-label="Intro"></a>
+  <a href="#s2" aria-label="Premise"></a>
+  <a href="#s3" aria-label="What it is"></a>
+  <a href="#s4" aria-label="Method"></a>
+  <a href="#s5" aria-label="Design"></a>
+  <a href="#s6" aria-label="Architecture"></a>
+  <a href="#s7" aria-label="Features"></a>
+  <a href="#s8" aria-label="Learning science"></a>
+  <a href="#s9" aria-label="Gamification"></a>
+  <a href="#s10" aria-label="Open source"></a>
+</nav>
+
+<main class="deck" id="deck">
+
+  <!-- 1 · HERO -->
+  <section id="s1" class="z-panel hero">
+    <div class="glyphs" data-glyphs="◆ ✦ ❧ ⚔ ♪"></div>
+    <div class="wrap">
+      <div class="kicker reveal">The Mexican Spanish Codex · v1.12</div>
+      <h1 class="brand reveal d1">¡ÓRA<em>LE</em>!</h1>
+      <p class="tagline reveal d2">Illuminated manuscript meets Mexican arcade.</p>
+      <p class="hero-sub reveal d3">A fully local, single-file HTML app that teaches conversational Mexican Spanish in 26 weeks. No server. No accounts. No dependencies. Open one file and go.</p>
+      <div class="chips reveal d4">
+        <span class="chip"><b>1</b> HTML file</span>
+        <span class="chip"><b>0</b> dependencies</span>
+        <span class="chip"><b>968</b>-card SRS deck</span>
+        <span class="chip"><b>100%</b> offline</span>
+        <span class="chip">MIT licensed</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · PREMISE -->
+  <section id="s2" class="z-panel">
+    <div class="glyphs" data-glyphs="▣ ◆"></div>
+    <div class="wrap">
+      <div class="kicker reveal">The premise</div>
+      <h2 class="reveal d1">Most language apps want an account.<br>This one wants a <span class="accent es">double-click</span>.</h2>
+      <p class="lead wide reveal d2">¡ÓRALE! is a single ~200&nbsp;KB <code>orale.html</code>. It runs from your disk, from a USB stick, or from GitHub Pages — with the whole 26-week course, its spaced-repetition engine, audio, games and progress-saving living inside that one file. Nothing phones home. Everything works on a plane.</p>
+      <div class="stats">
+        <div class="stat reveal d1"><div class="n" data-count="200">0</div><div class="l">KB, one file</div></div>
+        <div class="stat reveal d2"><div class="n" data-count="0">0</div><div class="l">Dependencies</div></div>
+        <div class="stat reveal d3"><div class="n" data-count="0">0</div><div class="l">Servers / accounts</div></div>
+        <div class="stat reveal d4"><div class="n" data-count="26">0</div><div class="l">Week curriculum</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · WHAT IT IS -->
+  <section id="s3" class="z-learn">
+    <div class="glyphs" data-glyphs="✎ ◆"></div>
+    <div class="wrap">
+      <div class="kicker reveal">What's inside</div>
+      <h2 class="reveal d1">A whole course, <span class="accent es">densely</span> packed.</h2>
+      <p class="lead wide reveal d2">Feature density that rivals multi-file, multi-team apps — all authored append-only inside one script.</p>
+      <div class="stats">
+        <div class="stat reveal d1"><div class="n" data-count="968">0</div><div class="l">SRS cards</div></div>
+        <div class="stat reveal d2"><div class="n" data-count="26">0</div><div class="l">Weeks · Códice</div></div>
+        <div class="stat reveal d3"><div class="n" data-count="20">0</div><div class="l">Listening dialogues</div></div>
+        <div class="stat reveal d4"><div class="n" data-count="6">0</div><div class="l">Graded stories</div></div>
+        <div class="stat reveal d1"><div class="n" data-count="6">0</div><div class="l">Boss battles</div></div>
+        <div class="stat reveal d2"><div class="n" data-count="6">0</div><div class="l">Arena mini-games</div></div>
+        <div class="stat reveal d3"><div class="n" data-count="12">0</div><div class="l">Ranks</div></div>
+        <div class="stat reveal d4"><div class="n" data-count="12">0</div><div class="l">Conjugation verbs</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · METHOD -->
+  <section id="s4" class="z-learn">
+    <div class="glyphs" data-glyphs="♪ ✎"></div>
+    <div class="wrap">
+      <div class="kicker reveal">The method · one hour a day</div>
+      <h2 class="reveal d1">Built around a <span class="accent es">daily ritual</span>.</h2>
+      <p class="lead wide reveal d2">The app doesn't try to be your whole study plan — it's the practice layer around a proven free audio course. Sixty minutes, four moves.</p>
+      <div class="method">
+        <div class="mrow reveal d1"><div class="min">25<small>MIN</small></div><div><b>Free audio course</b><span>Language Transfer, then Dreaming Spanish — spoken-only grammar, no textbook.</span></div></div>
+        <div class="mrow reveal d2"><div class="min">20<small>MIN</small></div><div><b>In-app SRS review</b><span>The 968-card deck with es-MX text-to-speech and a mistake-driven repair queue.</span></div></div>
+        <div class="mrow reveal d3"><div class="min">10<small>MIN</small></div><div><b>Shadowing booth</b><span>Pimsleur-style: hear the native line, record yourself, compare.</span></div></div>
+        <div class="mrow reveal d4"><div class="min">5<small>MIN</small></div><div><b>La Cantina</b><span>Slang, idioms, false friends, fun facts, and a media library to keep it alive.</span></div></div>
+      </div>
+      <p class="lead reveal d5" style="margin-top:26px">≈ <strong>170 hours to conversational B1.</strong> The month 7–12 extension reaches ~350 hours / B2.</p>
+    </div>
+  </section>
+
+  <!-- 5 · DESIGN / PERSONALITY -->
+  <section id="s5" class="z-arena">
+    <div class="glyphs" data-glyphs="◆ ✎ ⚔ ❧ ♪"></div>
+    <div class="wrap">
+      <div class="kicker reveal">The identity</div>
+      <h2 class="reveal d1">Five zones. Five moods.<br>One <span class="accent es">obsidian</span> shell.</h2>
+      <p class="lead wide reveal d2">A dark manuscript case whose accent color and typography shift as you move between zones — and flips to full parchment in the Códice. The contrast <em>is</em> the product: each room feels like a different room.</p>
+      <div class="zones">
+        <div class="zone z1 reveal d1"><span class="g">◆</span><div class="nm">Panel</div><div class="en">Cempasúchil</div></div>
+        <div class="zone z2 reveal d2"><span class="g">✎</span><div class="nm">Estudiar</div><div class="en">Talavera blue</div></div>
+        <div class="zone z3 reveal d3"><span class="g">⚔</span><div class="nm">Arena</div><div class="en">Rosa mexicano</div></div>
+        <div class="zone z4 reveal d4"><span class="g">❧</span><div class="nm">Códice</div><div class="en">Sepia parchment</div></div>
+        <div class="zone z5 reveal d5"><span class="g">♪</span><div class="nm">Cantina</div><div class="en">Terracotta</div></div>
+      </div>
+      <div class="anselmo reveal d3">
+        <div class="who">Profesor Anselmo · scribe & guide</div>
+        <p>"¡Órale! You return, apprentice. The ink is fresh and the codex is open — let us conjugate a verb or two before the sun sets, ¿sí?"</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · ARCHITECTURE -->
+  <section id="s6" class="z-arena">
+    <div class="glyphs" data-glyphs="▣ ⚔"></div>
+    <div class="wrap">
+      <div class="kicker reveal">Under the hood</div>
+      <h2 class="reveal d1">Boringly robust, <span class="accent es">on purpose</span>.</h2>
+      <div class="arch">
+        <div class="arow reveal d1"><div class="g">▣</div><div><b>One file, zero build.</b><span>All CSS and JS inline in <code>orale.html</code>. No bundler, no framework, no npm at runtime. Edit it in any text editor.</span></div></div>
+        <div class="arow reveal d2"><div class="g">◆</div><div><b>Custom SM-2 spaced repetition.</b><span>A hand-written ease/interval scheduler with a repair queue built from your own mistakes and surprise "Memory Raids" for retention.</span></div></div>
+        <div class="arow reveal d3"><div class="g">♪</div><div><b>Offline-first PWA.</b><span>Version-aware service worker: bump one constant and stale caches retire themselves. Installs from the address bar; still runs by double-clicking from disk.</span></div></div>
+        <div class="arow reveal d4"><div class="g">✦</div><div><b>Your data stays yours.</b><span>Progress lives in <code>localStorage</code>, with CSV / JSON export &amp; import. No telemetry, ever.</span></div></div>
+        <div class="arow reveal d5"><div class="g">⚔</div><div><b>Gated by real tests.</b><span>Two Node scripts — a data linter and a headless smoke test — must pass before any change merges. A three-model team (Opus · Fable · local Qwen) builds it session by session.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · FEATURES -->
+  <section id="s7" class="z-arena">
+    <div class="glyphs" data-glyphs="⚔ ◆"></div>
+    <div class="wrap">
+      <div class="kicker reveal">The toolkit</div>
+      <h2 class="reveal d1">Everything a learner reaches for.</h2>
+      <div class="grid g3">
+        <div class="card reveal d1"><span class="ico">◆</span><h3>SRS Deck</h3><p>968 cards — vocabulary, phrases, slang, idioms, trabajo — spoken in es-MX, four-grade honest self-rating.</p></div>
+        <div class="card reveal d2"><span class="ico">♪</span><h3>Shadowing Booth</h3><p>Record your voice, replay, and compare against the native line with speed control.</p></div>
+        <div class="card reveal d3"><span class="ico">✎</span><h3>Listening Lab</h3><p>20 two-voice dialogues with comprehension questions, unlocked week by week.</p></div>
+        <div class="card reveal d1"><span class="ico">❧</span><h3>Story Mode</h3><p>Six graded narratives — one per phase — narrated paragraph by paragraph.</p></div>
+        <div class="card reveal d2"><span class="ico">⚔</span><h3>Arena &amp; Bosses</h3><p>Six mini-games plus timed, mixed-skill boss battles that cap each phase.</p></div>
+        <div class="card reveal d3"><span class="ico">▣</span><h3>Conjugation Trainer</h3><p>12 core verbs across present, preterite, imperfect and ir-a future.</p></div>
+        <div class="card reveal d1"><span class="ico">✦</span><h3>Skill Tree</h3><p>A five-branch RPG character sheet that levels itself from what you've already done.</p></div>
+        <div class="card reveal d2"><span class="ico">❧</span><h3>The Códice</h3><p>26-week curriculum with spoken-only grammar, missions and curated free links.</p></div>
+        <div class="card reveal d3"><span class="ico">♪</span><h3>La Cantina</h3><p>Slang, idioms, false friends, cognates, fun facts and a full media library.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · LEARNING SCIENCE (parchment) -->
+  <section id="s8" class="z-codex parchment">
+    <div class="glyphs" data-glyphs="❧ ◆"></div>
+    <div class="wrap">
+      <div class="kicker reveal">The engine, in plain ink</div>
+      <h2 class="reveal d1">Memory, <span class="es" style="color:var(--rosa)">scheduled</span>.</h2>
+      <p class="lead wide reveal d2">Every card carries an <em>ease</em> and an <em>interval</em>. Grade it honestly and the algorithm decides when you'll see it next — minutes if you stumbled, a month if it's yours for good.</p>
+      <div class="grid g2">
+        <div class="card reveal d1"><h3>Four grades</h3><p><b>Otra vez</b> — forgot, back in minutes. <b>Difícil</b> — barely, ~a day. <b>Bien</b> — the interval grows. <b>Fácil</b> — it grows faster.</p></div>
+        <div class="card reveal d2"><h3>Repair queue</h3><p>Your mistakes are counted and re-served first, so study time flows toward exactly what you keep missing.</p></div>
+        <div class="card reveal d3"><h3>Memory Raids</h3><p>Surprise checks on cards you thought were mastered — the antidote to false confidence.</p></div>
+        <div class="card reveal d4"><h3>Mastery = 21 days</h3><p>When a card's interval crosses three weeks it counts as learned. Slowly, the deck teaches you it can be trusted.</p></div>
+      </div>
+      <div class="anselmo reveal d3">
+        <div class="who">Anselmo, in the margin</div>
+        <p>"Poco, seguido, para siempre — a little, often, forever. That is how the ink sets in the mind, apprentice."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · GAMIFICATION -->
+  <section id="s9" class="z-panel">
+    <div class="glyphs" data-glyphs="✦ ◆"></div>
+    <div class="wrap">
+      <div class="kicker reveal">Why you come back</div>
+      <h2 class="reveal d1">The grind, made a <span class="accent es">game</span>.</h2>
+      <p class="lead wide reveal d2">A full arcade layer wraps the study loop — earned, not bought. No leaderboards to lose to; the only opponent is yesterday's you (and, in the final battle, your own <span class="es">Duda</span> — your doubt).</p>
+      <div class="grid g3">
+        <div class="card reveal d1"><span class="ico">✦</span><h3>XP &amp; 12 ranks</h3><p>From Peregrino upward — every review, game and story feeds the bar.</p></div>
+        <div class="card reveal d2"><span class="ico">◆</span><h3>Streaks &amp; pesos</h3><p>Daily missions, a streak pill, and variable-reward chests to open.</p></div>
+        <div class="card reveal d3"><span class="ico">⚔</span><h3>Six themed bosses</h3><p>El Trabalenguas, El Tragón, La Comadre… ending in La Duda herself.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · OPEN SOURCE / CTA -->
+  <section id="s10" class="z-cantina">
+    <div class="glyphs" data-glyphs="♪ ◆ ❧"></div>
+    <div class="wrap">
+      <div class="kicker reveal">Take it</div>
+      <h2 class="reveal d1">Clone it. Fork it. <span class="accent es">Learn</span> from it.</h2>
+      <p class="lead wide reveal d2">MIT licensed and self-contained. Read the whole app top to bottom in one sitting, or just open it and start studying. Built in the open by a human and a small crew of models.</p>
+      <div class="repo reveal d2">
+        <div class="bar">orale-project/</div>
+        <pre><span class="f">app/orale.html</span>          the entire application
+<span class="f">app/manifest.webmanifest</span>  PWA manifest
+<span class="f">app/sw.js</span>               version-aware offline cache
+docs/DESIGN.md            design system &amp; data schemas
+docs/CHANGELOG.md         version history
+tools/smoke-test.js       headless runtime gate
+tools/validate-data.js    data integrity linter
+LICENSE                   MIT</pre>
+      </div>
+      <div class="cta reveal d3">
+        <a class="btn" href="https://github.com/" target="_blank" rel="noopener">★ View on GitHub</a>
+        <a class="btn ghost" href="../app/orale.html">◆ Open the app</a>
+      </div>
+      <div class="anselmo reveal d4">
+        <div class="who">Profesor Anselmo · despedida</div>
+        <p>"Ándale pues — the codex is yours now. Study a little today, and a little tomorrow, and one morning you will dream in español. ¡Órale!"</p>
+      </div>
+      <p class="foot reveal d5">¡ÓRALE! — The Mexican Spanish Codex · single-file PWA · MIT · made with cempasúchil, talavera &amp; a lot of ink.</p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ---- drifting glyph field (decorative animation only) ---- */
+document.querySelectorAll(".glyphs").forEach(el=>{
+  const set=(el.dataset.glyphs||"◆").split(" ").filter(Boolean);
+  const n=Math.min(set.length,5);
+  for(let i=0;i<n;i++){
+    const s=document.createElement("span");
+    s.textContent=set[i];
+    s.style.left=(6+Math.random()*82)+"%";
+    s.style.top=(6+Math.random()*72)+"%";
+    s.style.fontSize=(90+Math.random()*150)+"px";
+    s.style.animationDuration=(9+Math.random()*8)+"s";
+    s.style.animationDelay=(-Math.random()*8)+"s";
+    el.appendChild(s);
+  }
+});
+
+/* ---- reveal on scroll ---- */
+const revIO=new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); revIO.unobserve(e.target);} });
+},{threshold:.16});
+document.querySelectorAll(".reveal").forEach(el=>revIO.observe(el));
+
+/* ---- count-up numbers ---- */
+function countUp(el){
+  const target=+el.dataset.count, dur=1100, t0=performance.now();
+  const suffix = el.textContent.replace(/[0-9]/g,"");
+  (function step(t){
+    const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*e)+suffix;
+    if(p<1) requestAnimationFrame(step);
+  })(t0);
+}
+const numIO=new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ countUp(e.target); numIO.unobserve(e.target);} });
+},{threshold:.6});
+document.querySelectorAll("[data-count]").forEach(el=>numIO.observe(el));
+
+/* ---- progress rail highlight ---- */
+const rail=[...document.querySelectorAll(".rail a")];
+const secIO=new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){
+    const id=e.target.id;
+    rail.forEach(a=>a.classList.toggle("on", a.getAttribute("href")==="#"+id));
+  }});
+},{threshold:.5});
+document.querySelectorAll("section").forEach(s=>secIO.observe(s));
+</script>
+</body>
+</html>
