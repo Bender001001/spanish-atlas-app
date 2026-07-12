@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#10141c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>ÓRALE — The Mexican Spanish Codex</title>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --ink:#10141c; --ink2:#181e29; --ink3:#222a38; --line:#2e3746;
+  --bone:#e9e4d8; --dim:#8b94a6; --faint:#5a6375;
+  --rosa:#e4007c; --mari:#f2a33c; --tala:#3e8fb0; --lima:#8fbf4d; --rojo:#e05252;
+  --parch:#f1e7d0; --parch2:#e7d9ba; --sepia:#4a3a22; --sepia2:#7a6440;
+  --ac:var(--mari);
+  --ff-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --ff-codex:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --ff-mono:ui-monospace,"Cascadia Mono",Consolas,Menlo,monospace;
+  --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{background:var(--ink);color:var(--bone);font-family:var(--ff-body);min-height:100vh;overscroll-behavior:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:var(--tala);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--rosa);color:#fff}
+:focus-visible{outline:2px solid var(--mari);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* zone accents */
+body[data-zone="panel"]{--ac:var(--mari)}
+body[data-zone="learn"]{--ac:var(--tala)}
+body[data-zone="arena"]{--ac:var(--rosa)}
+body[data-zone="codex"]{--ac:var(--sepia2)}
+body[data-zone="cantina"]{--ac:#d98e4a}
+
+/* ============ SHELL ============ */
+#app{max-width:760px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--ink) 75%,transparent);padding:14px 16px 10px}
+.hd-row{display:flex;align-items:center;gap:12px}
+.brand{font-family:var(--ff-codex);font-weight:700;font-size:1.15rem;letter-spacing:.06em;color:var(--mari)}
+.brand em{font-style:normal;color:var(--rosa)}
+.hd-stats{margin-left:auto;display:flex;gap:8px;align-items:center}
+.pill{background:var(--ink3);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:.78rem;font-family:var(--ff-mono);display:flex;gap:5px;align-items:center;white-space:nowrap}
+.pill b{color:var(--mari)}
+.pill.streak b{color:var(--rosa)}
+.xp-wrap{margin-top:9px}
+.xp-meta{display:flex;justify-content:space-between;font-size:.72rem;color:var(--dim);font-family:var(--ff-mono);margin-bottom:4px}
+.xp-meta b{color:var(--bone)}
+.xp-bar{height:7px;background:var(--ink3);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--mari),var(--rosa));border-radius:99px;transition:width .5s ease}
+main{flex:1;padding:6px 16px 96px}
+
+/* bottom nav */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:var(--ink2);border-top:1px solid var(--line);display:flex;max-width:760px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;padding:10px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--faint);font-size:.66rem;letter-spacing:.04em;transition:color .15s}
+nav button .ico{font-size:1.15rem;line-height:1}
+nav button.on{color:var(--ac)}
+nav button.on .ico{transform:translateY(-1px)}
+
+/* ============ COMMON ============ */
+.card{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.card h3{font-size:.98rem;margin-bottom:8px;font-family:var(--ff-codex);letter-spacing:.03em}
+h2.sect{font-family:var(--ff-codex);font-size:1.35rem;margin:14px 0 12px;letter-spacing:.03em}
+h2.sect small{display:block;font-family:var(--ff-mono);font-size:.68rem;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ac);color:#0e0d0b;font-weight:700;border-radius:11px;padding:11px 18px;font-size:.92rem;transition:transform .1s,filter .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--ink3);color:var(--bone);border:1px solid var(--line);font-weight:600}
+.btn.wide{width:100%}
+.btn.sm{padding:7px 13px;font-size:.8rem;border-radius:9px}
+.btn:disabled{opacity:.4;cursor:default}
+.tag{display:inline-block;font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;background:var(--ink3);border:1px solid var(--line);color:var(--dim);border-radius:6px;padding:2px 8px}
+.muted{color:var(--dim);font-size:.85rem;line-height:1.5}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:flex;gap:10px;align-items:center}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.es{font-family:var(--ff-codex)}
+
+/* ============ PANEL ============ */
+.hero-greet{font-family:var(--ff-codex);font-size:1.5rem;line-height:1.25;margin:10px 0 2px}
+.hero-greet b{color:var(--mari)}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.stat{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);padding:12px 10px;text-align:center}
+.stat .n{font-family:var(--ff-mono);font-size:1.35rem;font-weight:700;color:var(--ac)}
+.stat .l{font-size:.66rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.quest{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line)}
+.quest:last-child{border-bottom:none}
+.quest .chk{width:22px;height:22px;border-radius:7px;border:2px solid var(--faint);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.quest.done .chk{background:var(--lima);border-color:var(--lima);color:#0e0d0b}
+.quest.done .qt{text-decoration:line-through;color:var(--faint)}
+.qt{font-size:.9rem;flex:1}
+.qxp{font-family:var(--ff-mono);font-size:.72rem;color:var(--mari)}
+.bar-row{margin:9px 0}
+.bar-row .bl{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px}
+.bar-row .bl b{font-family:var(--ff-mono);color:var(--dim);font-weight:400}
+.bar{height:8px;background:var(--ink3);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--ac)}
+canvas.chart{width:100%;height:130px;display:block}
+/* analytics v2 */
+.hm{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.hm .cell{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-family:var(--ff-mono);font-size:.6rem;color:var(--dim)}
+.hm .cell b{font-size:.74rem;color:var(--bone)}
+.hm .cell.lk{opacity:.35}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.68rem;color:var(--dim);font-family:var(--ff-mono);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px;border:1px solid var(--line)}
+
+/* ============ FLASHCARDS ============ */
+.fc-stage{perspective:1100px;margin:14px 0}
+.fc{position:relative;min-height:250px;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,1.4,.6,1);cursor:pointer}
+.fc.flip{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;background:var(--ink2);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:10px}
+.fc-face.back{transform:rotateY(180deg);border-color:var(--tala)}
+.fc-word{font-family:var(--ff-codex);font-size:2rem;line-height:1.2}
+.fc-sub{color:var(--dim);font-size:.85rem}
+.fc-hint{position:absolute;bottom:12px;font-size:.68rem;color:var(--faint);letter-spacing:.1em;text-transform:uppercase}
+.srs-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.srs-btns button{padding:12px 4px;border-radius:11px;font-weight:700;font-size:.82rem;border:1px solid var(--line);background:var(--ink3)}
+.srs-btns .b0{color:var(--rojo)} .srs-btns .b1{color:var(--mari)}
+.srs-btns .b2{color:var(--tala)} .srs-btns .b3{color:var(--lima)}
+.srs-btns button small{display:block;font-weight:400;font-size:.62rem;color:var(--faint);font-family:var(--ff-mono);margin-top:2px}
+.speak-ico{background:var(--ink3);border:1px solid var(--line);border-radius:99px;width:42px;height:42px;font-size:1.1rem;color:var(--tala)}
+
+/* ============ QUIZ / GAMES ============ */
+.opt{display:block;width:100%;text-align:left;background:var(--ink2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:9px;font-size:.95rem;transition:border-color .12s}
+.opt:hover{border-color:var(--ac)}
+.opt.right{border-color:var(--lima);background:rgba(143,191,77,.12)}
+.opt.wrong{border-color:var(--rojo);background:rgba(224,82,82,.12)}
+.q-word{font-family:var(--ff-codex);font-size:1.7rem;text-align:center;margin:16px 0}
+.q-meta{display:flex;justify-content:space-between;font-family:var(--ff-mono);font-size:.75rem;color:var(--dim);margin-bottom:8px}
+.timerbar{height:5px;background:var(--ink3);border-radius:99px;overflow:hidden;margin-bottom:14px}
+.timerbar i{display:block;height:100%;background:var(--rosa);transition:width .2s linear}
+.game-tile{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);padding:15px;cursor:pointer;transition:border-color .15s,transform .1s}
+.game-tile:active{transform:scale(.98)}
+.game-tile:hover{border-color:var(--rosa)}
+.game-tile .gt{font-family:var(--ff-codex);font-size:1.02rem;color:var(--rosa);margin-bottom:4px}
+.game-tile .gd{font-size:.76rem;color:var(--dim);line-height:1.4}
+.game-tile .gx{font-family:var(--ff-mono);font-size:.66rem;color:var(--mari);margin-top:7px}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;min-height:44px}
+.tile{background:var(--ink3);border:1px solid var(--tala);border-radius:9px;padding:9px 13px;font-family:var(--ff-codex);font-size:.95rem}
+.tile:disabled{opacity:.25}
+.build-out{min-height:52px;border:1px dashed var(--line);border-radius:11px;padding:9px;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.bigscore{font-family:var(--ff-mono);font-size:2.6rem;text-align:center;color:var(--ac);margin:10px 0}
+
+/* ============ CODEX (parchment zone) ============ */
+.codex{background:var(--parch);color:var(--sepia);border-radius:16px;padding:20px 18px;font-family:var(--ff-codex);box-shadow:inset 0 0 60px rgba(122,100,64,.25);border:1px solid var(--parch2)}
+.codex h2{font-size:1.4rem;letter-spacing:.04em;border-bottom:2px solid var(--sepia2);padding-bottom:6px;margin-bottom:12px}
+.codex h2::first-letter{font-size:1.9rem;color:#8c2f1b}
+.codex .phase{border:1px solid var(--parch2);border-radius:11px;margin-bottom:10px;background:rgba(255,255,255,.35);overflow:hidden}
+.codex .phase>button{width:100%;text-align:left;padding:13px 14px;font-family:var(--ff-codex);font-size:1rem;font-weight:700;color:var(--sepia);display:flex;justify-content:space-between;align-items:center}
+.codex .phase .ph-body{padding:0 14px 12px;display:none}
+.codex .phase.open .ph-body{display:block}
+.wk{border-top:1px dotted var(--sepia2);padding:11px 0}
+.wk .wk-t{font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.wk .wk-t .tag{background:transparent;border-color:var(--sepia2);color:var(--sepia2)}
+.wk p{font-size:.87rem;line-height:1.55;margin:6px 0}
+.wk .mission{font-style:italic;color:#8c2f1b}
+.wk ul{margin:4px 0 6px 18px;font-size:.85rem}
+.wk a{color:#1f5b7a;font-weight:600}
+.wk .btn{background:var(--sepia);color:var(--parch)}
+.wk.done .wk-t::after{content:"✓ superada";font-size:.7rem;color:#3e7a3e;font-family:var(--ff-mono)}
+.marginalia{border-left:3px solid #8c2f1b;background:rgba(140,47,27,.07);padding:9px 12px;font-style:italic;font-size:.86rem;border-radius:0 9px 9px 0;margin:10px 0}
+
+/* ============ CANTINA ============ */
+.slang-card{background:linear-gradient(160deg,#241a12,#1a1410);border:1px solid #4a3520;border-radius:var(--r);padding:14px;margin-bottom:10px}
+.slang-card .sw{font-family:var(--ff-codex);font-size:1.2rem;color:#e8b04a}
+.slang-card .sm{font-size:.85rem;color:var(--bone);margin:4px 0}
+.slang-card .sx{font-size:.8rem;color:var(--dim);font-style:italic}
+.ff-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:.8rem;padding:9px 0;border-bottom:1px solid var(--line)}
+.ff-row b{color:#d98e4a;font-family:var(--ff-codex);font-size:.92rem}
+.ff-row .no{color:var(--rojo)} .ff-row .si{color:var(--lima)}
+.fact{border-left:3px solid #d98e4a;padding:8px 12px;margin:10px 0;font-size:.87rem;line-height:1.55;color:var(--bone)}
+.chip{display:inline-block;background:var(--ink3);border:1px solid var(--line);border-radius:8px;padding:5px 10px;margin:3px;font-family:var(--ff-codex);font-size:.85rem}
+.subtabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
+.subtabs button{white-space:nowrap;background:var(--ink3);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.78rem;color:var(--dim)}
+.subtabs button.on{background:var(--ac);color:#0e0d0b;border-color:var(--ac);font-weight:700}
+
+/* ============ BUDDY ============ */
+#buddy{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);width:min(700px,calc(100% - 28px));z-index:55;background:var(--parch);color:var(--sepia);border-radius:13px;padding:11px 40px 11px 14px;font-family:var(--ff-codex);font-size:.88rem;line-height:1.45;box-shadow:0 8px 30px rgba(0,0,0,.5);border:1px solid var(--parch2);display:none;font-style:italic}
+#buddy.show{display:block;animation:pop .35s cubic-bezier(.3,1.5,.5,1)}
+#buddy::before{content:"ANSELMO ✒";position:absolute;top:-9px;left:12px;background:#8c2f1b;color:var(--parch);font-style:normal;font-family:var(--ff-mono);font-size:.58rem;letter-spacing:.14em;padding:2px 8px;border-radius:6px}
+#buddy .bx{position:absolute;top:6px;right:8px;color:var(--sepia2);font-size:1rem;padding:4px}
+@keyframes pop{from{opacity:0;transform:translateX(-50%) translateY(12px) scale(.96)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+
+/* ============ MODAL ============ */
+.modal-bg{position:fixed;inset:0;background:rgba(8,10,15,.8);z-index:100;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal{background:var(--ink2);border:1px solid var(--line);border-radius:18px;padding:20px;width:100%;max-width:480px;max-height:86vh;overflow-y:auto}
+.modal h3{font-family:var(--ff-codex);font-size:1.2rem;margin-bottom:10px}
+.chest{text-align:center;padding:14px 0}
+.chest .cico{font-size:3rem;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+.chest .cre{font-family:var(--ff-codex);font-size:1.1rem;color:var(--mari);margin-top:8px}
+select,input[type=text]{width:100%;background:var(--ink3);border:1px solid var(--line);border-radius:10px;color:var(--bone);padding:10px 12px;font-size:.9rem;font-family:inherit}
+label.fl{display:block;font-size:.75rem;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;margin:12px 0 5px;font-family:var(--ff-mono)}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--ink3);border:1px solid var(--mari);color:var(--bone);border-radius:11px;padding:10px 18px;z-index:200;font-size:.85rem;animation:pop .3s;font-family:var(--ff-mono)}
+@media(max-width:420px){.statgrid{gap:7px}.grid2{grid-template-columns:1fr}}
+
+.story-para{font-family:var(--ff-codex);font-size:1.06rem;line-height:1.75;color:var(--bone)}
+
+.sktree{display:flex;flex-direction:column;gap:10px}
+.sktree .branch{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.sktree .br-h{display:flex;align-items:center;gap:10px}
+.sktree .br-ico{font-size:1.2rem;color:var(--rosa)}
+.sktree .br-name{font-family:var(--ff-codex);font-size:1rem;flex:1}
+.sktree .br-lv{font-family:var(--ff-mono);font-size:.72rem;color:var(--mari)}
+.sktree .nodes{display:flex;gap:8px;margin:9px 0 6px}
+.sktree .node{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);background:var(--ink3)}
+.sktree .node.on{background:var(--rosa);border-color:var(--rosa);box-shadow:0 0 8px rgba(228,0,124,.5)}
+.sktree .br-sub{font-size:.76rem;line-height:1.4}
+</style>
+</head>
+<body data-zone="panel">
+<div id="app">
+  <header>
+    <div class="hd-row">
+      <div class="brand">¡ÓRA<em>LE</em>!</div>
+      <div class="hd-stats">
+        <div class="pill streak" id="pill-streak" title="Racha (streak)">✦ <b>0</b></div>
+        <div class="pill" id="pill-pesos" title="Pesos">$ <b>0</b></div>
+        <button class="pill" id="btn-help" title="Tutorial (English)">?</button>
+        <button class="pill" id="btn-settings" title="Ajustes">⚙</button>
+      </div>
+    </div>
+    <div class="xp-wrap">
+      <div class="xp-meta"><span id="xp-rank">Nivel 1 · Peregrino</span><b id="xp-num" aria-live="polite">0 XP</b></div>
+      <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    </div>
+  </header>
+  <main id="view" role="main"></main>
+  <nav role="navigation" aria-label="Navegación principal">
+    <button data-v="panel" class="on" aria-label="Panel"><span class="ico">◆</span>Panel</button>
+    <button data-v="learn" aria-label="Estudiar"><span class="ico">✎</span>Estudiar</button>
+    <button data-v="arena" aria-label="Arena"><span class="ico">⚔</span>Arena</button>
+    <button data-v="codex" aria-label="Códice"><span class="ico">❧</span>Códice</button>
+    <button data-v="cantina" aria-label="Cantina"><span class="ico">♪</span>Cantina</button>
+  </nav>
+  <div id="buddy" role="status"><span id="buddy-txt"></span><button class="bx" onclick="hideBuddy()">×</button></div>
+  <div id="modal-root"></div>
+</div>
+<script>
+"use strict";
+/* ================= DATA: CURRICULUM ================= */
+const PHASES=[
+ [1,"Supervivencia","Weeks 1-4 · Sound system, survival phrases, the verb engine starts"],
+ [2,"Vida Diaria","Weeks 5-8 · Present tense mastery, food, family, daily routine"],
+ [3,"En la Calle","Weeks 9-13 · Directions, restaurants, shopping, past tense unlocked"],
+ [4,"Conversación","Weeks 14-18 · Opinions, feelings, storytelling, future plans"],
+ [5,"Español Callejero","Weeks 19-22 · Slang, idioms, humor, the subjunctive survival kit"],
+ [6,"Pulido Final","Weeks 23-26 · Speed, narration, debate, final exam"]];
+const LT="https://www.languagetransfer.org";
+const DS="https://www.dreamingspanish.com";
+function yt(q){return "https://www.youtube.com/results?search_query="+encodeURIComponent(q)}
+const W=[
+{n:1,ph:1,t:"Sounds & Survival",g:"Spanish is phonetic: 5 pure vowels (a e i o u), never lazy like English. Rolled/tapped R, ñ, silent H, LL sounds like Y in Mexico. Stress rules: words ending in vowel/n/s stress the 2nd-to-last syllable; accents override.",m:"Record yourself saying 10 greetings out loud. Say hola, buenos días, ¿cómo estás? to a mirror without reading.",r:[["Language Transfer — start Track 1 (your Michel Thomas engine)",LT],["Butterfly Spanish: pronunciation",yt("butterfly spanish pronunciation vowels")]]},
+{n:2,ph:1,t:"To Be or To Be (ser vs estar)",g:"Two verbs for 'to be'. SER = identity/permanent (soy Mateo, soy de India). ESTAR = state/location (estoy cansado, estoy en Houston). Doctor for who you are, Location/Emotion for estar.",m:"Say 8 true sentences about yourself with soy/estoy. No writing.",r:[["Language Transfer tracks 5-12",LT],["Ser vs estar explained",yt("ser vs estar butterfly spanish")]]},
+{n:3,ph:1,t:"Numbers, Time & Courtesy",g:"Numbers 1-100, telling time (son las tres), days, months. Courtesy oil: por favor, gracias, con permiso, disculpe, ¿mande? (very Mexican way to say 'what?/pardon?').",m:"Say your phone number, birthday and daily schedule out loud in Spanish.",r:[["Numbers drill",yt("spanish numbers 1-100 practice listening")],["Dreaming Spanish superbeginner videos — start daily habit",DS]]},
+{n:4,ph:1,t:"The Question Machine",g:"Question words: qué, quién, cuándo, dónde, por qué, cómo, cuánto, cuál. Intonation makes questions — no word-order gymnastics needed. Checkpoint week: Phase 1 test.",m:"Ask 15 questions out loud about an imaginary stranger. Interrogate them.",r:[["Question words",yt("spanish question words explained")],["Easy Spanish street interviews (Mexico City)","https://www.youtube.com/@EasySpanish"]]},
+{n:5,ph:2,t:"The Big 5 Verbs",g:"Present tense of the workhorses: tener (have), ir (go), querer (want), poder (can), hacer (do/make). IR + A + infinitive = instant future: voy a comer = I'm going to eat. This one trick unlocks the future tense months early.",m:"Narrate tomorrow's plan out loud using only 'voy a...' — 10 sentences.",r:[["Language Transfer tracks 13-25",LT],["Top Spanish verbs",yt("most common spanish verbs present tense")]]},
+{n:6,ph:2,t:"Food & the Taco Protocol",g:"Ordering: me da..., quisiera..., para llevar (to go), la cuenta por favor. Mexican menu literacy: antojitos, guisados, salsas. Gustar logic: me gusta = 'it pleases me' (the thing is the subject).",m:"Order a full imaginary meal at a taquería out loud, including a complaint and the bill.",r:[["Ordering food in Mexico",yt("how to order tacos in spanish mexico")],["Spanish and Go — Mexico focused","https://www.youtube.com/@SpanishandGo"]]},
+{n:7,ph:2,t:"Family, People & Descriptions",g:"Family tree vocab, adjectives and agreement (alto/alta), possessives (mi, tu, su). Physical + personality descriptions. Diminutives: -ito/-ita make everything Mexican (ahorita, cafecito, momentito).",m:"Describe 5 family members out loud: appearance, personality, what they do.",r:[["Diminutives in Mexican Spanish",yt("mexican spanish diminutives ito ita")],["Dreaming Spanish — beginner level now",DS]]},
+{n:8,ph:2,t:"Daily Routine & Reflexives",g:"Reflexive verbs: me levanto, me baño, me voy. Time connectors: primero, luego, después, antes de, por fin. Phase 2 checkpoint test.",m:"Narrate your entire day out loud from waking to sleeping, 2 minutes minimum.",r:[["Reflexive verbs",yt("spanish reflexive verbs daily routine")],["Language Transfer tracks 26-40",LT]]},
+{n:9,ph:3,t:"Getting Around",g:"Directions: derecha, izquierda, derecho (straight — beware, sounds like right!), cuadra (block). Transport, Uber/taxi talk. Estar + location deep dive, hay = there is/are.",m:"Give someone directions from your house to your favorite restaurant, out loud.",r:[["Directions in Spanish",yt("asking directions in spanish mexico")],["No Hay Tos podcast — Mexican Spanish, start now",yt("no hay tos podcast beginner")]]},
+{n:10,ph:3,t:"Shopping & Haggling",g:"Prices, sizes, colors. ¿Cuánto cuesta? ¿Tiene en otro color? Está muy caro. Demonstratives: este, ese, aquel. Mexican market culture: el regateo (haggling) etiquette.",m:"Roleplay buying shoes and haggling — play both parts out loud.",r:[["Shopping vocabulary",yt("shopping in spanish market conversation")],["Easy Spanish: markets",yt("easy spanish mercado")]]},
+{n:11,ph:3,t:"The Past Unlocked I (Preterite)",g:"Preterite = completed actions: hablé, comí, viví. The killers: fui (I went/was), tuve, hice, dije. Story spine: primero pasó X, luego Y, al final Z.",m:"Tell what you did yesterday, out loud, 90 seconds, only past tense.",r:[["Language Transfer — past tense tracks",LT],["Preterite explained",yt("spanish preterite tense explained simply")]]},
+{n:12,ph:3,t:"The Past Unlocked II (Imperfect)",g:"Imperfect = background/used to: hablaba, comía, era, estaba. Preterite is the photo, imperfect is the video. Cuando era niño... (when I was a kid) — your story-telling superpower.",m:"Describe your childhood for 2 minutes out loud: where you lived, what you used to do.",r:[["Preterite vs imperfect",yt("preterite vs imperfect spanish story")],["Dreaming Spanish — intermediate stories",DS]]},
+{n:13,ph:3,t:"Health, Body & Emergencies",g:"Me duele... (hurts), body parts, pharmacy talk, emergencies. Tener idioms: tengo hambre/sed/sueño/prisa/miedo. Phase 3 checkpoint test.",m:"Explain 3 ailments to an imaginary pharmacist and understand their advice.",r:[["At the doctor in Spanish",yt("spanish doctor pharmacy conversation")],["Tener expressions",yt("tener expressions spanish")]]},
+{n:14,ph:4,t:"Opinions & Arguments",g:"Creo que, pienso que, me parece que, en mi opinión, la neta (honestly - MX). Agreeing/disagreeing: tienes razón, no estoy de acuerdo, depende. Comparatives: más que, menos que, mejor, peor.",m:"Argue out loud for 2 minutes: tacos vs pizza. Take both sides.",r:[["Giving opinions",yt("give opinions in spanish phrases")],["Easy Spanish opinion interviews",yt("easy spanish opinions street interview")]]},
+{n:15,ph:4,t:"Feelings & Small Talk",g:"Emotion vocabulary beyond bien/mal. Small talk weather, weekend, family. The Mexican art of not saying no directly: ahorita, luego vemos, déjame ver.",m:"Do a full 3-minute imaginary small-talk exchange with a neighbor, both roles.",r:[["Small talk phrases",yt("spanish small talk phrases native")],["No Hay Tos — pick any episode",yt("no hay tos podcast")]]},
+{n:16,ph:4,t:"Phone, Plans & Invitations",g:"Phone talk: bueno (Mexican phone hello), ¿de parte de quién? Making/changing/cancelling plans. Quedamos a las 8. Direct object pronouns: lo, la, los, las (lo compro = I buy it).",m:"Leave 3 voicemails out loud: invite, reschedule, cancel with excuse.",r:[["Phone conversations",yt("spanish phone conversation practice")],["Object pronouns",yt("direct object pronouns spanish explained")]]},
+{n:17,ph:4,t:"Work & Life Story",g:"Talking about your job without jargon: me dedico a..., trabajo en ventas. Your life arc: nací en, crecí en, me mudé a, llevo X años en. Present perfect: he vivido, he trabajado.",m:"Deliver your 2-minute life story out loud, smooth, no notes. Record it — this is your benchmark tape.",r:[["Talk about your job",yt("talk about your job in spanish")],["Dreaming Spanish intermediate",DS]]},
+{n:18,ph:4,t:"Storytelling Bootcamp",g:"Fillers that buy time like a native: pues, este..., o sea, fíjate que, ¿sabes qué? Sequencers, reported speech light: me dijo que... Phase 4 checkpoint test.",m:"Tell a funny story that happened to you, 2 minutes, with fillers and drama.",r:[["Spanish filler words",yt("spanish filler words muletillas mexican")],["Storytelling in Spanish",yt("tell stories in spanish past tenses")]]},
+{n:19,ph:5,t:"Mexican Slang Core",g:"The essentials: güey, órale, ándale, no manches, qué padre, chido, neta, aguas, chamba, sale. Register: when slang builds rapport vs when it backfires. The many jobs of madre in Mexican Spanish.",m:"Re-tell week 18's story, now seasoned with 5 slang words, naturally.",r:[["Mexican slang 101",yt("mexican slang words guey orale explained")],["Qué Onda: slang",yt("mexican spanish slang street")]]},
+{n:20,ph:5,t:"Idioms & Figures of Speech",g:"Echar la mano (help out), estar crudo (hungover), me vale (I don't care), sacar de onda (throw off). Sayings: más vale tarde que nunca, camarón que se duerme...",m:"Use 6 idioms in improvised sentences out loud, then explain each in Spanish.",r:[["Mexican idioms",yt("mexican spanish idioms dichos explained")],["Dichos y refranes",yt("dichos mexicanos famosos significado")]]},
+{n:21,ph:5,t:"Subjunctive Survival Kit",g:"Don't master it — pattern-match it. Quiero que vengas, espero que estés bien, ojalá (que) llueva, cuando llegues. Learn 12 frozen frames that cover 90% of spoken use.",m:"Make 10 wishes and hopes out loud using ojalá and espero que.",r:[["Subjunctive shortcuts",yt("spanish subjunctive triggers easy")],["Language Transfer — subjunctive tracks",LT]]},
+{n:22,ph:5,t:"Humor, Albures & Culture",g:"Mexican humor: double meanings (albures — recognize, don't attempt yet), sarcasm markers, teasing culture (carrilla). Regional flavors: norteño vs chilango vs costeño. Phase 5 checkpoint test.",m:"Watch a Mexican comedy clip and re-tell the joke out loud in Spanish.",r:[["Understanding albures",yt("que son los albures mexicanos explicacion")],["Franco Escamilla stand-up clips",yt("franco escamilla clips subtitulos")]]},
+{n:23,ph:6,t:"Speed & Ear Training",g:"Native-speed listening: linked speech (¿on'tá? = ¿dónde está?), dropped S in coastal accents. Shadow at 1.0x then 1.25x. Your ear does the heavy lifting from here.",m:"Shadow a 60-second native clip until you match rhythm. 5 reps daily.",r:[["Fast Spanish listening",yt("understand fast spoken spanish mexican")],["No Hay Tos at natural speed",yt("no hay tos natural speed")]]},
+{n:24,ph:6,t:"Debate & Depth",g:"Hold positions: por un lado... por otro lado, sin embargo, aunque, a pesar de. Hypotheticals: si tuviera... haría (if I had... I would).",m:"Debate yourself out loud for 3 minutes: living in Mexico vs USA.",r:[["Connectors for fluency",yt("spanish connectors advanced speaking")],["Conditional explained",yt("spanish conditional si clauses")]]},
+{n:25,ph:6,t:"Real Humans Protocol",g:"Deploy: free language exchanges (ConversationExchange.com, Tandem/HelloTalk apps), local taquerías, Mexican coworkers. Repair strategies: ¿cómo se dice...?, ¿me lo repites más despacio?",m:"Have one real 10-minute conversation with a native speaker. Non-negotiable.",r:[["ConversationExchange (free partners)","https://www.conversationexchange.com"],["How to survive first conversation",yt("first spanish conversation tips")]]},
+{n:26,ph:6,t:"El Examen Final",g:"Final exam in-app + real-world proof: record your 3-minute life story again and compare with week 17's tape. That delta is your certificate.",m:"Final boss: 15-minute conversation with a native. Then claim your rank.",r:[["Self-assess with CEFR",yt("cefr b1 spanish speaking sample")],["Keep going: Dreaming Spanish advanced",DS]]}
+];
+const EXT="Months 7-12 · La Maestría: keep the engine running at ~1h/day. 40% Dreaming Spanish advanced + native podcasts (No Hay Tos, Se Regalan Dudas), 30% real conversations (2-3 exchanges/week), 20% series without subtitles, 10% app repair drills. Target: 350 total hours = solid B2. You will think in Spanish before month 10.";
+/* ================= DATA: MEDIA ================= */
+const MED={
+songs:[["Eres","Café Tacvba","The Mexican rock classic — clear vocals, pure present tense"],["Hasta la Raíz","Natalia Lafourcade","Poetry at singable speed; iconic"],["Limón y Sal","Julieta Venegas","Simple, catchy, everyday vocabulary"],["Labios Rotos","Zoé","Mexican alt-rock, slow and clear"],["Nunca Es Suficiente","Los Ángeles Azules ft. Natalia Lafourcade","Cumbia you will hear at every Texas quinceañera"],["Bésame Mucho","Consuelo Velázquez (any version)","The most famous Mexican song ever written"],["La Chona","Los Tucanes de Tijuana","Norteño party staple — Texas dance floor literacy"],["Ella Baila Sola","Eslabon Armado x Peso Pluma","Modern corridos tumbados — how young Mexico sounds now"]],
+series:[["Club de Cuervos","Netflix","Mexican football comedy — THE recommendation; workplace + slang"],["La Casa de las Flores","Netflix","Dark comedy, chilango upper-class Spanish + slang"],["Narcos: México","Netflix","Gripping; mixed accents, use subtitles early"],["Luis Miguel: La Serie","Netflix","Clear Mexican Spanish, great for month 3+"],["Control Z","Netflix","Teen drama = how young Mexicans actually talk"],["El Chavo del Ocho","YouTube","Classic sitcom every Mexican quotes — cultural cheat code"]],
+movies:[["Roma","Cuarón — Netflix","Mexico City Spanish, slow and clear"],["Y Tu Mamá También","Cuarón","Raw Mexican slang masterclass (month 4+)"],["Coco","Pixar — switch audio to Spanish","Familiar story = perfect early immersion"],["No Se Aceptan Devoluciones","Derbez","Comedy; Mexican-American border of both languages"],["Amores Perros","Iñárritu","Advanced street Spanish (month 5+)"],["Macario","1960 classic","Slow, beautiful, subtitled folk Spanish"]],
+channels:[["Dreaming Spanish","https://www.dreamingspanish.com","Comprehensible input — your #1 listening engine, 15-25 min daily"],["Language Transfer","https://www.languagetransfer.org","Free Michel Thomas-style audio course — your grammar engine, weeks 1-12"],["Easy Spanish","https://www.youtube.com/@EasySpanish","Mexico City street interviews with dual subtitles"],["Butterfly Spanish","https://www.youtube.com/@ButterflySpanish","Ana is Mexican; deep clear lessons on demand"],["Spanish and Go","https://www.youtube.com/@SpanishandGo","Mexico travel Spanish + culture"],["No Hay Tos","https://www.youtube.com/results?search_query=no+hay+tos+podcast","Two Mexican guys, natural speed — month 3+"],["SpanishDict","https://www.spanishdict.com","Free dictionary + conjugator + pronunciation"],["Forvo","https://forvo.com","Hear any word by real natives (pick MX flags)"]]
+};
+/* ================= DATA: VOCAB [week, es, en] ================= */
+const V=[
+[1,"hola","hello"],[1,"adiós","goodbye"],[1,"buenos días","good morning"],[1,"buenas tardes","good afternoon"],[1,"buenas noches","good evening/night"],[1,"por favor","please"],[1,"gracias","thank you"],[1,"de nada","you're welcome"],[1,"sí","yes"],[1,"no","no"],[1,"perdón","sorry / excuse me"],[1,"mucho gusto","nice to meet you"],[1,"bien","well / fine"],[1,"mal","bad / badly"],[1,"hasta luego","see you later"],[1,"¿mande?","pardon? (MX)"],[1,"buenas","hi (informal)"],[1,"qué tal","what's up / how's it going"],[1,"cómo te va","how's it going"],[1,"nos vemos","see you"],[1,"con permiso","excuse me (to pass by)"],[1,"disculpe","excuse me (formal)"],[1,"salud","cheers / bless you"],[1,"provecho","enjoy your meal"],[1,"claro que sí","of course"],[1,"para nada","not at all / no problem"],[1,"no hay de qué","you're welcome (alt)"],[1,"encantado","delighted to meet you (said by a man)"],[1,"encantada","delighted to meet you (said by a woman)"],[1,"señor","sir / mister"],[1,"señora","ma'am / missus"],[1,"señorita","miss"],
+[2,"ser","to be (identity)"],[2,"estar","to be (state/place)"],[2,"yo","I"],[2,"tú","you (informal)"],[2,"él","he"],[2,"ella","she"],[2,"nosotros","we"],[2,"ustedes","you all"],[2,"hombre","man"],[2,"mujer","woman"],[2,"amigo","friend"],[2,"casa","house"],[2,"trabajo","work / job"],[2,"cansado","tired"],[2,"feliz","happy"],[2,"ocupado","busy"],[2,"soy","I am"],[2,"estoy","I am (state)"],[2,"eres","you are"],[2,"está","he/she/it is"],[2,"chico","guy / kid"],[2,"chica","girl"],[2,"casado","married"],[2,"soltero","single"],[2,"divertido","fun"],[2,"simpático","nice / friendly"],[2,"amable","kind"],[2,"guapo","handsome"],[2,"fuerte","strong"],[2,"listo","ready / smart"],
+[3,"hora","hour / time"],[3,"minuto","minute"],[3,"día","day"],[3,"semana","week"],[3,"mes","month"],[3,"año","year"],[3,"hoy","today"],[3,"mañana","tomorrow / morning"],[3,"ayer","yesterday"],[3,"ahora","now"],[3,"tarde","afternoon / late"],[3,"temprano","early"],[3,"lunes","Monday"],[3,"domingo","Sunday"],[3,"tiempo","time / weather"],[3,"medianoche","midnight"],[3,"uno","one"],[3,"dos","two"],[3,"tres","three"],[3,"diez","ten"],[3,"veinte","twenty"],[3,"cien","hundred"],[3,"mediodía","noon"],[3,"reloj","clock / watch"],[3,"puntual","punctual"],[3,"rato","a while / moment"],[3,"ahorita","right now (MX, softer immediacy)"],[3,"seguido","often / frequently (MX)"],[3,"de vez en cuando","once in a while"],[3,"tardar","to take time / be late"],
+[4,"qué","what"],[4,"quién","who"],[4,"cuándo","when"],[4,"dónde","where"],[4,"por qué","why"],[4,"cómo","how"],[4,"cuánto","how much"],[4,"cuál","which"],[4,"porque","because"],[4,"algo","something"],[4,"nada","nothing"],[4,"alguien","someone"],[4,"nadie","nobody"],[4,"aquí","here"],[4,"allá","over there"],[4,"también","also"],[4,"cuántos","how many (masc)"],[4,"cuántas","how many (fem)"],[4,"cuáles","which ones"],[4,"quiénes","who (plural)"],[4,"acaso","perhaps / by any chance"],[4,"ni idea","no idea"],[4,"quién sabe","who knows"],[4,"a ver","let's see"],[4,"oye","hey (MX, informal)"],[4,"no sé","I don't know"],[4,"puede ser","could be / maybe"],[4,"cómo así","how come / what do you mean (MX)"],[4,"así así","so-so"],[4,"más o menos","more or less"],
+[5,"tener","to have"],[5,"ir","to go"],[5,"querer","to want"],[5,"poder","to be able / can"],[5,"hacer","to do / make"],[5,"decir","to say / tell"],[5,"ver","to see"],[5,"dar","to give"],[5,"saber","to know (facts)"],[5,"venir","to come"],[5,"hablar","to speak"],[5,"comer","to eat"],[5,"beber","to drink"],[5,"vivir","to live"],[5,"necesitar","to need"],[5,"buscar","to look for"],[5,"trabajar","to work"],[5,"estudiar","to study"],[5,"aprender","to learn"],[5,"enseñar","to teach"],[5,"escribir","to write"],[5,"leer","to read"],[5,"correr","to run"],[5,"caminar","to walk"],[5,"dormir","to sleep"],[5,"empezar","to start / begin"],[5,"terminar","to finish"],[5,"ayudar","to help"],[5,"usar","to use"],[5,"cambiar","to change"],
+[6,"comida","food / lunch (MX)"],[6,"agua","water"],[6,"pollo","chicken"],[6,"carne","meat / beef"],[6,"pescado","fish"],[6,"arroz","rice"],[6,"frijoles","beans"],[6,"tortilla","tortilla"],[6,"salsa","sauce / salsa"],[6,"picante","spicy"],[6,"cuenta","bill / check"],[6,"mesero","waiter (MX)"],[6,"desayuno","breakfast"],[6,"cena","dinner"],[6,"sabroso","tasty"],[6,"antojo","craving"],[6,"taco","taco"],[6,"quesadilla","quesadilla"],[6,"torta","Mexican sandwich"],[6,"elote","corn on the cob (MX)"],[6,"limón","lime (MX)"],[6,"cebolla","onion"],[6,"cilantro","cilantro"],[6,"aguacate","avocado"],[6,"queso","cheese"],[6,"leche","milk"],[6,"café","coffee"],[6,"pan","bread"],[6,"huevo","egg"],[6,"fruta","fruit"],
+[7,"familia","family"],[7,"padre","father"],[7,"madre","mother"],[7,"esposo","husband"],[7,"esposa","wife"],[7,"hijo","son"],[7,"hija","daughter"],[7,"hermano","brother"],[7,"hermana","sister"],[7,"niño","child / boy"],[7,"alto","tall"],[7,"bajo","short (height)"],[7,"joven","young"],[7,"viejo","old"],[7,"bonito","pretty / nice"],[7,"inteligente","smart"],[7,"abuelo","grandfather"],[7,"abuela","grandmother"],[7,"tío","uncle"],[7,"tía","aunt"],[7,"primo","cousin (m)"],[7,"prima","cousin (f)"],[7,"nieto","grandson"],[7,"sobrino","nephew"],[7,"cuñado","brother-in-law"],[7,"suegra","mother-in-law"],[7,"gordo","chubby / fat (often affectionate in MX)"],[7,"flaco","skinny (often affectionate in MX)"],[7,"moreno","dark-skinned / brunette"],[7,"güero","light-skinned / blonde (MX)"],
+[8,"levantarse","to get up"],[8,"bañarse","to shower / bathe"],[8,"despertarse","to wake up"],[8,"dormirse","to fall asleep"],[8,"vestirse","to get dressed"],[8,"siempre","always"],[8,"nunca","never"],[8,"a veces","sometimes"],[8,"después","after / later"],[8,"antes","before"],[8,"luego","then / later"],[8,"primero","first"],[8,"entonces","then / so"],[8,"rutina","routine"],[8,"cepillarse","to brush (teeth/hair)"],[8,"descansar","to rest"],[8,"peinarse","to comb one's hair"],[8,"afeitarse","to shave"],[8,"maquillarse","to put on makeup"],[8,"ducharse","to shower"],[8,"acostarse","to go to bed"],[8,"quedarse","to stay"],[8,"llevarse bien","to get along"],[8,"apurarse","to hurry (MX)"],[8,"diario","daily"],[8,"hábito","habit"],[8,"horario","schedule"],[8,"de nuevo","again"],[8,"constante","constant"],[8,"puntualidad","punctuality"],
+[9,"calle","street"],[9,"cuadra","block (MX)"],[9,"derecha","right (side)"],[9,"izquierda","left"],[9,"derecho","straight ahead"],[9,"cerca","near"],[9,"lejos","far"],[9,"esquina","corner"],[9,"carro","car (MX)"],[9,"camión","bus (MX!) / truck"],[9,"avión","airplane"],[9,"viaje","trip"],[9,"llegar","to arrive"],[9,"salir","to leave / go out"],[9,"manejar","to drive (MX)"],[9,"semáforo","traffic light"],[9,"parada","bus stop"],[9,"estación","station"],[9,"boleto","ticket (MX)"],[9,"pasaje","fare / ticket"],[9,"mapa","map"],[9,"letrero","sign"],[9,"vuelta","turn"],[9,"cruzar","to cross"],[9,"perderse","to get lost"],[9,"ubicación","location"],[9,"cercano","nearby (adj)"],[9,"lejano","far / distant (adj)"],[9,"transporte","transportation"],[9,"tráfico","traffic"],
+[10,"tienda","store"],[10,"mercado","market"],[10,"dinero","money"],[10,"precio","price"],[10,"caro","expensive"],[10,"barato","cheap"],[10,"ropa","clothes"],[10,"zapatos","shoes"],[10,"camisa","shirt"],[10,"pantalón","pants"],[10,"talla","size (clothing)"],[10,"color","color"],[10,"pagar","to pay"],[10,"comprar","to buy"],[10,"vender","to sell"],[10,"efectivo","cash"],[10,"descuento","discount"],[10,"oferta","deal / offer"],[10,"probador","fitting room"],[10,"probarse","to try on"],[10,"cambio","change (money)"],[10,"tarjeta","card"],[10,"recibo","receipt"],[10,"bolsa","bag"],[10,"carrito","shopping cart"],[10,"fila","line / queue"],[10,"cajero","cashier"],[10,"ganga","bargain"],[10,"regatear","to haggle"],[10,"nuevo","new"],
+[11,"fui","I went / I was"],[11,"tuve","I had"],[11,"hice","I did / made"],[11,"dije","I said"],[11,"vine","I came"],[11,"pude","I could / managed"],[11,"estuve","I was (state)"],[11,"compré","I bought"],[11,"comí","I ate"],[11,"hablé","I spoke"],[11,"llegué","I arrived"],[11,"salí","I left / went out"],[11,"vi","I saw"],[11,"di","I gave"],[11,"quise","I wanted / tried"],[11,"pasó","it happened"],[11,"fue","he/she/it went / was"],[11,"tuvo","he/she/it had"],[11,"hizo","he/she/it did / made"],[11,"dijo","he/she said"],[11,"vino","he/she came"],[11,"pudo","he/she could"],[11,"estuvo","he/she was (state)"],[11,"llegó","he/she arrived"],[11,"salió","he/she left"],[11,"vio","he/she saw"],[11,"dio","he/she gave"],[11,"quiso","he/she wanted / tried"],[11,"trabajó","he/she worked"],[11,"comió","he/she ate"],
+[12,"mientras","while"],[12,"todavía","still / yet"],[12,"ya","already / now"],[12,"jugar","to play"],[12,"escuela","school"],[12,"recordar","to remember"],[12,"olvidar","to forget"],[12,"crecer","to grow up"],[12,"soñar","to dream"],[12,"barrio","neighborhood"],[12,"juguete","toy"],[12,"mascota","pet"],[12,"vecino","neighbor"],[12,"campo","countryside / field"],[12,"ciudad","city"],[12,"pueblo","town / people"],[12,"jugaba","used to play"],[12,"tenía","used to have"],[12,"quería","used to want"],[12,"iba","used to go"],[12,"era","used to be / was"],[12,"estaba","used to be (state)"],[12,"hacía","used to do / make"],[12,"decía","used to say"],[12,"veía","used to see"],[12,"comía","used to eat"],[12,"vivía","used to live"],[12,"gustaba","used to like"],[12,"recuerdo","memory / souvenir"],[12,"niñez","childhood"],
+[13,"cabeza","head"],[13,"estómago","stomach"],[13,"espalda","back (body)"],[13,"pierna","leg"],[13,"brazo","arm"],[13,"mano","hand"],[13,"ojo","eye"],[13,"doler","to hurt"],[13,"enfermo","sick"],[13,"medicina","medicine"],[13,"farmacia","pharmacy"],[13,"cita","appointment / date"],[13,"gripa","flu / cold (MX)"],[13,"fiebre","fever"],[13,"cuerpo","body"],[13,"mejorarse","to get better"],[13,"garganta","throat"],[13,"nariz","nose"],[13,"oreja","ear"],[13,"diente","tooth"],[13,"corazón","heart"],[13,"sangre","blood"],[13,"herida","wound / injury"],[13,"accidente","accident"],[13,"ambulancia","ambulance"],[13,"hospital","hospital"],[13,"doctor","doctor (m)"],[13,"doctora","doctor (f)"],[13,"enfermera","nurse"],[13,"receta","prescription / recipe"],[13,"pastilla","pill"],
+[14,"creer","to believe"],[14,"pensar","to think"],[14,"parecer","to seem"],[14,"opinión","opinion"],[14,"razón","reason / (tener razón: be right)"],[14,"de acuerdo","agreed / in agreement"],[14,"depende","it depends"],[14,"mejor","better / best"],[14,"peor","worse / worst"],[14,"más","more"],[14,"menos","less"],[14,"igual","same / equally"],[14,"diferente","different"],[14,"verdad","truth"],[14,"mentira","lie"],[14,"quizás","maybe"],[14,"creo que","I think that"],[14,"me parece que","it seems to me that"],[14,"en mi opinión","in my opinion"],[14,"tener razón","to be right"],[14,"estar de acuerdo","to agree"],[14,"la neta","honestly (MX)"],[14,"comparar","to compare"],[14,"analizar","to analyze"],[14,"punto","point"],[14,"ejemplo","example"],[14,"razonable","reasonable"],[14,"absurdo","absurd"],[14,"exagerar","to exaggerate"],[14,"convencido","convinced"],
+[15,"sentir","to feel"],[15,"emocionado","excited"],[15,"nervioso","nervous"],[15,"enojado","angry (MX)"],[15,"triste","sad"],[15,"preocupado","worried"],[15,"tranquilo","calm / relaxed"],[15,"aburrido","bored / boring"],[15,"sorprendido","surprised"],[15,"orgulloso","proud"],[15,"clima","weather / climate"],[15,"lluvia","rain"],[15,"calor","heat"],[15,"frío","cold"],[15,"fin de semana","weekend"],[15,"ánimo","spirits / cheer up!"],[15,"contento","happy / content"],[15,"deprimido","depressed"],[15,"harto","fed up (MX)"],[15,"relajado","relaxed"],[15,"asustado","scared"],[15,"celoso","jealous"],[15,"agradecido","grateful"],[15,"nublado","cloudy"],[15,"soleado","sunny"],[15,"viento","wind"],[15,"húmedo","humid"],[15,"fresco","cool / fresh"],[15,"temporada","season"],[15,"pronóstico","forecast"],
+[16,"llamar","to call"],[16,"contestar","to answer"],[16,"mensaje","message"],[16,"celular","cell phone (MX)"],[16,"invitar","to invite"],[16,"plan","plan"],[16,"cancelar","to cancel"],[16,"confirmar","to confirm"],[16,"juntos","together"],[16,"pendiente","pending / on my radar"],[16,"mandar","to send"],[16,"marcar","to dial / call (MX)"],[16,"libre","free / available"],[16,"compromiso","commitment"],[16,"avisar","to let know"],[16,"quedar","to agree to meet / remain"],[16,"buzón","voicemail"],[16,"número","number"],[16,"contacto","contact"],[16,"agenda","agenda / schedule"],[16,"reprogramar","to reschedule"],[16,"puntualmente","punctually"],[16,"dejar un mensaje","to leave a message"],[16,"estar comunicando","to be busy (phone line, MX)"],[16,"colgar","to hang up"],[16,"vibrar","to vibrate (phone)"],[16,"apagado","turned off"],[16,"encendido","turned on"],[16,"línea ocupada","busy line"],[16,"devolver la llamada","to call back"],
+[17,"empresa","company"],[17,"oficina","office"],[17,"jefe","boss"],[17,"cliente","client"],[17,"reunión","meeting"],[17,"proyecto","project"],[17,"ventas","sales"],[17,"sueldo","salary"],[17,"negocio","business"],[17,"éxito","success"],[17,"meta","goal"],[17,"equipo","team"],[17,"dedicarse","to do for a living"],[17,"mudarse","to move (house)"],[17,"nacer","to be born"],[17,"lograr","to achieve"],[17,"carrera","career"],[17,"currículum","resume / CV"],[17,"entrevista","interview"],[17,"contratar","to hire"],[17,"renunciar","to quit / resign"],[17,"jubilarse","to retire"],[17,"turno","shift"],[17,"horas extra","overtime"],[17,"compañero","coworker"],[17,"ascenso","promotion"],[17,"capacitación","training"],[17,"experiencia","experience"],[17,"habilidad","skill"],[17,"responsabilidad","responsibility"],
+[18,"pues","well... (filler)"],[18,"este...","um... (MX filler)"],[18,"o sea","I mean / that is"],[18,"fíjate que","get this / you know what"],[18,"resulta que","turns out that"],[18,"de repente","suddenly"],[18,"al final","in the end"],[18,"en fin","anyway / oh well"],[18,"bueno","well / okay"],[18,"¿sabes qué?","you know what?"],[18,"la cosa es que","the thing is"],[18,"total","long story short"],[18,"imagínate","imagine that"],[18,"según","according to"],[18,"mientras tanto","meanwhile"],[18,"por cierto","by the way"],[18,"o algo así","or something like that"],[18,"digamos","let's say"],[18,"por así decirlo","so to speak"],[18,"a fin de cuentas","at the end of the day"],[18,"de plano","flat out / definitely (MX)"],[18,"luego luego","right away (MX)"],[18,"anécdota","anecdote"],[18,"contar","to tell (a story)"],[18,"narrar","to narrate"],[18,"inventar","to make up / invent"],[18,"ni más ni menos","exactly, no more no less"],[18,"sin rodeos","without beating around the bush"],[18,"cuento","story"],[18,"punto y aparte","that's that / period (MX)"],
+[19,"aunque","although / even if"],[19,"sin embargo","however"],[19,"además","besides / also"],[19,"por eso","that's why"],[19,"apenas","barely / just now"],[19,"casi","almost"],[19,"bastante","quite / plenty"],[19,"demasiado","too much"],[19,"tal vez","maybe"],[19,"seguro","sure / safe"],[19,"claro","of course / clear"],[19,"obvio","obviously (MX loves it)"],[19,"en serio","seriously"],[19,"de verdad","really / truly"],[19,"la verdad","honestly"],[19,"ni modo","oh well, tough luck (MX)"],[19,"por lo tanto","therefore"],[19,"de hecho","in fact"],[19,"en realidad","actually / in reality"],[19,"al menos","at least"],[19,"por supuesto","of course"],[19,"ni siquiera","not even"],[19,"cada vez más","more and more"],[19,"lo más pronto posible","as soon as possible"],[19,"sea como sea","whatever the case"],[19,"en todo caso","in any case"],[19,"por si acaso","just in case"],[19,"a propósito","on purpose / by the way"],[19,"de todos modos","anyway"],[19,"aun así","even so"],
+[20,"echar","to throw / put in"],[20,"sacar","to take out / get"],[20,"meter","to put in"],[20,"dejar","to leave / let"],[20,"volverse","to become"],[20,"ponerse","to get/become + emotion"],[20,"llevar","to carry / take / wear"],[20,"traer","to bring"],[20,"agarrar","to grab (MX for take)"],[20,"soltar","to let go"],[20,"aguantar","to endure / put up with"],[20,"alcanzar","to reach / be enough"],[20,"faltar","to be missing / lacking"],[20,"sobrar","to be left over"],[20,"valer","to be worth"],[20,"caber","to fit"],[20,"echar de menos","to miss someone (Spain-leaning; MX default: extrañar)"],[20,"meterse en problemas","to get into trouble"],[20,"dejar de","to stop (doing something)"],[20,"ponerse a","to start (doing something)"],[20,"llevarse","to get along / take away"],[20,"caer bien","to make a good impression"],[20,"caer mal","to make a bad impression"],[20,"quedar bien","to look good / do the right thing"],[20,"salir bien","to turn out well"],[20,"salir mal","to turn out badly"],[20,"tocar","to touch / to be one's turn"],[20,"pegar","to hit / stick"],[20,"romper","to break"],[20,"dar igual","to not matter / not care"],
+[21,"esperar","to hope / wait"],[21,"desear","to wish"],[21,"dudar","to doubt"],[21,"sugerir","to suggest"],[21,"recomendar","to recommend"],[21,"pedir","to ask for"],[21,"exigir","to demand"],[21,"permitir","to allow"],[21,"prohibir","to forbid"],[21,"importar","to matter"],[21,"molestar","to bother"],[21,"alegrar","to make happy"],[21,"sorprender","to surprise"],[21,"temer","to fear"],[21,"confiar","to trust"],[21,"suerte","luck"],[21,"ojalá","hopefully"],[21,"es posible que","it's possible that"],[21,"no creo que","I don't think that"],[21,"antes de que","before"],[21,"para que","so that"],[21,"a menos que","unless"],[21,"con tal de que","as long as / provided that"],[21,"en caso de que","in case"],[21,"cuando quieras","whenever you want"],[21,"lo que sea","whatever"],[21,"como quieras","however you want"],[21,"donde sea","wherever"],[21,"quienquiera","whoever"],[21,"cualquiera","anyone / whichever"],
+[22,"broma","joke / prank"],[22,"chiste","joke (told)"],[22,"reírse","to laugh"],[22,"burlarse","to make fun of"],[22,"apodo","nickname"],[22,"costumbre","custom / habit"],[22,"fiesta","party"],[22,"orgullo","pride"],[22,"pena","embarrassment (MX!) / sorrow"],[22,"chisme","gossip"],[22,"payaso","clown"],[22,"travieso","mischievous"],[22,"ocurrente","witty"],[22,"grosero","rude"],[22,"educado","polite"],[22,"ambiente","atmosphere / vibe"],[22,"burla","mockery"],[22,"albur","double meaning / wordplay (MX)"],[22,"carrilla","teasing (MX)"],[22,"regional","regional"],[22,"norteño","from northern Mexico"],[22,"chilango","from Mexico City (MX)"],[22,"costeño","from the coast"],[22,"gracioso","funny"],[22,"serio","serious"],[22,"exagerado","dramatic / exaggerated"],[22,"buena onda","good vibes / nice (MX)"],[22,"mala onda","bad vibes / uncool (MX)"],[22,"caer gordo","to be annoying/unlikeable (MX)"],[22,"tomar el pelo","to pull someone's leg"],
+[23,"entender","to understand"],[23,"escuchar","to listen"],[23,"repetir","to repeat"],[23,"despacio","slowly"],[23,"rápido","fast"],[23,"acento","accent"],[23,"pronunciar","to pronounce"],[23,"sonar","to sound"],[23,"significar","to mean"],[23,"frase","phrase / sentence"],[23,"palabra","word"],[23,"idioma","language"],[23,"fluidez","fluency"],[23,"mejorar","to improve"],[23,"practicar","to practice"],[23,"ritmo","rhythm"],[23,"velocidad","speed"],[23,"tono","tone"],[23,"vocal","vowel"],[23,"consonante","consonant"],[23,"sílaba","syllable"],[23,"acentuar","to stress / accentuate"],[23,"enlazar","to link (sounds)"],[23,"claridad","clarity"],[23,"murmurar","to mumble / murmur"],[23,"gritar","to shout"],[23,"susurrar","to whisper"],[23,"tartamudear","to stutter"],[23,"vocabulario","vocabulary"],[23,"comprensión","comprehension"],
+[24,"por un lado","on one hand"],[24,"por otro lado","on the other hand"],[24,"a pesar de","despite"],[24,"en cambio","on the other hand / instead"],[24,"opinar","to give an opinion"],[24,"argumento","argument (point)"],[24,"ventaja","advantage"],[24,"desventaja","disadvantage"],[24,"apoyar","to support"],[24,"estar en contra","to be against"],[24,"proponer","to propose"],[24,"convencer","to convince"],[24,"ceder","to give in"],[24,"punto de vista","point of view"],[24,"tema","topic"],[24,"debatir","to debate"],[24,"si tuviera","if I had"],[24,"si pudiera","if I could"],[24,"haría","I would do"],[24,"sería","I would be"],[24,"tendría","I would have"],[24,"podría","I could / would be able"],[24,"me gustaría","I would like"],[24,"posiblemente","possibly"],[24,"probablemente","probably"],[24,"definitivamente","definitely"],[24,"sin duda","without a doubt"],[24,"por lo general","generally"],[24,"en general","in general"],[24,"de ser así","if that's the case"],
+[25,"aclarar","to clarify"],[25,"explicar","to explain"],[25,"entenderse","to understand each other"],[25,"malentendido","misunderstanding"],[25,"pausa","pause"],[25,"confianza","confidence / trust"],[25,"atreverse","to dare"],[25,"equivocarse","to make a mistake"],[25,"corregir","to correct"],[25,"fluir","to flow"],[25,"charlar","to chat (Spain — Mexicans say platicar)"],[25,"platicar","to chat (very MX)"],[25,"convivir","to hang out / coexist"],[25,"saludar","to greet"],[25,"despedirse","to say goodbye"],[25,"presentarse","to introduce oneself"],[25,"¿cómo se dice?","how do you say...?"],[25,"¿qué significa?","what does it mean?"],[25,"no entendí","I didn't understand"],[25,"conocer gente","to meet people"],[25,"hacer amigos","to make friends"],[25,"intercambio","exchange"],[25,"nativo","native (speaker)"],[25,"extranjero","foreigner"],[25,"cómodo","comfortable"],[25,"incómodo","uncomfortable"],[25,"paciencia","patience"],[25,"arriesgarse","to take a risk"],[25,"romper el hielo","to break the ice"],[25,"perder la vergüenza","to lose one's shyness"],
+[26,"repasar","to review"],[26,"dominar","to master"],[26,"avanzar","to advance"],[26,"desafío","challenge"],[26,"nivel","level"],[26,"premio","prize"],[26,"esfuerzo","effort"],[26,"constancia","consistency"],[26,"logro","achievement"],[26,"superar","to overcome"],[26,"celebrar","to celebrate"],[26,"siguiente","next"],[26,"camino","path / road"],[26,"futuro","future"],[26,"seguir","to continue / follow"],[26,"felicidades","congratulations"],[26,"recompensa","reward"],[26,"certificado","certificate"],[26,"graduarse","to graduate"],[26,"cerrar un ciclo","to close a chapter"],[26,"valió la pena","it was worth it"],[26,"lo logré","I did it"],[26,"misión cumplida","mission accomplished"],[26,"un nuevo capítulo","a new chapter"],[26,"seguir adelante","to keep going / move forward"],[26,"nunca te rindas","never give up"],[26,"lo mejor está por venir","the best is yet to come"],[26,"satisfacción","satisfaction"],[26,"meta cumplida","goal achieved"],[26,"celebrar en grande","to celebrate big"],
+[20,"extrañar","to miss someone (the MX way: te extraño)"]
+];
+/* ================= DATA: PHRASES [week, es, en] ================= */
+const PH=[
+[1,"¿Cómo te llamas?","What's your name?"],[1,"Me llamo Mateo.","My name is Mateo."],[1,"No hablo mucho español... todavía.","I don't speak much Spanish... yet."],
+[2,"Soy de la India.","I'm from India."],[2,"Estoy un poco cansado.","I'm a bit tired."],[2,"¿De dónde eres?","Where are you from?"],
+[3,"¿Qué hora es?","What time is it?"],[3,"Son las tres y media.","It's three thirty."],[3,"Nos vemos el lunes.","See you Monday."],
+[4,"¿Dónde está el baño?","Where's the bathroom?"],[4,"¿Cuánto cuesta?","How much does it cost?"],[4,"¿Cómo se dice esto?","How do you say this?"],
+[5,"Voy a trabajar mañana.","I'm going to work tomorrow."],[5,"Quiero aprender español.","I want to learn Spanish."],[5,"No puedo ahorita.","I can't right now."],
+[6,"Me da dos tacos de pastor, por favor.","Two pastor tacos, please."],[6,"La cuenta, por favor.","The check, please."],[6,"¿Qué me recomienda?","What do you recommend?"],
+[7,"Tengo un hijo de tres años.","I have a three-year-old son."],[7,"Mi esposa es doctora.","My wife is a doctor."],[7,"Somos tres en la familia.","We're three in the family."],
+[8,"Me levanto a las seis.","I get up at six."],[8,"Primero me baño, luego desayuno.","First I shower, then I have breakfast."],[8,"Me voy al trabajo a las ocho.","I leave for work at eight."],
+[9,"¿Cómo llego al centro?","How do I get downtown?"],[9,"Siga derecho dos cuadras.","Go straight two blocks."],[9,"Está a la derecha.","It's on the right."],
+[10,"¿Tiene en otra talla?","Do you have it in another size?"],[10,"Está muy caro, ¿me hace un descuento?","That's pricey, can you give me a discount?"],[10,"Me lo llevo.","I'll take it."],
+[11,"Ayer fui al súper.","Yesterday I went to the supermarket."],[11,"La pasé muy bien.","I had a great time. (MX)"],[11,"¿Qué hiciste el fin de semana?","What did you do on the weekend?"],
+[12,"Cuando era niño, vivía en la India.","When I was a kid, I lived in India."],[12,"Antes jugaba mucho fútbol.","I used to play a lot of soccer."],[12,"Había mucha gente.","There were a lot of people."],
+[13,"Me duele la espalda.","My back hurts."],[13,"Tengo gripa desde ayer.","I've had the flu since yesterday."],[13,"¿Tiene algo para el dolor?","Do you have something for the pain?"],
+[14,"Creo que tienes razón.","I think you're right."],[14,"No estoy de acuerdo.","I don't agree."],[14,"Depende de la situación.","It depends on the situation."],
+[15,"¿Qué tal tu fin de semana?","How was your weekend?"],[15,"Está haciendo mucho calor.","It's really hot out."],[15,"Me siento mucho mejor, gracias.","I feel much better, thanks."],
+[16,"¿Bueno? ¿Quién habla?","Hello? Who's calling? (MX phone)"],[16,"¿Quedamos a las ocho?","Shall we meet at eight?"],[16,"Te marco al rato.","I'll call you in a bit. (MX)"],
+[17,"Me dedico a las ventas.","I work in sales."],[17,"Llevo cinco años en Texas.","I've been in Texas five years."],[17,"Nací en la India, pero vivo en Houston.","I was born in India, but I live in Houston."],
+[18,"Fíjate que me pasó algo.","Get this — something happened to me."],[18,"O sea, no sabía qué hacer.","I mean, I didn't know what to do."],[18,"Total, que todo salió bien.","Long story short, it all worked out."],
+[19,"¡No manches, en serio!","No way, seriously! (MX)"],[19,"¿Qué onda, cómo va todo?","What's up, how's everything? (MX)"],[19,"La neta, estuvo increíble.","Honestly, it was incredible. (MX)"],
+[20,"Échame la mano, ¿no?","Give me a hand, will you? (MX)"],[20,"Me vale lo que digan.","I don't care what they say. (MX)"],[20,"Ando bien crudo hoy.","I'm really hungover today. (MX)"],
+[21,"Ojalá que no llueva.","Hopefully it doesn't rain."],[21,"Espero que estés bien.","I hope you're well."],[21,"Cuando llegues, avísame.","When you arrive, let me know."],
+[22,"¡Qué buena broma!","What a good prank!"],[22,"No es cierto, ¿verdad?","That's not true, right?"],[22,"Me da mucha pena.","I'm so embarrassed. (MX)"],
+[23,"¿Me lo repites más despacio?","Can you repeat that more slowly?"],[23,"No te entendí bien.","I didn't quite understand you."],[23,"Habla un poco más lento, porfa.","Speak a little slower, please."],
+[24,"Por un lado sí, por otro no.","On one hand yes, on the other no."],[24,"A pesar de todo, me gusta.","Despite everything, I like it."],[24,"Ese es un buen punto.","That's a good point."],
+[25,"Platicamos luego, ¿va?","We'll chat later, deal? (MX)"],[25,"Mucho gusto en conocerte.","Great to meet you."],[25,"Perdón, me equivoqué.","Sorry, I made a mistake."],
+[26,"¡Lo logré!","I did it!"],[26,"Ya hablo español, ¿puedes creerlo?","I speak Spanish now, can you believe it?"],[26,"Esto apenas empieza.","This is just getting started."]
+];
+/* ================= DATA: SLANG [word, meaning, example] ================= */
+const SL=[
+["güey / wey","dude / man (the universal MX word)","¿Qué onda, güey? ¿Cómo estás?"],
+["órale","alright! / wow / let's go","¡Órale! No sabía eso."],
+["ándale","that's it / hurry up / exactly","¡Ándale! Eso es lo que digo."],
+["no manches","no way! / you're kidding","¡No manches! ¿En serio ganaron?"],
+["qué padre","how cool","¡Qué padre está tu carro!"],
+["chido","cool / nice","La película estuvo bien chida."],
+["neta","truth / seriously / for real","¿Neta? No te creo."],
+["aguas","watch out! / careful","¡Aguas con el escalón!"],
+["chamba","work / job","Tengo mucha chamba esta semana."],
+["sale","okay / deal / sounds good","Nos vemos a las ocho, ¿sale?"],
+["ahorita","right now / in a bit / eventually","Ahorita lo hago. (could be never)"],
+["qué onda","what's up","¿Qué onda? ¿Todo bien?"],
+["fresa","preppy / snobby person","Esa colonia es muy fresa."],
+["codo","stingy / cheap (lit. elbow)","No seas codo, invita los tacos."],
+["crudo","hungover (lit. raw)","Ando bien crudo, güey."],
+["gacho","mean / ugly / lame","No seas gacho, ayúdame."],
+["chafa","low quality / cheap junk","Ese teléfono está bien chafa."],
+["chela","beer","¿Unas chelas el viernes?"],
+["cuate","buddy / pal","Es mi cuate del trabajo."],
+["carnal","bro (very close friend)","Te lo juro, carnal."],
+["morro / morra","kid / young guy / girl","Ese morro juega muy bien."],
+["lana","money (lit. wool)","No traigo lana, luego te pago."],
+["padrísimo","super cool","El concierto estuvo padrísimo."],
+["me vale","I don't care","Me vale lo que piensen."],
+["híjole","yikes / oh man","Híjole, se me olvidó por completo."],
+["ni modo","oh well / tough luck","Ya cerraron. Ni modo."],
+["equis","whatever / no big deal (lit. the letter X)","La fiesta estuvo equis."],
+["qué oso","how embarrassing (lit. what a bear)","Me caí enfrente de todos. ¡Qué oso!"],
+["está cañón","it's tough / intense","El tráfico en Houston está cañón."],
+["de volada","right away / super fast","Llego de volada, espérame."],
+["un chorro","a lot / tons","Tengo un chorro de trabajo."],
+["no hay bronca","no problem","¿Llego tarde? No hay bronca."],
+["simón","yeah / yep","¿Vienes? — Simón."],
+["nel","nope","¿Te gustó? — Nel, para nada."],
+["chale","ugh / bummer","Chale, perdió mi equipo."],
+["¿va?","deal? / okay?","Nos dividimos la cuenta, ¿va?"],
+["porfa","please (short for por favor)","Pásame la salsa, porfa."],
+["echar la hueva","to laze around","Hoy solo quiero echar la hueva."]
+];
+/* ================= DATA: IDIOMS [es, literal, meaning] ================= */
+const ID=[
+["echar la mano","to throw the hand","to help someone out"],
+["ponerse las pilas","to put in your batteries","to get your act together"],
+["echarle ganas","to throw desire at it","to give it your all"],
+["dar el avión","to give the airplane","to nod along without listening"],
+["hacerse pato","to make oneself a duck","to play dumb"],
+["sacar de onda","to take out of the wave","to throw someone off / weird out"],
+["me cae gordo","he falls fat on me","I can't stand him"],
+["caer bien","to fall well","to be likeable (me caes bien = I like you)"],
+["tomar el pelo","to take the hair","to pull someone's leg"],
+["costar un ojo de la cara","to cost an eye from the face","to cost a fortune"],
+["estar en las nubes","to be in the clouds","to be daydreaming"],
+["meter la pata","to put the paw in","to put your foot in it / mess up"],
+["dar en el clavo","to hit the nail","to nail it / be exactly right"],
+["hablando del rey de Roma","speaking of the king of Rome","speak of the devil"],
+["matar dos pájaros de un tiro","kill two birds with one shot","two birds, one stone"],
+["ser pan comido","to be eaten bread","to be a piece of cake"],
+["estar como agua para chocolate","like water for chocolate","to be boiling mad"],
+["no tener pelos en la lengua","no hairs on the tongue","to speak bluntly"],
+["a darle que es mole de olla","get to it, it's pot mole","let's get to work, no excuses (MX)"],
+["más vale tarde que nunca","worth more late than never","better late than never"],
+["camarón que se duerme se lo lleva la corriente","the shrimp that sleeps gets swept away","you snooze, you lose"],
+["el que no arriesga no gana","who doesn't risk doesn't win","nothing ventured, nothing gained"],
+["al mal tiempo, buena cara","to bad weather, a good face","keep your chin up"],
+["no hay mal que por bien no venga","no bad from which good doesn't come","every cloud has a silver lining"],
+["árbol que nace torcido jamás su tronco endereza","a tree born crooked never straightens","old habits die hard"],
+["estar hasta las narices","to be up to the nostrils","to be fed up"],
+["quedarse de a seis","to be left at six","to be stunned / shocked (MX)"],
+["irse de pinta","to go painting","to skip school/work (MX)"]
+];
+/* ================= DATA: TRABAJO (construction/steel bonus category) [es, en] ================= */
+const TR=[
+["el acero","steel"],["la construcción","construction"],["el edificio","building"],
+["el cimiento","foundation"],["la estructura","structure"],["el andamio","scaffolding"],
+["el soldador","welder"],["soldar","to weld"],["la soldadura","welding (noun)"],
+["el hierro","iron"],["la viga","beam"],["el concreto / hormigón","concrete"],
+["el ladrillo","brick"],["el cemento","cement"],["la grúa","crane"],
+["el casco","helmet"],["los guantes","gloves"],["las botas","boots"],
+["el martillo","hammer"],["el taladro","drill"],["la sierra","saw"],
+["el nivel","level"],["la regla","ruler / straightedge"],["el metro","measuring tape"],
+["el plano","blueprint / plan"],["la obra","construction site"],
+["el ingeniero civil","civil engineer"],["el supervisor","supervisor"],
+["el turno","shift"],["la jornada","workday"],["el horario","schedule"],
+["el ascenso","promotion"],["el bono","bonus"],["la nómina","payroll"],
+["el seguro","insurance"],["la pensión","pension"],
+["el casco de seguridad","safety helmet"],["los arneses","harnesses"],
+["la cinta transportadora","conveyor belt"],["el torno","lathe"]
+];
+/* ================= DATA: FALSE FRIENDS [es, looks like, actually means] ================= */
+const FF=[
+["embarazada","embarrassed","pregnant"],["éxito","exit","success"],["ropa","rope","clothes"],["sopa","soap","soup"],
+["carpeta","carpet","folder"],["actualmente","actually","currently"],["realizar","to realize","to carry out"],["asistir","to assist","to attend"],
+["atender","to attend","to serve / look after"],["librería","library","bookstore (library = biblioteca)"],["fábrica","fabric","factory"],["sensible","sensible","sensitive"],
+["molestar","to molest","to bother / annoy"],["pretender","to pretend","to intend / to woo"],["recordar","to record","to remember"],["soportar","to support","to tolerate / endure"],
+["largo","large","long"],["lectura","lecture","reading"],["suceso","success","event / incident"],["colegio","college","school (K-12)"],
+["compromiso","compromise","commitment / engagement"],["contestar","to contest","to answer"],["decepción","deception","disappointment"],["delito","delight","crime"],
+["introducir","to introduce (people)","to insert (people = presentar)"],["pariente","parent","relative"],["sano","sane","healthy"],["tuna","tuna fish","prickly pear (tuna fish = atún)"],
+["vaso","vase","drinking glass"],["campo","camp","field / countryside"],["billón","billion","trillion (billion = mil millones)"],["once","once","eleven"],
+["pie","pie","foot"],["red","red","net / network"],["sin","sin","without"],["pan","pan","bread"],
+["taller","taller","workshop / repair shop"],["mole","mole (animal)","the legendary Mexican sauce"],["dice","dice","he/she says"],["arena","arena","sand"]
+];
+/* ================= DATA: COGNATES (free vocabulary) ================= */
+const CG=["actor","animal","hospital","hotel","idea","chocolate","doctor","color","final","natural","popular","radio","taxi","tropical","banana","cereal","crisis","drama","error","familiar","festival","gas","general","horrible","metal","motor","musical","normal","original","panorama","plan","plaza","simple","terror","total","verbal","virus","criminal","digital","festival","tequila"];
+/* ================= DATA: FUN FACTS ================= */
+const FX=[
+"Spanish is phonetic: once you know the letter sounds, you can pronounce any word you read. English cannot say the same (cough, though, through...).",
+"The upside-down ¿ and ¡ are early warnings — they tell you to set your intonation before the sentence starts. Genuinely useful when reading aloud.",
+"'Ahorita' can mean now, in ten minutes, or never. Mexicans navigate this with pure context. You will too.",
+"Mexicans answer the phone with '¿Bueno?' — a leftover from early telephone days, when operators asked if the line was good.",
+"Spanish has two verbs for 'to know': saber (facts, skills) and conocer (people, places). English merged them; Spanish kept the receipts.",
+"The letter W barely exists in Spanish — only in loanwords like whisky, web y waffle.",
+"Mexico is the largest Spanish-speaking country on Earth — more speakers than Spain, Colombia or Argentina.",
+"Nahuatl (the Aztec language) gave the world: chocolate, tomate, aguacate, coyote, chicle and chile. You already speak some Nahuatl.",
+"'Esposas' means both 'wives' and 'handcuffs'. Spanish speakers find this equally funny.",
+"Days, months and languages are NOT capitalized in Spanish: lunes, enero, español.",
+"Answering '¿Mande?' instead of '¿Qué?' is uniquely Mexican — it descends from colonial '¿qué manda usted?' (what do you command?).",
+"Mexico uses 'ustedes' for all of you-plural. The 'vosotros' form is Spain-only — that's an entire conjugation you get to skip.",
+"The ñ was born as medieval scribes' shorthand: 'anno' (year) written with one n and a tilde became 'año'.",
+"Spanish speakers HAVE hunger, thirst, fear and years: tengo hambre, tengo 36 años. You don't feel 36 — you own 36.",
+"Double negatives are grammatically correct: 'No vi nada' (I didn't see nothing) is perfect Spanish.",
+"'Desvelado' — a single word for 'tired because you stayed up too late'. English needs a whole sentence.",
+"'Sobremesa' is the lingering table conversation after a meal ends. The word exists because the tradition is sacred.",
+"Order carefully: in Mexico a 'torta' is a sandwich, in Spain it's a cake, in Argentina it's a slap.",
+"One R vs two changes everything: pero (but) / perro (dog), caro (expensive) / carro (car). Roll responsibly.",
+"'Estrenar' — to wear or use something for the very first time. No English equivalent exists.",
+"Mexican Spanish puts diminutives on everything, even adverbs: ahorita, lueguito, tantito. It softens the whole language.",
+"'Tocayo' — the word for a person who shares your first name. English never bothered to invent one."
+];
+/* ================= DATA: GRAMMAR QUIZ [week, q, options, answerIdx] ================= */
+const GQ=[
+{w:2,q:"___ ingeniero de la India.",o:["Soy","Estoy","Es","Está"],a:0},
+{w:2,q:"___ muy cansado hoy.",o:["Soy","Estoy","Eres","Ser"],a:1},
+{w:3,q:"Son ___ tres de la tarde.",o:["los","las","la","el"],a:1},
+{w:4,q:"¿___ cuesta la camisa?",o:["Cómo","Cuál","Cuánto","Quién"],a:2},
+{w:5,q:"Mañana ___ a trabajar temprano.",o:["voy","va","vas","ir"],a:0},
+{w:5,q:"___ 36 años.",o:["Soy","Estoy","Tengo","Hago"],a:2},
+{w:5,q:"No ___ ir hoy, estoy ocupado.",o:["puedes","puedo","poder","pueden"],a:1},
+{w:6,q:"Me ___ mucho los tacos.",o:["gusta","gustan","gusto","gustar"],a:1},
+{w:7,q:"La casa es ___.",o:["blanco","blancos","blanca","blanc"],a:2},
+{w:8,q:"___ levanto a las seis todos los días.",o:["Yo","Me","Mi","Se"],a:1},
+{w:9,q:"___ un banco cerca de aquí.",o:["Está","Es","Hay","Tiene"],a:2},
+{w:10,q:"Esta camisa es más barata ___ esa.",o:["de","como","que","por"],a:2},
+{w:11,q:"Ayer ___ al mercado con mi esposa.",o:["voy","fui","iba","va"],a:1},
+{w:12,q:"Cuando ___ niño, jugaba fútbol.",o:["fui","era","soy","estaba"],a:1},
+{w:13,q:"Me ___ mucho la espalda.",o:["duele","duelen","dolor","doler"],a:0},
+{w:14,q:"Creo ___ tienes razón.",o:["de","qué","que","si"],a:2},
+{w:15,q:"Hace mucho ___ hoy en Houston.",o:["caliente","calor","caluroso","cálido"],a:1},
+{w:16,q:"¿Compraste el libro? — Sí, ___ compré ayer.",o:["le","la","lo","se"],a:2},
+{w:17,q:"___ cinco años viviendo en Texas.",o:["Tengo","Llevo","Hago","Estoy"],a:1},
+{w:18,q:"Me dijo ___ no podía venir.",o:["qué","de que","que","como"],a:2},
+{w:19,q:"___ está lloviendo, vamos a salir.",o:["Porque","Aunque","Como","Según"],a:1},
+{w:21,q:"Espero que ___ bien, amigo.",o:["estás","eres","estés","seas"],a:2},
+{w:23,q:"¿Me lo repites más ___, por favor?",o:["despacio","rápido","fuerte","tarde"],a:0},
+{w:24,q:"Si ___ más dinero, viajaría a México.",o:["tengo","tuve","tenía","tuviera"],a:3}
+];
+/* ================= DATA: CONJUGATION [verb, en, pres[6], pret[6], imp[6], irA-future[6]] ================= */
+/* persons order (Latin-American, no vosotros): yo · tú · él/ella/usted · nosotros · ustedes · ellos/ellas */
+const PERSONS=["yo","tú","él/ella/usted","nosotros","ustedes","ellos/ellas"];
+const TENSE_NAMES=["Presente","Pretérito","Imperfecto","Ir + a + infinitivo"];
+const TENSE_CUES=[
+["hoy","siempre","normalmente","los lunes","cada día"],
+["ayer","anoche","la semana pasada","el año pasado","hace un rato"],
+["de niño","antes","en aquellos tiempos","cuando vivía en México","todos los veranos"],
+["mañana","el próximo mes","pronto","la próxima semana","este fin de semana"]];
+const CJ=[
+["ser","to be",["soy","eres","es","somos","son","son"],["fui","fuiste","fue","fuimos","fueron","fueron"],["era","eras","era","éramos","eran","eran"],["voy a ser","vas a ser","va a ser","vamos a ser","van a ser","van a ser"]],
+["estar","to be (state/location)",["estoy","estás","está","estamos","están","están"],["estuve","estuviste","estuvo","estuvimos","estuvieron","estuvieron"],["estaba","estabas","estaba","estábamos","estaban","estaban"],["voy a estar","vas a estar","va a estar","vamos a estar","van a estar","van a estar"]],
+["tener","to have",["tengo","tienes","tiene","tenemos","tienen","tienen"],["tuve","tuviste","tuvo","tuvimos","tuvieron","tuvieron"],["tenía","tenías","tenía","teníamos","tenían","tenían"],["voy a tener","vas a tener","va a tener","vamos a tener","van a tener","van a tener"]],
+["ir","to go",["voy","vas","va","vamos","van","van"],["fui","fuiste","fue","fuimos","fueron","fueron"],["iba","ibas","iba","íbamos","iban","iban"],["voy a ir","vas a ir","va a ir","vamos a ir","van a ir","van a ir"]],
+["querer","to want",["quiero","quieres","quiere","queremos","quieren","quieren"],["quise","quisiste","quiso","quisimos","quisieron","quisieron"],["quería","querías","quería","queríamos","querían","querían"],["voy a querer","vas a querer","va a querer","vamos a querer","van a querer","van a querer"]],
+["poder","to be able / can",["puedo","puedes","puede","podemos","pueden","pueden"],["pude","pudiste","pudo","pudimos","pudieron","pudieron"],["podía","podías","podía","podíamos","podían","podían"],["voy a poder","vas a poder","va a poder","vamos a poder","van a poder","van a poder"]],
+["hacer","to do / make",["hago","haces","hace","hacemos","hacen","hacen"],["hice","hiciste","hizo","hicimos","hicieron","hicieron"],["hacía","hacías","hacía","hacíamos","hacían","hacían"],["voy a hacer","vas a hacer","va a hacer","vamos a hacer","van a hacer","van a hacer"]],
+["decir","to say / tell",["digo","dices","dice","decimos","dicen","dicen"],["dije","dijiste","dijo","dijimos","dijeron","dijeron"],["decía","decías","decía","decíamos","decían","decían"],["voy a decir","vas a decir","va a decir","vamos a decir","van a decir","van a decir"]],
+["saber","to know (facts)",["sé","sabes","sabe","sabemos","saben","saben"],["supe","supiste","supo","supimos","supieron","supieron"],["sabía","sabías","sabía","sabíamos","sabían","sabían"],["voy a saber","vas a saber","va a saber","vamos a saber","van a saber","van a saber"]],
+["poner","to put",["pongo","pones","pone","ponemos","ponen","ponen"],["puse","pusiste","puso","pusimos","pusieron","pusieron"],["ponía","ponías","ponía","poníamos","ponían","ponían"],["voy a poner","vas a poner","va a poner","vamos a poner","van a poner","van a poner"]],
+["venir","to come",["vengo","vienes","viene","venimos","vienen","vienen"],["vine","viniste","vino","vinimos","vinieron","vinieron"],["venía","venías","venía","veníamos","venían","venían"],["voy a venir","vas a venir","va a venir","vamos a venir","van a venir","van a venir"]],
+["dar","to give",["doy","das","da","damos","dan","dan"],["di","diste","dio","dimos","dieron","dieron"],["daba","dabas","daba","dábamos","daban","daban"],["voy a dar","vas a dar","va a dar","vamos a dar","van a dar","van a dar"]]
+];
+/* ================= DATA: DIALOGUES (Listening Lab) [{wk,t,note,lines:[[speaker,es,en]],mcqs:[{q,o[4],a}x3]}] ================= */
+const DLG=[
+{wk:1,t:"Primer encuentro",note:"Two strangers meet and trade the basics: names, origin, how are you.",
+lines:[["Diego","¡Hola! Buenos días. ¿Cómo te llamas?","Hi! Good morning. What's your name?"],
+["Sofía","Buenos días. Me llamo Sofía. ¿Y tú?","Good morning. My name is Sofía. And you?"],
+["Diego","Me llamo Diego. Mucho gusto.","My name is Diego. Nice to meet you."],
+["Sofía","Mucho gusto, Diego. ¿De dónde eres?","Nice to meet you, Diego. Where are you from?"],
+["Diego","Soy de la India. ¿Y tú, de dónde eres?","I'm from India. And you, where are you from?"],
+["Sofía","Soy de aquí, de Houston. ¿Cómo estás hoy?","I'm from here, Houston. How are you today?"],
+["Diego","Estoy bien, un poco cansado. ¿Y tú?","I'm fine, a bit tired. And you?"],
+["Sofía","Yo estoy muy bien, gracias. ¡Hasta luego!","I'm very well, thanks. See you later!"]],
+mcqs:[{q:"¿Cómo se llama la persona de la India?",o:["Sofía","Diego","Ana","Beto"],a:1},
+{q:"¿De dónde es Sofía?",o:["De México","De la India","De Houston","De España"],a:2},
+{q:"¿Cómo está Diego?",o:["Muy feliz","Enojado","Un poco cansado","Enfermo"],a:2}]},
+{wk:3,t:"¿Qué hora es?",note:"Asking the time and setting up a meeting — courtesy and scheduling basics.",
+lines:[["Ana","Perdón, ¿qué hora es?","Excuse me, what time is it?"],
+["Luis","Son las tres y media de la tarde.","It's three thirty in the afternoon."],
+["Ana","Gracias. ¿Nos vemos el lunes?","Thanks. Shall we see each other Monday?"],
+["Luis","Sí, claro. ¿A qué hora?","Yes, of course. What time?"],
+["Ana","A las diez de la mañana, ¿está bien?","At ten in the morning, is that okay?"],
+["Luis","Perfecto. Hasta el lunes, entonces.","Perfect. Until Monday, then."],
+["Ana","Hasta luego. ¡Que tengas buena tarde!","See you later. Have a good afternoon!"]],
+mcqs:[{q:"¿Qué hora es en el diálogo?",o:["Las tres y media de la tarde","Las diez de la mañana","Las doce de la noche","Las cinco de la tarde"],a:0},
+{q:"¿Qué día se van a ver Ana y Luis?",o:["El domingo","El lunes","El viernes","El sábado"],a:1},
+{q:"¿A qué hora quedan el lunes?",o:["A las tres","A las diez de la mañana","A las ocho de la noche","No quedan"],a:1}]},
+{wk:5,t:"Planes para mañana",note:"The Big 5 verbs and ir+a future in action — friends planning tomorrow.",
+lines:[["Carla","Oye, ¿qué vas a hacer mañana?","Hey, what are you going to do tomorrow?"],
+["Beto","Voy a trabajar temprano. ¿Y tú?","I'm going to work early. And you?"],
+["Carla","Quiero ir al mercado y después voy a comer con mi hermana.","I want to go to the market and then I'm going to eat with my sister."],
+["Beto","¡Qué bien! ¿Puedes venir a mi casa por la noche?","Nice! Can you come to my house at night?"],
+["Carla","Sí, puedo. ¿Qué vamos a hacer?","Yes, I can. What are we going to do?"],
+["Beto","Vamos a ver una película y voy a hacer tacos.","We're going to watch a movie and I'm going to make tacos."],
+["Carla","Me encanta esa idea. ¡Nos vemos mañana!","I love that idea. See you tomorrow!"]],
+mcqs:[{q:"¿Qué va a hacer Beto mañana temprano?",o:["Va a comer","Va a trabajar","Va a dormir","Va a viajar"],a:1},
+{q:"¿Con quién va a comer Carla?",o:["Con su hermana","Con su mamá","Con Beto","Con su jefe"],a:0},
+{q:"¿Qué va a hacer Beto en la noche?",o:["Tacos","Pizza","Tamales","Nada"],a:0}]},
+{wk:6,t:"En la taquería",note:"Ordering food, MX-style: pastor tacos, salsa heat level, and the check.",
+lines:[["Mesero","Buenas tardes, ¿qué le sirvo?","Good afternoon, what can I get you?"],
+["Cliente","Me da dos tacos de pastor, por favor.","Give me two pastor tacos, please."],
+["Mesero","¿Con todo? ¿Cebolla, cilantro, salsa?","With everything? Onion, cilantro, salsa?"],
+["Cliente","Sí, con todo, pero la salsa no muy picante.","Yes, with everything, but the salsa not too spicy."],
+["Mesero","Muy bien. ¿Algo de tomar?","Very good. Something to drink?"],
+["Cliente","Un agua de horchata, por favor.","A horchata water, please."],
+["Mesero","Enseguida. ¿Para aquí o para llevar?","Right away. For here or to go?"],
+["Cliente","Para aquí. La cuenta, por favor, cuando pueda.","For here. The check, please, whenever you can."]],
+mcqs:[{q:"¿Qué pide el cliente?",o:["Tacos de pastor","Enchiladas","Pozole","Tamales"],a:0},
+{q:"¿Cómo quiere la salsa el cliente?",o:["Muy picante","No muy picante","Sin salsa","Dulce"],a:1},
+{q:"¿Qué toma el cliente?",o:["Un refresco","Café","Agua de horchata","Cerveza"],a:2}]},
+{wk:8,t:"La rutina diaria",note:"Reflexive verbs between roommates comparing morning routines.",
+lines:[["Marta","¿A qué hora te levantas normalmente?","What time do you normally get up?"],
+["Iván","Me levanto a las seis. Primero me baño, luego desayuno.","I get up at six. First I shower, then I have breakfast."],
+["Marta","Yo me despierto tarde, casi a las ocho.","I wake up late, almost at eight."],
+["Iván","¿Y a qué hora te vas al trabajo?","And what time do you leave for work?"],
+["Marta","Me voy a las nueve. Antes de salir, siempre me visto rápido.","I leave at nine. Before leaving, I always get dressed quickly."],
+["Iván","Entonces tú duermes más que yo.","So you sleep more than me."],
+["Marta","Sí, ¡y no me arrepiento!","Yes, and I don't regret it!"]],
+mcqs:[{q:"¿A qué hora se levanta Iván?",o:["A las seis","A las ocho","A las nueve","A las diez"],a:0},
+{q:"¿Qué hace Iván primero, bañarse o desayunar?",o:["Desayunar","Bañarse","Las dos al mismo tiempo","Ninguna"],a:1},
+{q:"¿A qué hora se va Marta al trabajo?",o:["A las seis","A las siete","A las nueve","A las ocho"],a:2}]},
+{wk:9,t:"¿Cómo llego al centro?",note:"A tourist asks a local for directions downtown.",
+lines:[["Turista","Disculpe, ¿cómo llego al centro?","Excuse me, how do I get downtown?"],
+["Local","Siga derecho dos cuadras y luego dé vuelta a la derecha.","Go straight two blocks and then turn right."],
+["Turista","¿Está lejos de aquí?","Is it far from here?"],
+["Local","No, está cerca. Diez minutos caminando.","No, it's close. Ten minutes walking."],
+["Turista","¿Hay un camión que va para allá?","Is there a bus that goes there?"],
+["Local","Sí, hay uno, pero caminar es más rápido.","Yes, there's one, but walking is faster."],
+["Turista","Muchas gracias por su ayuda.","Thank you very much for your help."],
+["Local","De nada. ¡Que le vaya bien!","You're welcome. Have a good one!"]],
+mcqs:[{q:"¿Cuántas cuadras debe caminar derecho el turista?",o:["Una","Dos","Tres","Cuatro"],a:1},
+{q:"¿Está lejos el centro?",o:["Sí, muy lejos","No, está cerca","Está en otra ciudad","No se sabe"],a:1},
+{q:"Según el local, ¿qué es más rápido?",o:["El camión","Un taxi","Caminar","Un avión"],a:2}]},
+{wk:11,t:"¿Qué hiciste ayer?",note:"Catching up in the preterite — a trip to the market and a lazy day at home.",
+lines:[["Rosa","¿Qué hiciste ayer? Te marqué y no contestaste.","What did you do yesterday? I called you and you didn't answer."],
+["Tomás","Ay, perdón. Fui al mercado con mi esposa.","Oh, sorry. I went to the market with my wife."],
+["Rosa","¿Y qué compraron?","And what did you buy?"],
+["Tomás","Compré fruta y ella compró unos zapatos nuevos.","I bought fruit and she bought some new shoes."],
+["Rosa","Qué bien. Yo estuve en casa todo el día.","Nice. I was at home all day."],
+["Tomás","¿No hiciste nada?","You didn't do anything?"],
+["Rosa","Hice limpieza y vi una película. La pasé bien.","I cleaned and watched a movie. I had a good time."]],
+mcqs:[{q:"¿A dónde fue Tomás ayer?",o:["Al trabajo","Al mercado","A la escuela","Al doctor"],a:1},
+{q:"¿Qué compró la esposa de Tomás?",o:["Fruta","Ropa","Zapatos","Un carro"],a:2},
+{q:"¿Qué hizo Rosa en casa?",o:["Nada","Limpieza y vio una película","Cocinó para diez personas","Durmió todo el día"],a:1}]},
+{wk:13,t:"En la farmacia",note:"A pharmacy visit: symptoms, a recommendation, and the price.",
+lines:[["Cliente","Buenas tardes, me duele mucho la cabeza.","Good afternoon, my head hurts a lot."],
+["Farmacéutico","¿Desde cuándo le duele?","Since when does it hurt?"],
+["Cliente","Desde ayer. También tengo un poco de fiebre.","Since yesterday. I also have a bit of a fever."],
+["Farmacéutico","¿Tiene gripa o dolor de garganta?","Do you have a cold or a sore throat?"],
+["Cliente","Un poco de gripa, pero no me duele la garganta.","A bit of a cold, but my throat doesn't hurt."],
+["Farmacéutico","Le recomiendo este medicamento, dos veces al día.","I recommend this medicine, twice a day."],
+["Cliente","Perfecto. ¿Cuánto cuesta?","Perfect. How much does it cost?"],
+["Farmacéutico","Son ochenta pesos. Que se mejore.","It's eighty pesos. Get well soon."]],
+mcqs:[{q:"¿Qué le duele al cliente?",o:["El estómago","La cabeza","La espalda","La pierna"],a:1},
+{q:"¿Qué otro síntoma tiene?",o:["Tos","Fiebre","Dolor de garganta fuerte","Nada más"],a:1},
+{q:"¿Cuántas veces al día debe tomar el medicamento?",o:["Una vez","Dos veces","Tres veces","Cuatro veces"],a:1}]},
+{wk:14,t:"¿Tacos o pizza?",note:"A friendly argument over which food wins — opinions and comparatives.",
+lines:[["Memo","Yo creo que los tacos son mejores que la pizza.","I think tacos are better than pizza."],
+["Sara","No estoy de acuerdo. La pizza es más práctica.","I disagree. Pizza is more practical."],
+["Memo","Pero los tacos tienen más sabor, ¿no crees?","But tacos have more flavor, don't you think?"],
+["Sara","Depende. A mí me parece que los dos son ricos.","Depends. I think both are tasty."],
+["Memo","Tienes razón, la neta los dos son buenos.","You're right, honestly both are good."],
+["Sara","Entonces, ¿por qué discutimos tanto?","So why are we arguing so much?"],
+["Memo","Porque es divertido, ¡y porque los tacos ganan!","Because it's fun, and because tacos win!"]],
+mcqs:[{q:"¿Qué opina Memo de los tacos?",o:["Que son peores","Que son mejores que la pizza","Que no le gustan","Que son caros"],a:1},
+{q:"¿Está de acuerdo Sara al principio?",o:["Sí, totalmente","No, dice que la pizza es más práctica","No contesta","Se enoja"],a:1},
+{q:"Al final, ¿qué piensan los dos?",o:["Que la pizza es mejor","Que ambos son ricos","Que ninguno es bueno","Que no importa"],a:1}]},
+{wk:15,t:"Un fin de semana tranquilo",note:"Neighbors make small talk about the weekend and the weather.",
+lines:[["Vecina","Buenas, Don Pepe. ¿Cómo estuvo su fin de semana?","Hi, Don Pepe. How was your weekend?"],
+["Don Pepe","Muy tranquilo, gracias. Un poco de lluvia, pero bien.","Very calm, thanks. A bit of rain, but good."],
+["Vecina","Sí, hizo mucho frío el sábado.","Yes, it was very cold on Saturday."],
+["Don Pepe","Y hoy está nublado otra vez. ¿Y usted, cómo se siente?","And today it's cloudy again. And you, how are you feeling?"],
+["Vecina","La verdad, un poco cansada, pero contenta.","Honestly, a bit tired, but happy."],
+["Don Pepe","Me alegro. Que tenga buena semana.","Glad to hear. Have a good week."],
+["Vecina","Igualmente, Don Pepe. ¡Nos vemos!","Same to you, Don Pepe. See you!"]],
+mcqs:[{q:"¿Cómo estuvo el fin de semana de Don Pepe?",o:["Muy ocupado","Tranquilo","Terrible","No dice"],a:1},
+{q:"¿Qué clima hizo el sábado?",o:["Mucho calor","Frío y lluvia","Viento fuerte","Nieve"],a:1},
+{q:"¿Cómo se siente la vecina?",o:["Enojada","Un poco cansada pero contenta","Muy triste","Nerviosa"],a:1}]},
+{wk:16,t:"Cambio de planes",note:"A phone call to cancel and reschedule — plans, excuses, and confirmations.",
+lines:[["Lupe","¿Bueno? ¿Iván? Habla Lupe.","Hello? Iván? It's Lupe."],
+["Iván","¡Lupe! ¿Qué onda? ¿Todo bien?","Lupe! What's up? Everything okay?"],
+["Lupe","Sí, pero tengo que cancelar lo de mañana.","Yes, but I have to cancel tomorrow's plan."],
+["Iván","Ah, ¿por qué? ¿Pasó algo?","Oh, why? Did something happen?"],
+["Lupe","No, solo tengo mucho trabajo. ¿Quedamos el viernes mejor?","No, I just have a lot of work. Can we meet Friday instead?"],
+["Iván","Va, sin problema. Te marco el jueves para confirmar.","Sure, no problem. I'll call you Thursday to confirm."],
+["Lupe","Perfecto. Gracias por entender.","Perfect. Thanks for understanding."]],
+mcqs:[{q:"¿Qué necesita hacer Lupe?",o:["Confirmar el plan","Cancelar lo de mañana","Invitar a Iván","Pedir dinero"],a:1},
+{q:"¿Por qué cancela Lupe?",o:["Está enferma","Tiene mucho trabajo","No quiere ir","Se le olvidó"],a:1},
+{q:"¿Qué día proponen verse?",o:["El jueves","El viernes","El sábado","El lunes"],a:1}]},
+{wk:17,t:"Mi nuevo trabajo",note:"Coworkers catch up about a new job, a boss, and a goal for the year.",
+lines:[["Marco","¿Cómo te va en el nuevo trabajo?","How's it going at the new job?"],
+["Ana","Muy bien. Me dedico a las ventas ahora.","Very well. I work in sales now."],
+["Marco","¡Qué bien! ¿Y te gusta tu jefe?","Nice! And do you like your boss?"],
+["Ana","Sí, es buena persona. Llevo dos meses en la empresa.","Yes, they're a good person. I've been at the company two months."],
+["Marco","¿Y cuál es tu meta este año?","And what's your goal this year?"],
+["Ana","Quiero un ascenso antes de diciembre.","I want a promotion before December."],
+["Marco","Con tu experiencia, lo vas a lograr.","With your experience, you'll achieve it."]],
+mcqs:[{q:"¿A qué se dedica Ana ahora?",o:["A la enseñanza","A las ventas","A la medicina","A la construcción"],a:1},
+{q:"¿Cuánto tiempo lleva Ana en la empresa?",o:["Una semana","Dos meses","Un año","Cinco años"],a:1},
+{q:"¿Cuál es la meta de Ana?",o:["Renunciar","Un ascenso","Cambiar de carrera","Jubilarse"],a:1}]},
+{wk:18,t:"Una historia chistosa",note:"A funny story told with classic Mexican filler words and a phone-in-taco-bag twist.",
+lines:[["Beto","Oye, fíjate que me pasó algo bien chistoso ayer.","Hey, get this, something really funny happened to me yesterday."],
+["Nacho","A ver, cuéntame. ¿Qué pasó?","Let's see, tell me. What happened?"],
+["Beto","Pues, iba caminando y, de repente, se me cayó el celular.","Well, I was walking and, suddenly, I dropped my phone."],
+["Nacho","¿Se rompió?","Did it break?"],
+["Beto","No, o sea, cayó justo en una bolsa de tacos de un señor.","No, I mean, it landed right in a guy's bag of tacos."],
+["Nacho","¡No manches! ¿Y qué hizo el señor?","No way! And what did the guy do?"],
+["Beto","Se rió mucho y me invitó un taco. Al final, todo salió bien.","He laughed a lot and offered me a taco. In the end, everything turned out fine."]],
+mcqs:[{q:"¿Qué se le cayó a Beto?",o:["Las llaves","El celular","La cartera","Los lentes"],a:1},
+{q:"¿Dónde cayó el celular?",o:["En el agua","En una bolsa de tacos","En la calle","En su casa"],a:1},
+{q:"¿Cómo reaccionó el señor?",o:["Se enojó","Se rió y le dio un taco","No dijo nada","Llamó a la policía"],a:1}]},
+{wk:19,t:"Puro relajo con los cuates",note:"Mexican slang core, back to back: güey, órale, chamba, aguas, qué padre, sale.",
+lines:[["Chuy","¡Quihubo, güey! ¿Qué onda?","What's up, dude? How's it going?"],
+["Beto","Todo bien, aquí nomás. ¿Y tú, qué tal?","All good, just here. And you, how's it going?"],
+["Chuy","Órale, pues yo ando bien ocupado con la chamba.","Well, I've been really busy with work."],
+["Beto","Ah, qué mala onda. ¿Mucho trabajo?","Oh, that's rough. A lot of work?"],
+["Chuy","Sí, pero aguas, ya casi es viernes.","Yeah, but heads up, it's almost Friday."],
+["Beto","¡Qué padre! Vamos por unas chelas el viernes, ¿sale?","Awesome! Let's grab some beers Friday, deal?"],
+["Chuy","¡Sale y vale! Ahí nos vemos.","Deal! See you there."]],
+mcqs:[{q:"¿Cómo anda Chuy?",o:["De vacaciones","Muy ocupado con el trabajo","Enfermo","Triste"],a:1},
+{q:"¿Qué día proponen salir?",o:["El lunes","El viernes","El domingo","Hoy"],a:1},
+{q:"¿Qué significa '¡sale y vale!' en este diálogo?",o:["No, gracias","Está bien, de acuerdo","Adiós para siempre","No entiendo"],a:1}]},
+{wk:20,t:"Estoy crudo, no manches",note:"Morning-after idioms: andar crudo, echar la mano, me vale, sacar de onda.",
+lines:[["Rulo","Ay, hermano, ando bien crudo hoy.","Oh man, I'm really hungover today."],
+["Memo","Jajaja, ¿tanto tomaste anoche?","Haha, did you drink that much last night?"],
+["Rulo","Un poco. Échame la mano y tráeme un café, ¿no?","A little. Give me a hand and bring me a coffee, will you?"],
+["Memo","Va, pero luego tú me ayudas con la mudanza.","Sure, but later you help me with the move."],
+["Rulo","Me vale, con tal de que me traigas ese café ya.","I don't care, as long as you bring me that coffee now."],
+["Memo","Está bien, no te saques de onda.","Okay, don't get thrown off."],
+["Rulo","Gracias, de verdad. Eres un gran amigo.","Thanks, really. You're a great friend."]],
+mcqs:[{q:"¿Cómo se siente Rulo?",o:["Muy contento","Crudo (con resaca)","Enfermo del estómago","Nervioso"],a:1},
+{q:"¿Qué le pide Rulo a Memo?",o:["Dinero","Un café","Su celular","Un taxi"],a:1},
+{q:"¿Qué tiene que hacer Rulo después?",o:["Nada","Ayudar con la mudanza","Ir al trabajo","Dormir todo el día"],a:1}]},
+{wk:21,t:"Espero que todo salga bien",note:"A mother sends her son off on a trip — the subjunctive survival kit in action.",
+lines:[["Mamá","Espero que tengas buen viaje, mijo.","I hope you have a good trip, son."],
+["Hijo","Gracias, mamá. Ojalá que no haya tráfico.","Thanks, mom. Hopefully there's no traffic."],
+["Mamá","Cuando llegues, avísame, por favor.","When you arrive, let me know, please."],
+["Hijo","Claro que sí. No quiero que te preocupes.","Of course. I don't want you to worry."],
+["Mamá","Es que siempre quiero que estés bien.","It's just that I always want you to be well."],
+["Hijo","Lo sé, mamá. Ojalá que llegue antes de las ocho.","I know, mom. Hopefully I'll arrive before eight."],
+["Mamá","Ojalá. Te quiero mucho, cuídate.","Hopefully. I love you a lot, take care."]],
+mcqs:[{q:"¿Qué espera la mamá?",o:["Que tenga buen viaje","Que se quede en casa","Que no llame","Que llegue tarde"],a:0},
+{q:"¿Qué debe hacer el hijo cuando llegue?",o:["Nada","Avisarle a su mamá","Llamar a un taxi","Dormir"],a:1},
+{q:"¿A qué hora espera llegar el hijo?",o:["Antes de las ocho","Después de medianoche","Al mediodía","No sabe"],a:0}]},
+{wk:22,t:"Puro choteo entre cuates",note:"Regional identity and gentle teasing — norteño, chilango, and costeño banter.",
+lines:[["Dany","Oye, Rocío, ¿de dónde eres? ¿Eres chilanga?","Hey, Rocío, where are you from? Are you from Mexico City?"],
+["Rocío","No, soy costeña, de Veracruz. ¿Y tú?","No, I'm from the coast, from Veracruz. And you?"],
+["Dany","Yo soy norteño, de Monterrey. Por eso hablo tan directo.","I'm from the north, from Monterrey. That's why I talk so directly."],
+["Rocío","Jaja, sí, se nota. Aquí en el sur somos más relajados.","Haha, yes, it shows. Here in the south we're more laid-back."],
+["Dany","Oye, no te burles, ¿eh?","Hey, don't make fun, huh?"],
+["Rocío","No me burlo, es solo carrilla. Todos tenemos nuestro estilo.","I'm not making fun, it's just teasing. We all have our style."],
+["Dany","Tienes razón. ¡Viva la diversidad mexicana!","You're right. Long live Mexican diversity!"]],
+mcqs:[{q:"¿De dónde es Rocío?",o:["De Monterrey","De Veracruz (costeña)","De la Ciudad de México","De Guadalajara"],a:1},
+{q:"¿De dónde es Dany?",o:["Es norteño, de Monterrey","Es chilango","Es costeño","No dice"],a:0},
+{q:"¿Qué es 'carrilla' según el diálogo?",o:["Un insulto grave","Teasing entre amigos","Una comida típica","Un baile regional"],a:1}]},
+{wk:23,t:"Habla más despacio, por favor",note:"A student asks a teacher to slow down — ear training and pronunciation practice.",
+lines:[["Estudiante","Disculpe, no le entendí. ¿Puede repetir?","Excuse me, I didn't understand. Can you repeat?"],
+["Profesor","Claro. Dije que practiquemos el acento hoy.","Of course. I said let's practice the accent today."],
+["Estudiante","Ah, ya. Es que habla muy rápido a veces.","Oh, I see. It's just that you speak really fast sometimes."],
+["Profesor","Tienes razón, voy a hablar más despacio.","You're right, I'll speak more slowly."],
+["Estudiante","Gracias. Mi oído todavía no capta todo.","Thanks. My ear still doesn't catch everything."],
+["Profesor","Es normal. Con práctica, tu comprensión va a mejorar mucho.","It's normal. With practice, your comprehension will improve a lot."],
+["Estudiante","Eso espero. Practico todos los días.","I hope so. I practice every day."]],
+mcqs:[{q:"¿Qué le pide el estudiante al profesor?",o:["Que hable más rápido","Que repita y hable más despacio","Que le dé tarea","Que cancele la clase"],a:1},
+{q:"¿Qué van a practicar hoy?",o:["La gramática","El acento","Los números","La escritura"],a:1},
+{q:"¿Qué le dice el profesor sobre la comprensión del estudiante?",o:["Que nunca va a mejorar","Que va a mejorar con práctica","Que ya es perfecta","No opina"],a:1}]},
+{wk:24,t:"Si tuviera más tiempo...",note:"A hypothetical debate about living in Mexico vs. the US — connectors and conditionals.",
+lines:[["Lalo","Por un lado, me gusta vivir aquí, pero por otro, extraño México.","On one hand, I like living here, but on the other, I miss Mexico."],
+["Ceci","Si tuvieras la oportunidad, ¿regresarías?","If you had the chance, would you go back?"],
+["Lalo","Tal vez. Sin embargo, aquí tengo un buen trabajo.","Maybe. However, I have a good job here."],
+["Ceci","Es cierto. Aunque, a pesar de todo, la familia es lo más importante.","True. Although, despite everything, family is the most important thing."],
+["Lalo","Tienes razón. Si pudiera, viviría en los dos lugares.","You're right. If I could, I'd live in both places."],
+["Ceci","Eso sería ideal. Por lo general, no es tan fácil.","That would be ideal. Generally, it's not that easy."],
+["Lalo","Cierto, pero soñar no cuesta nada.","True, but dreaming costs nothing."]],
+mcqs:[{q:"¿Qué extraña Lalo?",o:["La comida","México","Su trabajo","Nada"],a:1},
+{q:"¿Qué haría Lalo si pudiera?",o:["Vivir solo en México","Vivir en los dos lugares","Nunca regresar","Cambiar de trabajo"],a:1},
+{q:"Según Ceci, ¿qué es lo más importante?",o:["El dinero","La familia","El trabajo","La comida"],a:1}]},
+{wk:25,t:"Rompiendo el hielo",note:"A language-exchange meetup — repair strategies for real conversations with strangers.",
+lines:[["Yolanda","Hola, ¿tú eres Kevin? Nos vamos a intercambiar idiomas.","Hi, are you Kevin? We're doing a language exchange."],
+["Kevin","Sí, mucho gusto. Disculpa, ¿cómo se dice 'nervous' en español?","Yes, nice to meet you. Sorry, how do you say 'nervous' in Spanish?"],
+["Yolanda","Se dice 'nervioso'. No te preocupes, todos estamos así al principio.","You say 'nervioso'. Don't worry, we're all like that at first."],
+["Kevin","Gracias. ¿Me lo repites más despacio, por favor?","Thanks. Can you repeat that more slowly, please?"],
+["Yolanda","Claro. Con paciencia, vas a entender todo poco a poco.","Of course. With patience, you'll understand everything little by little."],
+["Kevin","Eso espero. Quiero perder la vergüenza de hablar.","I hope so. I want to lose my fear of speaking."],
+["Yolanda","Así se hace. ¡Vamos a romper el hielo con un café!","That's the way. Let's break the ice with a coffee!"]],
+mcqs:[{q:"¿Qué quiere saber Kevin?",o:["Cómo se dice 'nervous'","Dónde está el baño","Qué hora es","Cuánto cuesta el café"],a:0},
+{q:"¿Qué le pide Kevin a Yolanda?",o:["Dinero","Que repita más despacio","Que se vaya","Un número de teléfono"],a:1},
+{q:"¿Qué quiere lograr Kevin?",o:["Aprender a cocinar","Perder la vergüenza de hablar","Cambiar de trabajo","Nada en especial"],a:1}]}
+];
+/* ================= DATA: STORIES (Story Mode S6) [{wk,ph,t,note,quest,paras[],mcqs:[{q,o[4],a}x5]}] ================= */
+const ST=[
+{wk:4,ph:1,t:"El primer día de Mateo",
+ note:"Chapter I. A stranger arrives, and the street tests his tongue at once. Present tense, survival words.",
+ quest:"Misión: acompaña a Mateo en su primer día. Escucha cada párrafo y descubre a quién conoce y a qué hora.",
+ paras:[
+ "¡Hola! Me llamo Mateo. Soy de la India y ahora estoy en una ciudad de México. Hoy es mi primer día aquí y, la verdad, estoy muy nervioso. También estoy contento, porque todo es nuevo para mí. No tengo amigos aquí todavía, pero quiero tener muchos amigos. Quiero aprender español y quiero hablar como la gente de aquí.",
+ "En la calle, una señora muy amable me dice: «Buenos días, joven. ¿Cómo estás?». Yo digo: «Buenos días, señora. Estoy bien, gracias. ¿Y usted?». «Muy bien, gracias», dice ella. «¿De dónde eres?». «Soy de la India», digo yo. «¡Ah, qué lejos! Mucho gusto, joven», dice ella con una sonrisa.",
+ "La señora se llama Lupita. Lupita es simpática y platica mucho. «¿Qué hora es?», me dice. En mi reloj son las diez de la mañana. «Todavía es temprano», dice Lupita. «¿Tienes tiempo para un café?». «Sí, claro que sí», digo yo. «Tengo todo el día. No tengo trabajo hoy». «¡Perfecto! Vamos», dice ella.",
+ "Nosotros vamos a un café pequeño y bonito. Yo quiero aprender y Lupita quiere ayudar. «¿Por qué estás aquí en México?», me dice ella. «Quiero trabajar y también quiero aprender el idioma», digo yo. «¡Qué bien! Mira, aquí en México somos muy amables», dice Lupita. «Poco a poco vas a hablar muy bien. No es tan difícil».",
+ "Mi primer día no es fácil, pero ya no estoy tan nervioso. Ahora estoy feliz. En una hora, ya tengo una amiga nueva: Lupita. «Mañana es otro día», dice ella. «Y mañana vas a aprender más palabras». «Muchas gracias por todo, señora Lupita», digo yo. «¡Qué buena onda es la gente aquí!». Hoy, en mi primer día, ya estoy un poco en casa. ¡Órale, qué buen comienzo!"
+ ],
+ mcqs:[
+ {q:"¿De dónde es Mateo?",o:["De México","De la India","De España","De Houston"],a:1},
+ {q:"¿Cómo está Mateo en su primer día?",o:["Nervioso y contento","Enojado","Cansado y triste","Enfermo"],a:0},
+ {q:"¿Cómo se llama la señora amable?",o:["Ana","Sofía","Lupita","Carmen"],a:2},
+ {q:"¿Qué hora es cuando hablan?",o:["Las tres de la tarde","Las diez de la mañana","Las ocho de la noche","Medianoche"],a:1},
+ {q:"¿Adónde van Mateo y Lupita?",o:["A la escuela","A un café","A la casa de Mateo","Al mercado"],a:1}
+ ]},
+
+{wk:8,ph:2,t:"La comida de los domingos",
+ note:"Chapter II. Routine, family and a Sunday feast. Present tense and the ir+a future.",
+ quest:"Misión: sigue el día de Mateo, de la mañana a la comida familiar. ¿Qué van a comer y qué van a hacer?",
+ paras:[
+ "Ahora Mateo ya tiene una rutina. Todos los días quiere levantarse temprano, a las seis de la mañana. Primero va a bañarse, y después va a comer pan con café. «El desayuno es muy necesario», dice siempre Lupita. «Sin desayuno no puedes estudiar bien». Mateo sabe que ella tiene razón.",
+ "De lunes a viernes, Mateo va a la escuela para estudiar español. En la clase hace muchas cosas: escucha, habla y practica. Hace preguntas todo el tiempo, porque quiere aprender rápido. A veces está muy cansado, pero nunca va a dejar de practicar. «Voy a hablar bien», dice, «aunque me cueste».",
+ "Hoy es domingo y Mateo va a comer con la familia de Lupita. La madre de Lupita hace pollo con arroz y frijoles. También hay tortillas, salsa picante y aguacate. «¡Qué sabroso!», dice Mateo. «Muchas gracias, señora. Todo está muy rico». La madre está feliz. «Come más, joven, hay mucha comida», le dice ella.",
+ "El padre de Lupita es muy simpático y también platica mucho. «¿Y qué vas a hacer mañana?», le dice a Mateo. «Mañana voy a descansar un poco y luego voy a estudiar», dice Mateo. «Y el domingo que viene vamos a jugar fútbol», dice el hermano de Lupita. «¡Va! Me gusta la idea», dice Mateo, muy contento.",
+ "En la noche, Mateo está feliz y un poco cansado. Ahora tiene amigos, tiene comida sabrosa y tiene una familia mexicana. «Poco a poco voy a hablar como la gente de aquí», piensa. «Voy a lograr mi meta». Y va a dormir temprano, porque mañana es lunes y va a ser otro día de trabajo. Mateo ya no está solo: México ya es un poco su casa."
+ ],
+ mcqs:[
+ {q:"¿A qué hora quiere levantarse Mateo?",o:["A las diez","A las seis","A las ocho","A mediodía"],a:1},
+ {q:"¿Para qué va Mateo a la escuela?",o:["Para trabajar","Para comer","Para estudiar español","Para dormir"],a:2},
+ {q:"¿Qué día come con la familia de Lupita?",o:["El lunes","El sábado","El domingo","El viernes"],a:2},
+ {q:"¿Qué hace de comer la madre de Lupita?",o:["Pollo con arroz y frijoles","Pescado","Torta y café","Solo fruta"],a:0},
+ {q:"¿Qué van a hacer el domingo que viene?",o:["Ir al mercado","Jugar fútbol","Estudiar","Descansar todo el día"],a:1}
+ ]},
+
+{wk:13,ph:3,t:"Perdido en la ciudad",
+ note:"Chapter III. The past tense arrives, and so does trouble: Mateo gets lost, haggles, and lands at the pharmacy.",
+ quest:"Misión: reconstruye lo que le pasó a Mateo ayer, paso a paso. ¿Cómo terminó su aventura?",
+ paras:[
+ "Ayer Mateo tuvo una gran aventura. Quiso ir al mercado, pero se perdió en la ciudad. Caminó mucho: primero a la derecha, luego a la izquierda, y al final no supo dónde estaba. Todo estaba muy lejos y no vio ningún letrero. «¿Dónde está el mercado?», dijo, un poco nervioso.",
+ "Por fin, un señor muy amable lo ayudó. «Está cerca, joven», dijo el señor. «Camine derecho dos cuadras y luego a la izquierda, en la esquina del semáforo». Mateo caminó rápido y por fin llegó. ¡Qué grande y qué bonito estaba el mercado! Había comida, ropa y mucha gente por todos lados.",
+ "En el mercado, Mateo vio unos zapatos muy bonitos. «¿Cuánto cuesta?», dijo. «Doscientos pesos», dijo el señor de la tienda. «Uy, es mucho, está muy caro», dijo Mateo. Los dos hablaron un rato y, al final, Mateo pagó ciento cincuenta. «El regateo es un arte», pensó, muy contento con su ganga. Aprendió algo nuevo ese día.",
+ "Pero, de repente, a Mateo le empezó a doler el estómago. La comida picante fue demasiado para él. Caminó a una farmacia cerca del mercado. «Me duele mucho el estómago», dijo. La doctora fue muy amable y le dio una medicina. «Tómela hoy y mañana va a estar bien, joven», dijo ella. «No coma tan picante».",
+ "En la noche, Mateo ya estaba mejor. Habló con Lupita por teléfono y le contó todo: el señor amable, el mercado, los zapatos baratos y el dolor de estómago. Los dos hablaron y hablaron. «¡Ay, Mateo! Bienvenido a México», dijo ella, muy contenta. «Aquí cada día es una nueva historia». Mateo estaba cansado, pero feliz. Su aventura terminó bien."
+ ],
+ mcqs:[
+ {q:"¿Qué quiso hacer Mateo ayer?",o:["Ir a la escuela","Ir al mercado","Ir al hospital","Ir al café"],a:1},
+ {q:"¿Qué le pasó cuando caminó por la ciudad?",o:["Se perdió","Vio a Lupita","Compró un carro","Encontró trabajo"],a:0},
+ {q:"¿Cuánto pagó Mateo por los zapatos?",o:["Doscientos pesos","Ciento cincuenta pesos","Cincuenta pesos","Nada"],a:1},
+ {q:"¿Por qué fue Mateo a la farmacia?",o:["Le dolía la cabeza","Le dolía el estómago","Estaba cansado","Quería comprar salsa"],a:1},
+ {q:"¿Qué hicieron Mateo y Lupita en la noche?",o:["Fueron al mercado","Hablaron de la aventura por teléfono","Comieron tacos","Estudiaron español"],a:1}
+ ]},
+
+{wk:18,ph:4,t:"La gran decisión",
+ note:"Chapter IV. Opinions, feelings and a life choice: Mateo weighs a job offer and tells his own story.",
+ quest:"Misión: entiende la decisión de Mateo. ¿Qué le ofrecen, qué opina Lupita y qué decide al final?",
+ paras:[
+ "Después de un año, Mateo ya hablaba mucho mejor. Un día, su jefe le dijo algo muy importante. «Fíjate que tenemos un proyecto nuevo», le dijo. «Necesitamos a alguien bueno en ventas. ¿Quieres el trabajo? Es más dinero, pero también es más responsabilidad. Tú decides». Mateo no supo qué decir en ese momento.",
+ "Esa noche, Mateo estaba emocionado, pero también nervioso. «No sé qué hacer», pensó. «Por un lado, quiero el ascenso y el mejor sueldo. Por otro lado, tengo un poco de miedo. ¿Voy a poder? ¿Y si me equivoco?». Pensó y pensó, y casi no pudo dormir en toda la noche. Era una decisión difícil.",
+ "Al día siguiente, habló con Lupita, porque ella siempre le daba buenas ideas. «La verdad, creo que tú puedes», le dijo ella. «Tienes experiencia y trabajas mucho. En mi opinión, tienes que decir que sí. El miedo es normal, amigo. Todos tenemos miedo antes de algo nuevo. Pero tú eres fuerte».",
+ "Mateo pensó en toda su historia. «Nací en la India, me mudé a México y aprendí un idioma nuevo. Si pude con todo eso, también puedo con esto». De repente, ya no tenía tanto miedo. Estaba más tranquilo y hasta un poco orgulloso. «Tienes razón, Lupita», dijo. «Gracias por escuchar. Siempre me ayudas mucho».",
+ "Al otro día, Mateo fue con su jefe, muy seguro. «Sí, quiero el trabajo», le dijo. «Muchas gracias por la oportunidad. Voy a trabajar muy duro». Su jefe estaba muy contento. «Sabía que ibas a decir que sí», le dijo. «Bienvenido al equipo». Y así, con miedo pero con fuerza, Mateo empezó un nuevo capítulo de su historia."
+ ],
+ mcqs:[
+ {q:"¿Qué le ofreció el jefe a Mateo?",o:["Un trabajo en ventas","Un carro nuevo","Unas vacaciones","Una casa"],a:0},
+ {q:"¿Cómo se sentía Mateo al principio?",o:["Aburrido","Emocionado y nervioso","Enojado","Tranquilo"],a:1},
+ {q:"¿Qué le recomendó Lupita?",o:["Decir que no","Pensarlo un año","Decir que sí","Buscar otro trabajo"],a:2},
+ {q:"¿Qué recordó Mateo de su propia historia?",o:["Que nunca viaja","Que se mudó y aprendió un idioma","Que no tiene amigos","Que odia el trabajo"],a:1},
+ {q:"¿Qué decidió Mateo al final?",o:["Aceptar el trabajo","Renunciar","Volver a la India","No hacer nada"],a:0}
+ ]},
+
+{wk:22,ph:5,t:"La fiesta de la cuadra",
+ note:"Chapter V. Slang, jokes and good vibes: Mateo learns the street has its own dictionary.",
+ quest:"Misión: métete a la fiesta con Mateo. ¿Entiendes la jerga, el humor y los buenos deseos del barrio?",
+ paras:[
+ "El sábado, Mateo fue a una fiesta en la cuadra de Lupita. «¡Órale, ya llegaste!», le dijo un amigo. «Qué padre que viniste, güey». Mateo ya entendía la jerga y le contestó: «¡Claro que sí! No me la iba a perder, ¿cómo crees?». Todos se rieron. Ese Mateo ya hablaba como un chilango.",
+ "Había mucha comida, música y muy buena onda. Un señor contó un chiste, pero Mateo no lo entendió bien. «Es un albur», le explicó Lupita. «Es un chiste con doble sentido, humor muy mexicano. No te preocupes, poco a poco lo vas a entender. A mí también me costó de niña».",
+ "«Oye, ¿y tú de dónde eres?», le dijo una chica. «De la India, pero ya me siento medio mexicano», dijo Mateo. «¡No manches, qué chido!», dijo ella. «Hablas increíble, güey». Mateo estaba muy contento. La neta, ya no se sentía como un extranjero en la fiesta. Ahora era uno más del barrio.",
+ "«Ojalá te quedes muchos años aquí», le dijo Lupita, ya tarde en la noche. «Ojalá», dijo Mateo con una sonrisa. «Aunque a veces echo de menos a mi familia, la verdad me siento en casa. Ustedes ya son mi familia también». «Ándale, ya te pusiste sentimental, güey», dijo ella, y los dos se rieron.",
+ "La fiesta terminó muy tarde. Mateo caminó a su casa contento, con la música todavía en la cabeza. «Qué buena onda es la gente de aquí», pensó. Ya no era el chico nervioso del primer día. Ahora sabía la jerga, entendía los chistes y tenía muchos amigos. Ahora, de verdad, era un cuate más de la cuadra. ¡Qué chido!"
+ ],
+ mcqs:[
+ {q:"¿Dónde fue la fiesta?",o:["En un café","En la cuadra de Lupita","En la escuela","En el mercado"],a:1},
+ {q:"¿Qué es un «albur»?",o:["Una comida","Un baile","Un chiste con doble sentido","Un tipo de música"],a:2},
+ {q:"¿Qué le dijo la chica cuando supo que Mateo hablaba bien?",o:["«No manches, qué chido»","«Qué caro»","«Ni modo»","«Está muy lejos»"],a:0},
+ {q:"¿Qué le desea Lupita a Mateo (ojalá...)?",o:["Que se vaya pronto","Que se quede muchos años","Que trabaje más","Que cocine"],a:1},
+ {q:"¿Cómo se siente Mateo al final de la fiesta?",o:["Como un extranjero","Nervioso y triste","Como un cuate del barrio","Enojado"],a:2}
+ ]},
+
+{wk:26,ph:6,t:"Un nuevo capítulo",
+ note:"Chapter VI. The finale. Two years on, Mateo looks back, weighs his future, and celebrates how far he has come.",
+ quest:"Misión: llega al final del viaje de Mateo. ¿Qué decide sobre su futuro y qué aprendió del camino?",
+ paras:[
+ "Después de dos años, Mateo ya hablaba español casi como un mexicano. Un día pensó en todo su camino: el primer día nervioso, la señora amable del café, el mercado, el dolor de estómago, el nuevo trabajo y la gran fiesta de la cuadra. «Cuánto cambié», pensó, con una sonrisa. «Ya no soy el mismo chico de antes».",
+ "Su familia de la India lo llamó por teléfono. «¿Cuándo vas a volver, hijo?», le dijo su madre. Mateo se quedó callado un rato. Por un lado, echaba de menos a su familia. Por otro lado, aquí ya tenía amigos, trabajo y una buena vida. Era una decisión muy difícil. No supo qué contestar en ese momento.",
+ "Después habló con Lupita. «La verdad, no sé qué hacer», le dijo. «Los quiero mucho a todos ustedes, pero también quiero ver a mi familia en la India». Lupita lo escuchó con paciencia. «¿Y por qué no las dos cosas?», dijo ella. «Puedes ir a ver a tu familia y luego volver. México ya es tu casa también, amigo».",
+ "Mateo entendió que no tenía que escoger para siempre. «Tienes toda la razón», dijo, más tranquilo. «Voy a ir a la India en el verano, voy a ver a mi familia, y luego voy a volver aquí. Lo mejor está por venir». Se sintió muy bien y muy agradecido. Por fin ya no tenía miedo del futuro.",
+ "Esa noche, Mateo pensó en todo el camino. Ya no era el extranjero perdido del primer día. Aprendió un idioma nuevo, hizo muchos amigos y encontró una segunda casa. «Valió la pena», dijo en voz alta, muy contento. «Todo el esfuerzo valió la pena». Y con una gran sonrisa pensó: «Misión cumplida... y ahora, a seguir adelante»."
+ ],
+ mcqs:[
+ {q:"¿Cuánto tiempo pasó en esta historia?",o:["Un mes","Dos años","Diez años","Una semana"],a:1},
+ {q:"¿Qué le preguntó su madre por teléfono?",o:["Cuándo va a volver","Si tiene hambre","Qué hora es","Si habla inglés"],a:0},
+ {q:"¿Por qué era difícil la decisión de Mateo?",o:["No tenía dinero","Echaba de menos a su familia pero amaba su vida en México","No hablaba español","No tenía amigos"],a:1},
+ {q:"¿Qué solución le dio Lupita?",o:["Quedarse para siempre","Irse para siempre","Ver a su familia y luego volver","No hacer nada"],a:2},
+ {q:"¿Cómo se siente Mateo al final de su viaje?",o:["Arrepentido","Agradecido y satisfecho","Nervioso","Enojado"],a:1}
+ ]}
+];
+/* ================= DATA: BUDDY (Profesor Anselmo) ================= */
+const AN={
+greet:["¡Salve! Another day conquering the tongue of Cervantes... well, of Cantinflas, in our case.","Ah, you return. The codex was gathering dust. Ink is cheap; discipline is dear.","Buenos días, escudero. The words will not memorize themselves — believe me, I have asked them politely.","I once knew a man who studied only when motivated. He remains on week one to this day. En fin... ¡a trabajar!","¡Órale! You came back. My faith in humanity rises by approximately three percent."],
+win:["¡Excelente! Had I a trumpet, I would sound it. Alas, I have only this scroll.","Correct! Somewhere in Mexico City, a taquero smiles and knows not why.","¡Así se hace! Your tongue grows sharper than my quill.","Magnífico. I shall record this triumph in the annals. The annals are a sticky note, but still."],
+fail:["Incorrect — but fear not. Even the great scribes blotted their pages. Then they practiced.","Ay... no. But a wrong answer remembered burns brighter than a right one guessed.","Hmm. The word escaped you. Words do that. Hunt it down in the repair drills.","Wrong, but boldly wrong. I respect it. Once more."],
+streak:["A streak! Consistency — rarer than a unicorn and twice as useful.","Your racha grows. Compound interest of the mind, amigo mío."],
+test:["A test approaches. Breathe. You know more than you think — and I have seen what you think.","Examination time. Remember: hesitation is fine; silence is the only true error."],
+nudge:["Psst. Five minutes of review now spares an hour of regret later. Old scribe's arithmetic.","The cards grow restless in their deck. They miss you. I do not — but they do."],
+level:["¡Nivel superado! Your title improves. Your responsibilities, tragically, also.","A new rank! I shall polish your name in the ledger accordingly."]
+};
+const RANKS=["Peregrino","Aprendiz","Escudero","Callejero","Charlador","Cuate","Compadre","Cronista","Trovador","Erudito","Maestro","Leyenda del Barrio"];
+const LV=[0,150,400,800,1400,2200,3200,4500,6000,8000,10500,13500];
+const ACH=[
+["r1","Primeras Palabras","Complete your first review",s=>s.stats.reviews>=1],
+["r50","Cincuenta Cartas","50 reviews completed",s=>s.stats.reviews>=50],
+["r300","Biblioteca Viva","300 reviews completed",s=>s.stats.reviews>=300],
+["r1000","El Archivista","1000 reviews completed",s=>s.stats.reviews>=1000],
+["s7","Semana de Hierro","7-day streak",s=>s.bestStreak>=7],
+["s30","Mes de Acero","30-day streak",s=>s.bestStreak>=30],
+["g1","Gladiador","Win your first arena game",s=>s.stats.games>=1],
+["g25","Campeón de la Arena","25 arena games played",s=>s.stats.games>=25],
+["t1","Primera Prueba","Pass your first weekly test",s=>s.weeksDone.length>=1],
+["t13","Media Campaña","Pass 13 weekly tests",s=>s.weeksDone.length>=13],
+["t26","El Examen Final","All 26 weeks conquered",s=>s.weeksDone.length>=26],
+["sh10","Voz de Bronce","10 shadowing sessions",s=>s.stats.shadow>=10],
+["l6","Cuate Oficial","Reach level 6",s=>lvlOf(s.xp)>=6],
+["l12","Leyenda","Reach level 12",s=>lvlOf(s.xp)>=12],
+["cj1","Verbo Domado","Complete your first conjugation round",s=>(s.stats.conj||0)>=1],
+["cj200","Políglota Verbal","200 conjugations drilled",s=>(s.stats.conj||0)>=200],
+["dlg1","Oído de Barrio","Complete your first dialogue",s=>(s.stats.dlg||0)>=1],
+["dlg20","Maestro del Oído","20 dialogues completed",s=>(s.stats.dlg||0)>=20],
+["st1","Primera Crónica","Complete your first Story Mode chapter",s=>(s.stats.story||0)>=1],
+["st6","Cronista de Óralelandia","Read all 6 Story Mode chapters",s=>(s.storyDone||[]).length>=6],
+["b1","Domador de Sonidos","Defeat the Phase 1 boss (El Trabalenguas)",s=>(s.bossDone||[]).includes(1)],
+["b2","Amo de la Rutina","Defeat the Phase 2 boss (El Tragón)",s=>(s.bossDone||[]).includes(2)],
+["b3","Rey de la Calle","Defeat the Phase 3 boss (El Chofer Fantasma)",s=>(s.bossDone||[]).includes(3)],
+["b4","Voz de la Plaza","Defeat the Phase 4 boss (La Comadre)",s=>(s.bossDone||[]).includes(4)],
+["b5","Señor del Albur","Defeat the Phase 5 boss (El Rey del Albur)",s=>(s.bossDone||[]).includes(5)],
+["b6","Leyenda de Óralelandia","Defeat the final boss (La Duda)",s=>(s.bossDone||[]).includes(6)]
+];
+/* ================= ENGINE: STATE ================= */
+const KEY="orale_v1";
+let S=load();
+function fresh(){return{xp:0,pesos:0,week:1,streak:0,bestStreak:0,lastActive:null,cards:{},miss:{},days:{},stats:{reviews:0,games:0,shadow:0,tests:0,conj:0,dlg:0,story:0},weeksDone:[],ach:[],dlgDone:[],storyDone:[],bossDone:[],bossBest:{},log:[],factIdx:0,created:today(),voice:"",rate:0.95,name:"Escudero",tut:false}}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);return Object.assign(fresh(),s)}}catch(e){}return fresh()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function eday(){const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*6e4)/864e5)}
+function edayISO(n){return new Date(n*864e5).toISOString().slice(0,10)}
+function day(){const k=today();if(!S.days[k])S.days[k]={min:0,rev:0,game:0,shadow:0,nw:0,chest:false,conj:0,dlg:0,story:0};return S.days[k]}
+function markActive(){const t=today();if(S.lastActive!==t){const y=new Date(Date.now()-864e5);const yk=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");S.streak=(S.lastActive===yk)?S.streak+1:1;S.bestStreak=Math.max(S.bestStreak,S.streak);S.lastActive=t;if(S.streak>1&&S.streak%3===0)buddy(pick(AN.streak))}}
+function lvlOf(xp){let l=1;for(let i=0;i<LV.length;i++)if(xp>=LV[i])l=i+1;return Math.min(l,12)}
+function addXP(n){const before=lvlOf(S.xp);S.xp+=n;markActive();const after=lvlOf(S.xp);renderHeader();if(after>before){buddy(pick(AN.level)+" Ahora eres: "+RANKS[after-1]+".");toast("↑ Nivel "+after+" · "+RANKS[after-1])}checkAch();save()}
+function addPesos(n){S.pesos+=n;renderHeader();save()}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+/* ================= DECK / SRS ================= */
+function deck(){const d=[];V.forEach((x,i)=>d.push({id:"v"+i,wk:x[0],es:x[1],en:x[2],cat:"Vocabulario"}));PH.forEach((x,i)=>d.push({id:"p"+i,wk:x[0],es:x[1],en:x[2],cat:"Frases"}));SL.forEach((x,i)=>d.push({id:"s"+i,wk:19,es:x[0],en:x[1],cat:"Jerga",ex:x[2]}));ID.forEach((x,i)=>d.push({id:"i"+i,wk:20,es:x[0],en:x[2],cat:"Dichos",ex:"lit: "+x[1]}));TR.forEach((x,i)=>d.push({id:"tr"+i,wk:17,es:x[0],en:x[1],cat:"Trabajo"}));return d}
+const DECK=deck();
+const BYID={};DECK.forEach(c=>BYID[c.id]=c);
+function unlocked(){return DECK.filter(c=>c.wk<=S.week)}
+function cState(id){return S.cards[id]}
+function dueCards(){const now=Date.now();return unlocked().filter(c=>{const st=S.cards[c.id];return st&&st.due<=now})}
+function newCards(){return unlocked().filter(c=>!S.cards[c.id])}
+function masteredCards(){return unlocked().filter(c=>{const st=S.cards[c.id];return st&&st.iv>=21})}
+function knownCards(){return unlocked().filter(c=>S.cards[c.id])}
+function grade(id,g){let st=S.cards[id]||{e:2.5,iv:0,reps:0,lapses:0,due:0};st.reps++;
+ if(g===0){st.lapses++;st.e=Math.max(1.3,st.e-0.2);st.iv=0;st.due=Date.now()+6e5;S.miss[id]=(S.miss[id]||0)+1;}
+ else{if(st.iv===0){st.iv=g===1?1:g===2?2:4}else{if(g===1){st.iv=Math.max(1,Math.round(st.iv*1.2));st.e=Math.max(1.3,st.e-0.15)}else if(g===2){st.iv=Math.round(st.iv*st.e)}else{st.iv=Math.round(st.iv*st.e*1.35);st.e=Math.min(3,st.e+0.15)}}
+  st.due=Date.now()+st.iv*864e5;}
+ S.cards[id]=st;if(!S.log)S.log=[];S.log.push([eday(),id,g]);if(S.log.length>2000)S.log=S.log.slice(-2000);S.stats.reviews++;day().rev++;addXP(g===0?2:5);save()}
+/* ================= TTS ================= */
+let VOICES=[];
+function loadVoices(){VOICES=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith("es"))}
+if("speechSynthesis" in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
+function bestVoice(){if(S.voice){const v=VOICES.find(v=>v.name===S.voice);if(v)return v}
+ return VOICES.find(v=>/MX/i.test(v.lang))||VOICES.find(v=>/US|419/i.test(v.lang))||VOICES[0]}
+function speak(t,rate,pitch,voiceOverride){if(!("speechSynthesis" in window))return toast("No hay voz disponible en este navegador");speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);const v=voiceOverride||bestVoice();if(v)u.voice=v;u.lang=v?v.lang:"es-MX";u.rate=rate||S.rate;u.pitch=pitch||1;speechSynthesis.speak(u)}
+/* ================= UI HELPERS ================= */
+const $=s=>document.querySelector(s);
+function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
+let buddyT=null;
+function buddy(t){$("#buddy-txt").textContent=t;$("#buddy").classList.add("show");clearTimeout(buddyT);buddyT=setTimeout(hideBuddy,9000)}
+function hideBuddy(){$("#buddy").classList.remove("show")}
+function modal(html){const r=$("#modal-root");r.innerHTML='<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">'+html+'</div></div>'}
+function closeModal(){$("#modal-root").innerHTML=""}
+function renderHeader(){const l=lvlOf(S.xp);const lo=LV[l-1],hi=LV[l]||LV[11]+3000;
+ $("#xp-rank").textContent="Nivel "+l+" · "+RANKS[l-1];$("#xp-num").textContent=S.xp+" XP";
+ $("#xp-fill").style.width=Math.min(100,Math.round((S.xp-lo)/(hi-lo)*100))+"%";
+ $("#pill-streak").innerHTML="✦ <b>"+S.streak+"</b>";$("#pill-pesos").innerHTML="$ <b>"+S.pesos+"</b>"}
+function checkAch(){ACH.forEach(a=>{if(!S.ach.includes(a[0])&&a[3](S)){S.ach.push(a[0]);toast("Logro: "+a[1]);addPesos(25)}})}
+/* ================= QUESTS & CHEST ================= */
+function quests(){const d=day();return[
+ {t:"Repasa 15 tarjetas",xp:25,done:d.rev>=15,p:Math.min(d.rev,15)+"/15"},
+ {t:"Juega 1 partida en la Arena",xp:20,done:d.game>=1,p:d.game+"/1"},
+ {t:"Haz 1 sesión de sombra (shadowing)",xp:20,done:d.shadow>=1,p:d.shadow+"/1"},
+ {t:"Practica conjugación (1 ronda)",xp:20,done:(d.conj||0)>=1,p:(d.conj||0)+"/1"}]}
+function questCheck(){const q=quests();const d=day();if(q.every(x=>x.done)&&!d.chest){d.chest=true;save();openChest()}}
+function openChest(){const roll=Math.random();let re,ic="✦";
+ if(roll<0.4){const p=20+Math.floor(Math.random()*41);addPesos(p);re="+"+p+" pesos"}
+ else if(roll<0.7){addXP(40);re="+40 XP de bonificación"}
+ else{re="Dato desbloqueado: "+FX[S.factIdx%FX.length];S.factIdx++;save()}
+ modal('<div class="chest"><div class="cico">▣</div><h3>¡Cofre del día!</h3><div class="cre">'+esc(re)+'</div><p class="muted" style="margin-top:8px">Misiones diarias completadas. Vuelve mañana, la racha te espera.</p><button class="btn wide" style="margin-top:14px" onclick="closeModal()">¡Órale!</button></div>')}
+/* ================= ROUTER ================= */
+let VIEW="panel";
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>go(b.dataset.v)));
+function go(v){recReset();VIEW=v;document.body.dataset.zone=v;document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+ ({panel:renderPanel,learn:renderLearn,arena:renderArena,codex:renderCodex,cantina:renderCantina})[v]();
+ if(Math.random()<0.18)buddy(pick(AN.greet));window.scrollTo(0,0)}
+/* ================= VIEW: PANEL ================= */
+function renderPanel(){const d=day();const due=dueCards().length,nw=newCards().length,mast=masteredCards().length,known=knownCards().length;
+ const hrs=Object.values(S.days).reduce((a,x)=>a+x.min,0)/60;
+ const greetH=new Date().getHours();const g=greetH<12?"Buenos días":greetH<19?"Buenas tardes":"Buenas noches";
+ let q=quests();
+ let html='<div class="hero-greet">'+g+', <b>'+esc(S.name)+'</b>.</div><p class="muted">Semana '+S.week+' de 26 · '+(due?due+" tarjetas te esperan.":"Todo al día. Qué raro. Qué sospechoso.")+'</p>';
+ html+='<div class="statgrid"><div class="stat"><div class="n">'+known+'</div><div class="l">palabras vistas</div></div><div class="stat"><div class="n">'+mast+'</div><div class="l">dominadas</div></div><div class="stat"><div class="n">'+hrs.toFixed(1)+'h</div><div class="l">total invertido</div></div></div>';
+ html+='<div class="card"><h3>Misiones de hoy</h3>'+q.map(x=>'<div class="quest'+(x.done?" done":"")+'"><div class="chk">'+(x.done?"✓":"")+'</div><div class="qt">'+x.t+' <span class="muted">('+x.p+')</span></div><div class="qxp">+'+x.xp+'</div></div>').join("")+'<p class="muted" style="margin-top:8px">Completa las cuatro y abre el cofre del día.</p></div>';
+ html+='<div class="grid2"><button class="btn wide" onclick="startReview()">Repasar ('+due+')</button><button class="btn ghost wide" onclick="startNew()">Aprender nuevas ('+Math.min(nw,15)+')</button></div>';
+ html+='<div class="card" style="margin-top:12px"><h3>Últimos 14 días (minutos)</h3><canvas class="chart" id="ch-days"></canvas></div>';
+ html+='<div class="card"><h3>Análisis</h3><p class="muted">Retención de 90 días, pronóstico de carga, mapa de dominio semanal y tu fecha estimada para la meta de 170 horas.</p><button class="btn ghost wide" style="margin-top:10px" onclick="ADEMO=null;renderAnalytics()">Ver análisis completo</button></div>';
+ html+='<div class="card"><h3>Dominio por categoría</h3>'+catBars()+'</div>';
+ const weak=Object.entries(S.miss).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
+ html+='<div class="card"><h3>Zonas débiles</h3>'+(weak.length?weak.map(w=>{const c=BYID[w[0]];return c?'<div class="spread" style="padding:6px 0;border-bottom:1px solid var(--line)"><span class="es">'+esc(c.es)+'</span><span class="muted">'+esc(c.en)+' · fallada '+w[1]+'x</span></div>':""}).join("")+'<button class="btn sm ghost" style="margin-top:10px" onclick="startRepair()">Reparar ahora</button>':'<p class="muted">Sin fallas registradas. Anselmo está impresionado, y eso es difícil.</p>')+'</div>';
+ const un=S.ach.length;html+='<div class="card"><h3>Logros ('+un+'/'+ACH.length+')</h3>'+ACH.map(a=>'<span class="chip" style="'+(S.ach.includes(a[0])?"border-color:var(--mari);color:var(--mari)":"opacity:.4")+'" title="'+esc(a[2])+'">'+esc(a[1])+'</span>').join("")+'</div>';
+ $("#view").innerHTML=html;drawDays();questCheck()}
+function catBars(){const cats={};unlocked().forEach(c=>{cats[c.cat]=cats[c.cat]||[0,0];cats[c.cat][1]++;const st=S.cards[c.id];if(st&&st.iv>=7)cats[c.cat][0]++});
+ return Object.entries(cats).map(([k,v])=>{const pc=v[1]?Math.round(v[0]/v[1]*100):0;return '<div class="bar-row"><div class="bl"><span>'+k+'</span><b>'+pc+'%</b></div><div class="bar"><i style="width:'+pc+'%"></i></div></div>'}).join("")}
+function drawDays(){const cv=$("#ch-days");if(!cv)return;const ctx=cv.getContext("2d");const W2=cv.width=cv.offsetWidth*2,H2=cv.height=260;
+ const days=[];for(let i=13;i>=0;i--){const d=new Date(Date.now()-i*864e5);const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");days.push([k.slice(8),(S.days[k]||{min:0}).min])}
+ const max=Math.max(60,...days.map(d=>d[1]));const bw=W2/14;
+ ctx.strokeStyle="rgba(139,148,166,.35)";ctx.setLineDash([6,6]);ctx.beginPath();const ty=H2-30-(60/max)*(H2-50);ctx.moveTo(0,ty);ctx.lineTo(W2,ty);ctx.stroke();ctx.setLineDash([]);
+ days.forEach((d,i)=>{const h=(d[1]/max)*(H2-50);ctx.fillStyle=d[1]>=60?"#f2a33c":"#3e8fb0";ctx.beginPath();ctx.roundRect(i*bw+bw*0.2,H2-30-h,bw*0.6,Math.max(h,3),6);ctx.fill();ctx.fillStyle="#8b94a6";ctx.font="20px monospace";ctx.textAlign="center";ctx.fillText(d[0],i*bw+bw/2,H2-8)})}
+/* ================= VIEW: ANALYTICS v2 ================= */
+let ADEMO=null;
+function AS(){return ADEMO||S}
+function dayKey(back){const d=new Date(Date.now()-back*864e5);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function analyticsDemo(){ADEMO=ADEMO?null:seedDemoState();renderAnalytics();toast(ADEMO?"Datos de demostración — nada se guarda":"De vuelta a tus datos reales")}
+function seedDemoState(){const d=fresh();d.week=14;let rnd=42;const rand=()=>{rnd=(rnd*1103515245+12345)%2147483648;return rnd/2147483648};
+ const e0=eday();
+ for(let i=89;i>=0;i--){if(rand()<0.82){const rev=8+Math.floor(rand()*22);d.days[dayKey(i)]={min:25+Math.floor(rand()*50),rev:rev,game:1,shadow:1,nw:5,chest:false,conj:1,dlg:0};
+  for(let r=0;r<rev;r++){const ok=rand()<(0.62+(89-i)/89*0.25);d.log.push([e0-i,"v"+Math.floor(rand()*300),ok?(rand()<0.5?2:3):(rand()<0.6?1:0)])}}}
+ DECK.slice(0,420).forEach(c=>{if(rand()<0.8){const iv=[1,2,4,8,15,25,40][Math.floor(rand()*7)];d.cards[c.id]={e:2.5,iv:iv,reps:3,lapses:0,due:Date.now()+(Math.floor(rand()*15)-2)*864e5}}});
+ return d}
+function hoursProjection(st){const tot=Object.values(st.days).reduce((a,x)=>a+x.min,0);let recent=0;for(let i=0;i<28;i++)recent+=(st.days[dayKey(i)]||{min:0}).min;
+ const pace=Math.round(recent/28);const remain=Math.max(0,170*60-tot);
+ if(remain<=0)return{pace:pace,eta:"¡Hecha!",note:"Meta de 170 horas alcanzada. La siguiente parada son las 350 horas (B2 sólido) — mismo motor, misma hora diaria."};
+ if(pace<1)return{pace:0,eta:"—",note:"Sin actividad en los últimos 28 días, no hay ritmo que proyectar. Un repaso hoy reinicia la máquina."};
+ const days=Math.ceil(remain/pace);const eta=new Date(Date.now()+days*864e5);let fmt;try{fmt=eta.toLocaleDateString("es-MX",{day:"numeric",month:"short",year:"numeric"})}catch(e){fmt=eta.toISOString().slice(0,10)}
+ return{pace:pace,eta:fmt,note:"A tu ritmo de los últimos 28 días ("+pace+" min/día) faltan ~"+days+" días para las 170 horas. A la hora diaria del plan llegarías en "+Math.ceil(remain/60)+" días."}}
+function weekHeatmap(st){const per={};DECK.forEach(c=>{per[c.wk]=per[c.wk]||[0,0];per[c.wk][1]++;const cs=st.cards[c.id];if(cs&&cs.iv>=7)per[c.wk][0]++});
+ let cells="";for(let w=1;w<=26;w++){const p=per[w]||[0,0];const pct=p[1]?p[0]/p[1]:0;const locked=w>st.week;
+  const bg=pct===0?"var(--ink3)":pct<0.25?"#3e8fb055":pct<0.5?"#3e8fb0aa":pct<0.75?"#f2a33c99":"#8fbf4dcc";
+  cells+='<div class="cell'+(locked?" lk":"")+'" style="background:'+bg+'" title="Semana '+w+(locked?" (cerrada)":"")+' · '+p[0]+'/'+p[1]+' tarjetas con intervalo ≥7 días"><b>'+w+'</b>'+Math.round(pct*100)+'%</div>'}
+ return '<div class="hm">'+cells+'</div>'}
+function buildReviewCSV(st){const G=["otra_vez","dificil","bien","facil"];let csv="fecha,tarjeta_id,espanol,ingles,calificacion\n";
+ (st.log||[]).forEach(r=>{const c=BYID[r[1]];csv+=edayISO(r[0])+","+r[1]+",\""+String(c?c.es:"?").replace(/"/g,'""')+"\",\""+String(c?c.en:"?").replace(/"/g,'""')+"\","+(G[r[2]]||r[2])+"\n"});return csv}
+function exportReviewCSV(){const st=AS();if(!(st.log||[]).length)return toast("La bitácora está vacía — empieza a repasar");
+ const blob=new Blob(["﻿"+buildReviewCSV(st)],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");a.href=url;a.download="orale-repasos-"+today()+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);toast("CSV exportado: "+st.log.length+" repasos")}
+function renderAnalytics(){const st=AS();const hrs=Object.values(st.days).reduce((a,x)=>a+x.min,0)/60;const proj=hoursProjection(st);
+ let html='<h2 class="sect"><small>Panel · Análisis</small>La sala de mapas</h2>';
+ html+='<div class="grid2" style="margin-bottom:12px"><button class="btn sm ghost" onclick="ADEMO=null;go(\'panel\')">← Volver al panel</button><button class="btn sm ghost" onclick="analyticsDemo()">'+(ADEMO?"Ver mis datos":"Demo con datos de prueba")+'</button></div>';
+ if(ADEMO)html+='<p class="muted" style="margin-bottom:10px"><b>Modo demostración:</b> 90 días de datos generados para probar las gráficas. Nada se guarda.</p>';
+ html+='<div class="statgrid"><div class="stat"><div class="n">'+hrs.toFixed(1)+'h</div><div class="l">de 170h meta</div></div><div class="stat"><div class="n">'+proj.pace+'</div><div class="l">min/día (28d)</div></div><div class="stat"><div class="n" style="font-size:.95rem;line-height:2">'+esc(proj.eta)+'</div><div class="l">meta estimada</div></div></div>';
+ html+='<div class="card"><h3>Camino a las 170 horas</h3><div class="bar" style="height:10px"><i style="width:'+Math.min(100,hrs/170*100).toFixed(1)+'%"></i></div><p class="muted" style="margin-top:8px">'+esc(proj.note)+'</p></div>';
+ html+='<div class="card"><h3>Retención · 90 días</h3><p class="muted">% de repasos acertados por día (todo lo que no fue "Otra vez"). La línea punteada es la referencia sana: 85%.</p><canvas class="chart" id="ch-ret" style="height:150px"></canvas></div>';
+ html+='<div class="card"><h3>Carga de repasos · próximos 14 días</h3><p class="muted">Tarjetas que vencen cada día si no repasas antes. La barra roja es lo ya pendiente hoy.</p><canvas class="chart" id="ch-due" style="height:150px"></canvas></div>';
+ html+='<div class="card"><h3>Dominio por semana</h3><p class="muted">Porcentaje de tarjetas de cada semana con intervalo ≥7 días (memoria estable).</p>'+weekHeatmap(st)+'<div class="legend"><span><i style="background:var(--ink3)"></i>sin ver</span><span><i style="background:#3e8fb055"></i>&lt;25%</span><span><i style="background:#3e8fb0aa"></i>&lt;50%</span><span><i style="background:#f2a33c99"></i>&lt;75%</span><span><i style="background:#8fbf4dcc"></i>≥75%</span></div></div>';
+ html+='<div class="card"><h3>Bitácora de repasos</h3><p class="muted">'+(st.log||[]).length+' repasos registrados (se conservan los últimos ~2000). Exporta el historial como CSV para hoja de cálculo o Anki.</p><button class="btn ghost wide" style="margin-top:10px" onclick="exportReviewCSV()" '+((st.log||[]).length?"":"disabled")+'>Descargar CSV</button></div>';
+ $("#view").innerHTML=html;drawRetention(st);drawDueLoad(st)}
+function drawRetention(st){const cv=$("#ch-ret");if(!cv||!cv.getContext)return;const ctx=cv.getContext("2d");const W2=cv.width=cv.offsetWidth*2,H2=cv.height=300;
+ const e0=eday();const agg={};(st.log||[]).forEach(r=>{if(r[0]>e0-90){const k=e0-r[0];agg[k]=agg[k]||[0,0];agg[k][1]++;if(r[2]>0)agg[k][0]++}});
+ const pts=[];for(let i=89;i>=0;i--){if(agg[i])pts.push([89-i,agg[i][0]/agg[i][1]])}
+ if(!pts.length){ctx.fillStyle="#8b94a6";ctx.font="22px monospace";ctx.textAlign="center";ctx.fillText("Aún no hay repasos en la bitácora — empieza hoy.",W2/2,H2/2);return}
+ const x=i=>10+i/89*(W2-20),y=p=>H2-26+((-p)*(H2-52));
+ ctx.strokeStyle="rgba(139,148,166,.35)";ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(0,y(0.85));ctx.lineTo(W2,y(0.85));ctx.stroke();ctx.setLineDash([]);
+ ctx.strokeStyle="#3e8fb0";ctx.lineWidth=3;ctx.beginPath();pts.forEach((p,ix)=>{ix?ctx.lineTo(x(p[0]),y(p[1])):ctx.moveTo(x(p[0]),y(p[1]))});ctx.stroke();
+ ctx.fillStyle="#f2a33c";pts.forEach(p=>{ctx.beginPath();ctx.arc(x(p[0]),y(p[1]),4,0,7);ctx.fill()});
+ ctx.fillStyle="#8b94a6";ctx.font="20px monospace";ctx.textAlign="left";ctx.fillText("hace 90 días",10,H2-6);ctx.textAlign="right";ctx.fillText("hoy",W2-10,H2-6);
+ const last=pts[pts.length-1];ctx.fillStyle="#e9e4d8";ctx.fillText(Math.round(last[1]*100)+"%",W2-10,Math.max(20,y(last[1])-12))}
+function drawDueLoad(st){const cv=$("#ch-due");if(!cv||!cv.getContext)return;const ctx=cv.getContext("2d");const W2=cv.width=cv.offsetWidth*2,H2=cv.height=300;
+ const now=Date.now();const buckets=new Array(14).fill(0);
+ Object.entries(st.cards).forEach(([id,c])=>{const card=BYID[id];if(!card||card.wk>st.week)return;const dd=Math.floor((c.due-now)/864e5);if(dd<0)buckets[0]++;else if(dd<14)buckets[dd]++});
+ const max=Math.max(5,...buckets);const bw=W2/14;
+ buckets.forEach((v,i)=>{const h=v/max*(H2-64);ctx.fillStyle=i===0?"#e05252":"#3e8fb0";ctx.beginPath();ctx.roundRect(i*bw+bw*0.2,H2-30-h,bw*0.6,Math.max(h,3),6);ctx.fill();
+  ctx.fillStyle="#8b94a6";ctx.font="20px monospace";ctx.textAlign="center";ctx.fillText(i===0?"hoy":"+"+i,i*bw+bw/2,H2-8);
+  if(v){ctx.fillStyle="#e9e4d8";ctx.fillText(v,i*bw+bw/2,H2-38-h)}})}
+/* ================= VIEW: LEARN (SRS) ================= */
+function renderLearn(){const due=dueCards().length,nw=Math.min(newCards().length,15);
+ $("#view").innerHTML='<h2 class="sect"><small>Estudiar</small>El taller de memoria</h2>'
+ +'<div class="card"><h3>Repaso (SRS)</h3><p class="muted">El sistema decide qué estás a punto de olvidar y te lo pone enfrente. Cada tarjeta tiene audio: escúchala, dila en voz alta, luego voltéala.</p><button class="btn wide" style="margin-top:10px" onclick="startReview()" '+(due?"":"disabled")+'>Repasar '+due+' pendientes</button></div>'
+ +'<div class="card"><h3>Tarjetas nuevas</h3><p class="muted">Máximo 15 nuevas por día — la retención manda, no el ego. Desbloqueadas hasta la semana '+S.week+'.</p><button class="btn ghost wide" style="margin-top:10px" onclick="startNew()" '+(nw?"":"disabled")+'>Aprender '+nw+' nuevas</button></div>'
+ +'<div class="card"><h3>Reparación</h3><p class="muted">Drill dirigido a tus fallas más repetidas. Aquí es donde se gana la fluidez de verdad.</p><button class="btn ghost wide" style="margin-top:10px" onclick="startRepair()">Reparar zonas débiles</button></div>'
+ +'<div class="card"><h3>Cabina de sombra</h3><p class="muted">El método Pimsleur en casa: escucha la frase, imítala en voz alta al instante, iguala el ritmo. Es el ejercicio con mayor retorno por minuto de toda la app.</p><button class="btn ghost wide" style="margin-top:10px" onclick="startShadow()">Entrar a la cabina</button></div>'
+ +'<div class="card"><h3>Conjugación</h3><p class="muted">12 verbos clave, cuatro tiempos, seis personas. Verás algo como <i>yo + tener + ayer</i>: dilo en voz alta, luego escribe la forma o elige entre opciones.</p><button class="btn ghost wide" style="margin-top:10px" onclick="startConj()">Practicar conjugación</button></div>'
+ +'<div class="card"><h3>Diálogos</h3><p class="muted">Minidiálogos de dos voces con preguntas de comprensión. Escucha línea por línea a tu ritmo, luego responde.</p><button class="btn ghost wide" style="margin-top:10px" onclick="startListening()">Entrar a la cabina de escucha</button></div>'
+ +'<div class="card"><h3>Historias</h3><p class="muted">Story Mode: seis cronicas graduadas, una por fase, narradas para ti. Escucha parrafo por parrafo y responde 5 preguntas. Es la capa de campana de tu aventura.</p><button class="btn ghost wide" style="margin-top:10px" onclick="startStories()">Entrar a Story Mode</button></div>';}
+let Q=[],QI=0,QMODE="rev";
+function startReview(){go("learn");Q=shuffle(dueCards());QMODE="rev";QI=0;if(!Q.length)return toast("Nada pendiente. Vuelve más tarde.");showCard()}
+function startNew(){go("learn");const d=day();const room=Math.max(0,15-d.nw);Q=shuffle(newCards()).slice(0,room);QMODE="new";QI=0;if(!Q.length)return toast("Límite diario de nuevas alcanzado.");showCard()}
+function showCard(){if(QI>=Q.length){$("#view").innerHTML='<div class="card" style="text-align:center;padding:34px 16px"><div class="bigscore">✓</div><h3>Sesión terminada</h3><p class="muted">'+Q.length+' tarjetas procesadas. La memoria a largo plazo se construye así: poco, seguido, para siempre.</p><button class="btn" style="margin-top:14px" onclick="renderLearn()">Volver</button></div>';if(Math.random()<0.5)buddy(pick(AN.win));renderHeader();return}
+ const c=Q[QI];if(QMODE==="new"&&!S.cards[c.id])day().nw++;
+ $("#view").innerHTML='<div class="q-meta"><span>'+(QI+1)+' / '+Q.length+'</span><span>'+esc(c.cat)+' · sem '+c.wk+'</span></div>'
+ +'<div class="fc-stage"><div class="fc" id="fc" onclick="this.classList.toggle(\'flip\')"><div class="fc-face"><div class="fc-word es">'+esc(c.es)+'</div>'+(c.ex?'<div class="fc-sub">'+esc(c.ex)+'</div>':"")+'<button class="speak-ico" onclick="event.stopPropagation();speak(BYID[\''+c.id+'\'].es)">♪</button><div class="fc-hint">di la respuesta en voz alta · toca para voltear</div></div><div class="fc-face back"><div class="fc-word">'+esc(c.en)+'</div><div class="fc-sub es">'+esc(c.es)+'</div></div></div></div>'
+ +'<div class="srs-btns"><button class="b0" onclick="ans(0)">Otra vez<small>&lt;10 min</small></button><button class="b1" onclick="ans(1)">Difícil<small>~1 día</small></button><button class="b2" onclick="ans(2)">Bien<small>'+ivPreview(c.id,2)+'</small></button><button class="b3" onclick="ans(3)">Fácil<small>'+ivPreview(c.id,3)+'</small></button></div>';
+ speak(c.es)}
+function ivPreview(id,g){const st=S.cards[id];if(!st||st.iv===0)return g===2?"2 días":"4 días";const iv=g===2?Math.round(st.iv*st.e):Math.round(st.iv*st.e*1.35);return iv+" días"}
+function ans(g){const c=Q[QI];grade(c.id,g);if(g===0){Q.splice(Math.min(QI+3,Q.length),0,c)}QI++;showCard()}
+function startRepair(){go("learn");const weak=Object.entries(S.miss).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,10).map(x=>BYID[x[0]]).filter(Boolean);
+ if(!weak.length)return toast("No hay zonas débiles. Increíble.");
+ quizRun(shuffle(weak).map(c=>mcq(c)),"Reparación",(score,total)=>{addXP(score*4);buddy(score===total?pick(AN.win):pick(AN.fail))},true)}
+/* ================= SHADOW BOOTH ================= */
+let SHR=0.85,CURP=null;
+function startShadow(){go("learn");shadowCard()}
+function shadowCard(){recReset();const pool=PH.filter(p=>p[0]<=S.week);const p=pick(pool);CURP=p;
+ $("#view").innerHTML='<h2 class="sect"><small>Cabina de sombra</small>Escucha. Imita. Iguala.</h2>'
+ +'<div class="card" style="text-align:center;padding:26px 16px"><div class="fc-word es" style="margin-bottom:6px">'+esc(p[1])+'</div><p class="muted">'+esc(p[2])+'</p>'
+ +'<div class="row" style="justify-content:center;margin-top:16px;flex-wrap:wrap"><button class="btn" onclick="speak('+JSON.stringify(p[1]).replace(/"/g,"&quot;")+',SHR)">♪ Escuchar</button><button class="btn ghost sm" onclick="SHR=Math.max(0.55,SHR-0.1);toast(\'Velocidad \'+SHR.toFixed(2))">− lento</button><button class="btn ghost sm" onclick="SHR=Math.min(1.3,SHR+0.1);toast(\'Velocidad \'+SHR.toFixed(2))">+ rápido</button></div>'
+ +'<div id="rec-area">'+recArea()+'</div>'
+ +'<p class="muted" style="margin-top:14px">Protocolo: escúchala 2 veces → dila en voz alta pegado al audio → repite hasta igualar ritmo y música de la frase. Después grábate e intenta igualar el audio original.</p>'
+ +'<div class="grid2" style="margin-top:14px"><button class="btn ghost" onclick="shadowCard()">Otra frase</button><button class="btn" onclick="shadowDone()">Rep lograda ✓</button></div></div>';}
+function shadowDone(){S.stats.shadow++;day().shadow++;addXP(8);toast("+8 XP · sombra registrada");questCheck();shadowCard()}
+/* ================= SPEECH PRACTICE v2 (recording) ================= */
+let REC={stream:null,recorder:null,chunks:[],url:null,recording:false};
+function recSupported(){return !!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)}
+function recReset(){clearInterval(BOSST);if(REC.url)URL.revokeObjectURL(REC.url);if(REC.stream)REC.stream.getTracks().forEach(t=>t.stop());REC={stream:null,recorder:null,chunks:[],url:null,recording:false}}
+function renderRecArea(){const el=$("#rec-area");if(el)el.innerHTML=recArea()}
+function recArea(){
+ if(!recSupported())return '<p class="muted" style="margin-top:14px">Grabación no disponible en este navegador (usa Chrome o Edge).</p>';
+ if(REC.recording)return '<div class="row" style="justify-content:center;margin-top:14px"><button class="btn" style="background:var(--rojo)" onclick="recStop()">⏹ Detener grabación</button></div><p class="muted" style="text-align:center;margin-top:6px">Grabando… di la frase en voz alta.</p>';
+ if(REC.url)return '<div class="grid2" style="margin-top:14px"><button class="btn ghost" onclick="recPlay()">▶ Escuchar mi grabación</button><button class="btn ghost" onclick="speak('+JSON.stringify(CURP[1]).replace(/"/g,"&quot;")+',SHR)">♪ Comparar con nativo</button></div><button class="btn sm ghost wide" style="margin-top:8px" onclick="recDiscard()">🗑 Descartar y grabar de nuevo</button>';
+ return '<div class="row" style="justify-content:center;margin-top:14px"><button class="btn ghost" onclick="recStart()">🎙 Grabar mi voz</button></div>';
+}
+async function recStart(){
+ try{
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  REC.stream=stream;REC.chunks=[];
+  const mime=(window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported("audio/webm"))?"audio/webm":"";
+  REC.recorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
+  REC.recorder.ondataavailable=e=>{if(e.data&&e.data.size>0)REC.chunks.push(e.data)};
+  REC.recorder.onstop=()=>{const blob=new Blob(REC.chunks,{type:(REC.recorder.mimeType||"audio/webm")});REC.url=URL.createObjectURL(blob);if(REC.stream)REC.stream.getTracks().forEach(t=>t.stop());REC.stream=null;REC.recording=false;renderRecArea()};
+  REC.recorder.start();REC.recording=true;renderRecArea();
+ }catch(e){toast("No se pudo acceder al micrófono. Revisa permisos (o abre la app desde HTTPS/localhost).")}
+}
+function recStop(){if(REC.recorder&&REC.recording)REC.recorder.stop()}
+function recPlay(){if(REC.url){const a=new Audio(REC.url);a.play()}}
+function recDiscard(){recReset();renderRecArea()}
+/* ================= CONJUGATION TRAINER ================= */
+function stripAccents(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"")}
+function conjNorm(s){return stripAccents(s).trim().toLowerCase().replace(/\s+/g," ")}
+function conjBuild(n){const items=[],used=new Set();
+ function pushCombo(vi,ti,pi){const key=vi+"-"+ti+"-"+pi;if(used.has(key))return false;used.add(key);const v=CJ[vi];items.push({vi:vi,ti:ti,pi:pi,id:"cj"+vi+"_"+ti+"_"+pi,cue:pick(TENSE_CUES[ti]),ans:v[2+ti][pi]});return true}
+ const weak=shuffle(Object.keys(S.miss).filter(k=>k.indexOf("cj")===0&&S.miss[k]>0));
+ weak.slice(0,Math.min(3,n)).forEach(id=>{const m=id.match(/^cj(\d+)_(\d+)_(\d+)$/);if(m)pushCombo(+m[1],+m[2],+m[3])});
+ let guard=0;while(items.length<n&&guard<500){guard++;pushCombo(Math.floor(Math.random()*CJ.length),Math.floor(Math.random()*4),Math.floor(Math.random()*6))}
+ return shuffle(items)}
+let CQ=null,CQOPTS=[];
+function startConj(){go("learn");CQ={items:conjBuild(10),i:0,score:0};conjQ()}
+function conjQ(){const z=CQ;if(z.i>=z.items.length)return conjEnd();
+ const it=z.items[z.i],v=CJ[it.vi];
+ $("#view").innerHTML='<div class="q-meta"><span>CONJUGACIÓN</span><span>'+(z.i+1)+'/'+z.items.length+'</span></div>'
+ +'<div class="card" style="text-align:center">'
+ +'<div class="tag">'+esc(TENSE_NAMES[it.ti])+'</div>'
+ +'<div class="q-word" style="margin:14px 0">'+esc(PERSONS[it.pi])+' + <span class="es">'+esc(v[0])+'</span> + '+esc(it.cue)+'</div>'
+ +'<button class="speak-ico" onclick="speak('+JSON.stringify(PERSONS[it.pi]+" "+v[0]+" "+it.cue).replace(/"/g,"&quot;")+')">♪</button>'
+ +'<div style="margin-top:16px"><input type="text" id="cj-in" placeholder="escribe la forma conjugada…" autocomplete="off" autocapitalize="off" onkeydown="if(event.key===\'Enter\')conjSubmit()"></div>'
+ +'<div class="grid2" style="margin-top:12px"><button class="btn ghost" onclick="conjOptions()">No sé, dame opciones</button><button class="btn" onclick="conjSubmit()">Confirmar</button></div>'
+ +'</div>';}
+function conjDistractors(it){const v=CJ[it.vi],ans=it.ans;let pool=[];
+ for(let t=0;t<4;t++)for(let p=0;p<6;p++){const f=v[2+t][p];if(f!==ans&&pool.indexOf(f)<0)pool.push(f)}
+ pool=shuffle(pool);let guard=0;
+ while(pool.length<3&&guard<50){guard++;const ov=CJ[Math.floor(Math.random()*CJ.length)];const f=ov[2+it.ti][it.pi];if(f!==ans&&pool.indexOf(f)<0)pool.push(f)}
+ return pool.slice(0,3)}
+function conjOptions(){const z=CQ,it=z.items[z.i],v=CJ[it.vi];CQOPTS=shuffle([it.ans].concat(conjDistractors(it)));
+ $("#view").innerHTML='<div class="q-meta"><span>CONJUGACIÓN</span><span>'+(z.i+1)+'/'+z.items.length+'</span></div>'
+ +'<div class="tag">'+esc(TENSE_NAMES[it.ti])+'</div>'
+ +'<div class="q-word" style="margin:14px 0">'+esc(PERSONS[it.pi])+' + <span class="es">'+esc(v[0])+'</span> + '+esc(it.cue)+'</div>'
+ +CQOPTS.map((o,i)=>'<button class="opt" onclick="conjPick('+i+')">'+esc(o)+'</button>').join("")}
+function conjPick(i){conjGrade(CQOPTS[i]===CQ.items[CQ.i].ans)}
+function conjSubmit(){const el=$("#cj-in");conjGrade(conjNorm(el?el.value:"")===conjNorm(CQ.items[CQ.i].ans))}
+function conjGrade(correct){const z=CQ,it=z.items[z.i];
+ if(correct){z.score++;if(S.miss[it.id])S.miss[it.id]=Math.max(0,S.miss[it.id]-1)}
+ else{S.miss[it.id]=(S.miss[it.id]||0)+1}
+ $("#view").innerHTML='<div class="card" style="text-align:center;border-color:'+(correct?"var(--lima)":"var(--rojo)")+'"><div class="bigscore" style="color:'+(correct?"var(--lima)":"var(--rojo)")+'">'+(correct?"✓":"✗")+'</div><div class="q-word es">'+esc(it.ans)+'</div></div>';
+ speak(it.ans);setTimeout(()=>{z.i++;conjQ()},1100)}
+function conjEnd(){const z=CQ,total=z.items.length;S.stats.conj=(S.stats.conj||0)+total;day().conj=(day().conj||0)+1;addXP(z.score*4);questCheck();checkAch();
+ $("#view").innerHTML='<div class="card" style="text-align:center;padding:30px 16px"><div class="bigscore">'+z.score+'/'+total+'</div><h3>Conjugación · ronda completa</h3><p class="muted">+'+z.score*4+' XP</p><button class="btn" style="margin-top:14px" onclick="renderLearn()">Volver</button></div>';
+ if(z.score===total)buddy(pick(AN.win));else if(z.score<total*0.5)buddy(pick(AN.fail));
+ renderHeader();save()}
+/* ================= LISTENING LAB (dialogues) ================= */
+let DLR=0.9,DLGQ=null;
+function dlgUnlocked(){return DLG.map((d,i)=>({d:d,i:i})).filter(x=>x.d.wk<=S.week)}
+function startListening(){go("learn");renderDlgList()}
+function renderDlgList(){const items=dlgUnlocked();
+ $("#view").innerHTML='<h2 class="sect"><small>Cabina de escucha</small>Diálogos de Óralelandia</h2>'
+ +(items.length?items.map(x=>'<div class="card"><h3>'+esc(x.d.t)+' <span class="tag">sem '+x.d.wk+'</span>'+((S.dlgDone||[]).includes(x.i)?' <span class="tag" style="border-color:var(--lima);color:var(--lima)">✓ hecho</span>':"")+'</h3><p class="muted">'+esc(x.d.note)+'</p><button class="btn ghost wide" style="margin-top:8px" onclick="dlgPlay('+x.i+')">Escuchar diálogo</button></div>').join(""):'<p class="muted">Todavía no hay diálogos desbloqueados. Sigue avanzando de semana.</p>')}
+function dlgPlay(i){DLGQ={i:i,li:0};dlgLine()}
+function dlgVoiceFor(ch){if(ch===1&&VOICES.length>1){const alt=VOICES.find(v=>v!==bestVoice());if(alt)return alt}return bestVoice()}
+function dlgSpeakLine(li){const d=DLG[DLGQ.i];const ln=d.lines[li];speak(ln[1],DLR,li%2===0?1:1.3,dlgVoiceFor(li%2))}
+function dlgLine(){const z=DLGQ,d=DLG[z.i];
+ if(z.li>=d.lines.length)return dlgMCQ();
+ const ln=d.lines[z.li];
+ $("#view").innerHTML='<div class="q-meta"><span>'+esc(d.t)+'</span><span>'+(z.li+1)+'/'+d.lines.length+'</span></div>'
+ +'<div class="card" style="text-align:center">'
+ +'<div class="tag">'+esc(ln[0])+'</div>'
+ +'<div class="q-word es" style="margin:12px 0">'+esc(ln[1])+'</div>'
+ +'<div class="muted">'+esc(ln[2])+'</div>'
+ +'<div class="row" style="justify-content:center;margin-top:16px;flex-wrap:wrap"><button class="btn" onclick="dlgSpeakLine('+z.li+')">♪ Escuchar</button><button class="btn ghost sm" onclick="DLR=Math.max(0.55,DLR-0.1);toast(\'Velocidad \'+DLR.toFixed(2))">− lento</button><button class="btn ghost sm" onclick="DLR=Math.min(1.3,DLR+0.1);toast(\'Velocidad \'+DLR.toFixed(2))">+ rápido</button></div>'
+ +'<div class="grid2" style="margin-top:14px"><button class="btn ghost" '+(z.li===0?"disabled":"")+' onclick="DLGQ.li--;dlgLine()">◀ Anterior</button><button class="btn" onclick="DLGQ.li++;dlgLine()">'+(z.li===d.lines.length-1?"Ir a las preguntas":"Siguiente ▶")+'</button></div>'
+ +'</div>';
+ dlgSpeakLine(z.li)}
+function dlgMCQ(){const z=DLGQ,d=DLG[z.i];
+ const items=d.mcqs.map((m,j)=>({q:m.q,opts:m.o,a:m.a,id:"dlg"+z.i+"_"+j}));
+ quizRun(items,"Comprensión · "+d.t,(score,total)=>{S.stats.dlg=(S.stats.dlg||0)+1;day().dlg=(day().dlg||0)+1;S.dlgDone=S.dlgDone||[];if(!S.dlgDone.includes(z.i))S.dlgDone.push(z.i);addXP(score*6);buddy(score===total?pick(AN.win):pick(AN.fail));checkAch();save()},true)}
+/* ================= STORY MODE (S6) ================= */
+let STR=0.92,STQ=null;
+function storyUnlocked(){return ST.map((s,i)=>({s:s,i:i})).filter(x=>x.s.wk<=S.week)}
+function startStories(){go("learn");renderStoryList()}
+function renderStoryList(){const items=storyUnlocked();const done=S.storyDone||[];
+ let html='<h2 class="sect"><small>Story Mode · La campaña</small>Las crónicas de Óralelandia</h2>'
+ +'<div class="marginalia">Anselmo narra la saga de Mateo, un viajero como tú: seis crónicas, una por fase. Escúchalas párrafo por párrafo y demuestra que entendiste.</div>';
+ if(!items.length){html+='<p class="muted">Todavía no hay crónicas abiertas. Avanza de semana para desbloquear la primera (semana 4).</p>'}
+ else{html+=items.map(x=>'<div class="card"><h3>'+esc(x.s.t)+' <span class="tag">fase '+(x.s.ph||"?")+' · sem '+x.s.wk+'</span>'+(done.includes(x.i)?' <span class="tag" style="border-color:var(--lima);color:var(--lima)">✓ leída</span>':"")+'</h3><p class="muted">'+esc(x.s.note)+'</p><button class="btn ghost wide" style="margin-top:8px" onclick="storyOpen('+x.i+')">Leer y escuchar</button></div>').join("")}
+ const next=ST.map((s,i)=>({s:s,i:i})).find(x=>x.s.wk>S.week);
+ if(next)html+='<div class="card" style="opacity:.5"><h3>??? <span class="tag">sem '+next.s.wk+'</span></h3><p class="muted">La siguiente crónica se abre en la semana '+next.s.wk+'. Sigue avanzando.</p></div>';
+ $("#view").innerHTML=html}
+function storyOpen(i){STQ={i:i,pi:0};storyIntro()}
+function storyIntro(){const s=ST[STQ.i];
+ $("#view").innerHTML='<div class="q-meta"><span>STORY MODE</span><span>fase '+(s.ph||"?")+' · sem '+s.wk+'</span></div>'
+ +'<h2 class="sect" style="margin-top:2px">'+esc(s.t)+'</h2>'
+ +'<div class="marginalia">'+esc(s.quest)+'</div>'
+ +'<div class="card"><p class="muted">'+esc(s.note)+'</p><p class="muted" style="margin-top:8px">'+s.paras.length+' párrafos · '+s.mcqs.length+' preguntas de comprensión al final.</p><div class="grid2" style="margin-top:12px"><button class="btn ghost" onclick="renderStoryList()">◀ Volver</button><button class="btn" onclick="STQ.pi=0;storyPage()">Empezar la crónica</button></div></div>';
+ buddy("A tale for you, escudero. Listen well — the questions await at the end.")}
+function storySpeak(pi){const s=ST[STQ.i];speak(s.paras[pi],STR,1,bestVoice())}
+function storyPage(){const z=STQ,s=ST[z.i];
+ if(z.pi>=s.paras.length)return storyMCQ();
+ $("#view").innerHTML='<div class="q-meta"><span>'+esc(s.t)+'</span><span>párrafo '+(z.pi+1)+'/'+s.paras.length+'</span></div>'
+ +'<div class="card"><p class="story-para es">'+esc(s.paras[z.pi])+'</p>'
+ +'<div class="row" style="justify-content:center;margin-top:14px;flex-wrap:wrap"><button class="btn" onclick="storySpeak('+z.pi+')">♪ Escuchar</button><button class="btn ghost sm" onclick="STR=Math.max(0.55,STR-0.1);toast(\'Velocidad \'+STR.toFixed(2))">− lento</button><button class="btn ghost sm" onclick="STR=Math.min(1.3,STR+0.1);toast(\'Velocidad \'+STR.toFixed(2))">+ rápido</button></div>'
+ +'<div class="grid2" style="margin-top:14px"><button class="btn ghost" '+(z.pi===0?"disabled":"")+' onclick="STQ.pi--;storyPage()">◀ Anterior</button><button class="btn" onclick="STQ.pi++;storyPage()">'+(z.pi===s.paras.length-1?"Ir a las preguntas ▶":"Siguiente ▶")+'</button></div></div>';
+ storySpeak(z.pi)}
+function storyMCQ(){const z=STQ,s=ST[z.i];
+ const items=s.mcqs.map((m,j)=>({q:m.q,opts:m.o,a:m.a,id:"st"+z.i+"_"+j}));
+ quizRun(items,"Comprensión · "+s.t,function(score,total){S.stats.story=(S.stats.story||0)+1;day().story=(day().story||0)+1;S.storyDone=S.storyDone||[];if(!S.storyDone.includes(z.i))S.storyDone.push(z.i);addXP(score*8);buddy(score>=4?pick(AN.win):pick(AN.fail));checkAch();save()},true)}
+/* ================= QUIZ CORE ================= */
+function mcq(c,dir){dir=dir||(Math.random()<0.5?"e2n":"n2e");const wrong=shuffle(DECK.filter(x=>x.id!==c.id&&x.cat===c.cat)).slice(0,3);
+ const q=dir==="e2n"?c.es:c.en;const right=dir==="e2n"?c.en:c.es;
+ const opts=shuffle([right,...wrong.map(w=>dir==="e2n"?w.en:w.es)]);
+ return{q:q,say:dir==="e2n"?c.es:null,opts:opts,a:opts.indexOf(right),id:c.id,es:c.es}}
+function listenQ(c){const wrong=shuffle(DECK.filter(x=>x.id!==c.id)).slice(0,3);const opts=shuffle([c.en,...wrong.map(w=>w.en)]);
+ return{q:"♪ (escucha)",say:c.es,listen:true,opts:opts,a:opts.indexOf(c.en),id:c.id,es:c.es}}
+let QZ=null;
+function quizRun(items,title,onEnd,trackRepair){QZ={items:items,i:0,score:0,title:title,onEnd:onEnd,rep:trackRepair};quizQ()}
+function quizQ(){const z=QZ;if(z.i>=z.items.length){const pct=Math.round(z.score/z.items.length*100);
+ $("#view").innerHTML='<div class="card" aria-live="polite" style="text-align:center;padding:30px 16px"><div class="bigscore">'+z.score+'/'+z.items.length+'</div><h3>'+esc(z.title)+' · '+pct+'%</h3><button class="btn" style="margin-top:14px" onclick="go(VIEW)">Continuar</button></div>';
+ z.onEnd(z.score,z.items.length);renderHeader();save();return}
+ const it=z.items[z.i];
+ $("#view").innerHTML='<div class="q-meta"><span>'+esc(z.title)+'</span><span>'+(z.i+1)+'/'+z.items.length+'</span></div>'
+ +'<div class="q-word es">'+esc(it.q)+(it.say?' <button class="speak-ico" onclick="speak(QZ.items[QZ.i].say)">♪</button>':"")+'</div>'
+ +it.opts.map((o,i)=>'<button class="opt" onclick="quizAns('+i+',this)">'+esc(o)+'</button>').join("");
+ if(it.listen)speak(it.say)}
+function quizAns(i,el){const z=QZ,it=z.items[z.i];const btns=document.querySelectorAll(".opt");btns.forEach(b=>b.onclick=null);
+ if(i===it.a){el.classList.add("right");z.score++;if(z.rep&&it.id&&S.miss[it.id])S.miss[it.id]=Math.max(0,S.miss[it.id]-1)}
+ else{el.classList.add("wrong");btns[it.a].classList.add("right");if(it.id)S.miss[it.id]=(S.miss[it.id]||0)+1}
+ setTimeout(()=>{z.i++;quizQ()},900)}
+/* ================= VIEW: ARENA ================= */
+function renderArena(){$("#view").innerHTML='<h2 class="sect"><small>Arena</small>Cinco minutos, una pelea</h2><p class="muted" style="margin-bottom:12px">Para los días sin tiempo: cada juego dura 2-4 minutos y cuenta para la misión diaria.</p>'
+ +'<div class="card"><h3>⚔ Jefes de Fase</h3><p class="muted">Al final de cada fase te espera un guardián: examen mixto, a contrarreloj y con barra de vida. Derrótalo con 80% o más para ganar su insignia.</p><button class="btn wide" style="margin-top:10px" onclick="renderBossList()">Ver los seis jefes</button></div>'
+ +'<div class="card"><h3>❧ Árbol de Habilidades</h3><p class="muted">Tus cinco ramas de poder — Vocabulario, Oído, Voz, Gramática y Callejero — suben solas con todo lo que practicas.</p><button class="btn ghost wide" style="margin-top:10px" onclick="renderSkillTree()">Ver mi árbol</button></div>'
+ +'<div class="grid2">'
+ +gt("Rayo","45 segundos, traducciones a máxima velocidad. Puro reflejo.","+2 XP por acierto","gameRayo()")
+ +gt("Oído","Escucha la palabra, elige el significado. Entrena el radar.","+4 XP por acierto","gameOido()")
+ +gt("Trampa","Falsos amigos: palabras que parecen inglés y te traicionan.","+4 XP por acierto","gameTrampa()")
+ +gt("Constructor","Arma la frase mexicana con las piezas en orden.","+10 XP por frase","gameBuild()")
+ +gt("¿Amigo o Traidor?","¿Cognado gratis o falso amigo? Decide en un segundo.","+3 XP por acierto","gameCog()")
+ +gt("Asalto de Memoria","5 tarjetas viejas al azar. ¿Siguen contigo?","+5 XP por acierto","memoryRaid(true)")
+ +'</div>';}
+function gt(t,d,x,fn){return '<div class="game-tile" onclick="'+fn+'"><div class="gt">'+t+'</div><div class="gd">'+d+'</div><div class="gx">'+x+'</div></div>'}
+function gameDone(name,score,total,xpPer){S.stats.games++;day().game++;addXP(score*xpPer);questCheck();checkAch()}
+function gameRayo(){const pool=shuffle(knownCards().length>=10?knownCards():unlocked()).slice(0,40);let i=0,score=0,t=45,tm=null;
+ function tick(){t--;const b=$("#tbar");if(b)b.style.width=(t/45*100)+"%";if(t<=0)end();else tm=setTimeout(tick,1000)}
+ function q(){if(i>=pool.length)return end();const c=pool[i];const item=mcq(c);
+  $("#view").innerHTML='<div class="q-meta"><span>RAYO</span><span>'+score+' pts</span></div><div class="timerbar"><i id="tbar" style="width:'+(t/45*100)+'%"></i></div><div class="q-word es">'+esc(item.q)+'</div>'+item.opts.map((o,j)=>'<button class="opt" onclick="window.__rayo('+j+','+item.a+')">'+esc(o)+'</button>').join("")}
+ window.__rayo=(j,a)=>{if(j===a)score++;else{const c=pool[i];S.miss[c.id]=(S.miss[c.id]||0)+1}i++;q()};
+ function end(){clearTimeout(tm);window.__rayo=null;$("#view").innerHTML='<div class="card" style="text-align:center;padding:30px"><div class="bigscore">'+score+'</div><h3>Rayo terminado</h3><p class="muted">+'+score*2+' XP</p><button class="btn" style="margin-top:12px" onclick="renderArena()">Volver</button></div>';gameDone("rayo",score,i,2)}
+ q();tm=setTimeout(tick,1000)}
+function gameOido(){const pool=shuffle(unlocked()).slice(0,8);quizRun(pool.map(c=>listenQ(c)),"Oído",(s,t)=>gameDone("oido",s,t,4),true)}
+function gameTrampa(){const pool=shuffle(FF).slice(0,8);const items=pool.map(f=>{const wrong=shuffle(FF.filter(x=>x!==f)).slice(0,2).map(x=>x[2]);const opts=shuffle([f[2],f[1],...wrong.slice(0,2)]);return{q:f[0],opts:opts,a:opts.indexOf(f[2])}});
+ quizRun(items,"Trampa · ¿qué significa de verdad?",(s,t)=>gameDone("trampa",s,t,4))}
+function gameCog(){const items=shuffle([...shuffle(CG).slice(0,6).map(w=>({w:w,cog:true})),...shuffle(FF).slice(0,6).map(f=>({w:f[0],cog:false,real:f[2]}))]);let i=0,score=0;
+ function q(){if(i>=items.length){$("#view").innerHTML='<div class="card" style="text-align:center;padding:30px"><div class="bigscore">'+score+'/12</div><h3>¿Amigo o Traidor?</h3><button class="btn" style="margin-top:12px" onclick="renderArena()">Volver</button></div>';gameDone("cog",score,12,3);return}
+  const it=items[i];$("#view").innerHTML='<div class="q-meta"><span>¿AMIGO O TRAIDOR?</span><span>'+(i+1)+'/12 · '+score+' pts</span></div><div class="q-word es">'+esc(it.w)+'</div><p class="muted" style="text-align:center;margin-bottom:14px">¿Significa lo mismo que en inglés?</p><div class="grid2"><button class="btn" onclick="window.__cog(true)">Amigo (igual)</button><button class="btn ghost" onclick="window.__cog(false)">Traidor (falso)</button></div>';}
+ window.__cog=(g)=>{const it=items[i];if(g===it.cog){score++;toast(it.cog?"Sí: gratis.":"Traidor: significa "+it.real)}else{toast(it.cog?"Era amigo: significa lo mismo.":"¡Traición! Significa: "+it.real)}i++;q()};q()}
+function gameBuild(){const pool=shuffle(PH.filter(p=>p[0]<=S.week&&p[1].split(" ").length>=4)).slice(0,5);let i=0,score=0,out=[];
+ function q(){if(i>=pool.length){window.__bt=null;$("#view").innerHTML='<div class="card" style="text-align:center;padding:30px"><div class="bigscore">'+score+'/5</div><h3>Constructor</h3><button class="btn" style="margin-top:12px" onclick="renderArena()">Volver</button></div>';gameDone("build",score,5,10);return}
+  out=[];const p=pool[i];const words=p[1].replace(/[¿¡]/g,"").split(" ");const tiles=shuffle(words.map((w,j)=>({w:w,j:j})));
+  window.__bt=(k)=>{const t=tiles[k];if(t.used)return;t.used=true;out.push(t.w);draw(tiles,p)};
+  window.__bres=()=>{tiles.forEach(t=>t.used=false);out=[];draw(tiles,p)};
+  window.__bok=()=>{const target=p[1].replace(/[¿¡]/g,"");const ok=out.join(" ")===target;if(ok){score++;speak(p[1]);toast("¡Exacto!")}else toast("Era: "+p[1]);i++;setTimeout(q,ok?700:1600)};
+  function draw(tiles,p){$("#view").innerHTML='<div class="q-meta"><span>CONSTRUCTOR</span><span>'+(i+1)+'/5</span></div><p class="muted" style="text-align:center">'+esc(p[2])+'</p><div class="build-out">'+out.map(w=>'<span class="tile">'+esc(w)+'</span>').join("")+'</div><div class="tiles">'+tiles.map((t,k)=>'<button class="tile" '+(t.used?"disabled":"")+' onclick="window.__bt('+k+')">'+esc(t.w)+'</button>').join("")+'</div><div class="grid2"><button class="btn ghost" onclick="window.__bres()">Reiniciar</button><button class="btn" onclick="window.__bok()">Confirmar</button></div>';}
+  draw(tiles,p)}
+ q()}
+function memoryRaid(manual){const m=masteredCards();if(m.length<5){if(manual)toast("Aún no tienes 5 tarjetas dominadas.");return}
+ const pool=shuffle(m).slice(0,5);buddy("¡Asalto de memoria! Veamos qué sobrevivió al olvido...");
+ quizRun(pool.map(c=>mcq(c)),"Asalto de Memoria",(s,t)=>{addXP(s*5);if(s<t){pool.forEach(c=>{const st=S.cards[c.id];if(st){st.iv=Math.max(3,Math.round(st.iv/2));st.due=Date.now()+st.iv*864e5}});save()}},true)}
+/* ================= WEEKLY TEST ================= */
+function weekTest(n){buddy(pick(AN.test));const wk=DECK.filter(c=>c.wk===n);const vocabQ=shuffle(wk).slice(0,8).map(c=>mcq(c));
+ const lisQ=shuffle(wk).slice(0,2).map(c=>listenQ(c));
+ const gq=shuffle(GQ.filter(g=>g.w<=n&&g.w>n-6)).slice(0,2).map(g=>({q:g.q,opts:g.o,a:g.a}));
+ quizRun(shuffle([...vocabQ,...lisQ,...gq]),"Examen · Semana "+n,(s,t)=>{const pct=s/t;
+  if(pct>=0.75){if(!S.weeksDone.includes(n))S.weeksDone.push(n);S.week=Math.max(S.week,Math.min(26,n+1));S.stats.tests++;addXP(80);addPesos(30);toast("Semana "+n+" superada · +80 XP");buddy(pick(AN.win)+" La semana "+(n+1<=26?n+1+" te espera.":"final... ha llegado."))}
+  else{buddy(pick(AN.fail)+" Repara tus zonas débiles y vuelve al examen.")}
+  save()},true)}
+/* ================= BOSS BATTLES & SKILL TREE (S9) ================= */
+const BOSSWK=[4,8,13,18,22,26];
+const BOSSES=[
+ {ph:1,name:"El Trabalenguas",sub:"Guardián de los Sonidos y las Frases de Auxilio",
+  intro:"The Guardian of Sounds bars the gate. His armor is five pure vowels — pierce it with clean pronunciation, escudero.",
+  taunt:["¡Ja! A vowel slips from your grasp.","Your tongue trembles... press on!","Not bad for a peregrino."],
+  defeat:"The Guardian dissolves into five clean vowels: a, e, i, o, u. Phase 1 is yours."},
+ {ph:2,name:"El Tragón",sub:"Devorador de Rutinas y Taquerías",
+  intro:"El Tragón has eaten every verb in the kitchen. Feed him the right conjugation or be the next dish.",
+  taunt:["¡Más rápido, o te como!","Mmm, a mistake — delicious.","You cook with words. I respect that."],
+  defeat:"El Tragón pushes away his plate, defeated and full. Phase 2 conquered."},
+ {ph:3,name:"El Chofer Fantasma",sub:"Espectro de las Calles y del Pretérito",
+  intro:"The Ghost Driver knows every street and every yesterday. Navigate his past tense or stay lost forever.",
+  taunt:["¡Dabas vuelta donde no era!","The past does not forgive easily.","You found the corner. Barely."],
+  defeat:"The Ghost Driver tips his hat and fades into the traffic. Phase 3 is behind you."},
+ {ph:4,name:"La Comadre",sub:"Reina de las Opiniones y el Chisme",
+  intro:"La Comadre has an opinion about everything, especially your Spanish. Out-argue her — with feeling.",
+  taunt:["¡Ay, no estoy de acuerdo!","La neta, esa estuvo débil.","Hmph. You have a point."],
+  defeat:"La Comadre nods, impressed, and spreads word that you can hold a conversation. Phase 4 done."},
+ {ph:5,name:"El Rey del Albur",sub:"Monarca de la Jerga y el Doble Sentido",
+  intro:"The King of Albures speaks in traps and punchlines. Read the street or become the joke, güey.",
+  taunt:["¡No manches, casi!","Órale, that one you got.","¿Cómo crees? Try again."],
+  defeat:"The King of Albures laughs and calls you cuate. Phase 5 — you speak like the barrio now."},
+ {ph:6,name:"La Duda",sub:"El Jefe Final — tu propia voz interior",
+  intro:"The last boss is La Duda: your own doubt, wearing your face. Everything you learned answers here. ¡Vámonos!",
+  taunt:["\"You'll never sound native\" — she whispers.","Silence her with an answer.","She flickers. Keep going."],
+  defeat:"La Duda vanishes. In her place, a mirror: you, speaking Spanish. Óralelandia is conquered, Leyenda."}
+];
+let BOSS=null,BOSST=null;
+function bossUnlocked(ph){return S.week>=BOSSWK[ph-1]}
+function startBossArena(){renderBossList()}
+function renderBossList(){var html='<h2 class="sect"><small>Jefes de Fase</small>Seis batallas, seis insignias</h2>'
+ +'<div class="marginalia">Anselmo: cada fase termina con un guardián. Examen mixto, a contrarreloj, con barra de vida. Vence con 80% o más para arrancarle su insignia.</div>';
+ html+=BOSSES.map(function(b){var un=bossUnlocked(b.ph);var done=(S.bossDone||[]).includes(b.ph);var best=(S.bossBest||{})[b.ph];
+  return '<div class="card"'+(un?"":' style="opacity:.55"')+'><h3>⚔ '+esc(b.name)+' <span class="tag">fase '+b.ph+'</span>'+(done?' <span class="tag" style="border-color:var(--lima);color:var(--lima)">✓ vencido</span>':"")+'</h3><p class="muted">'+esc(b.sub)+'</p>'+(un?'<button class="btn '+(done?"ghost ":"")+'wide" style="margin-top:8px" onclick="startBoss('+b.ph+')">'+(done?"Repetir batalla":"Pelear")+'</button>'+(best?'<p class="muted" style="margin-top:6px;font-size:.75rem">Mejor: '+best+'/10</p>':""):'<p class="muted" style="margin-top:6px">Sellado hasta la semana '+BOSSWK[b.ph-1]+'.</p>')+'</div>';
+ }).join("");
+ $("#view").innerHTML=html}
+function bossConj(wkMax){var vi=Math.floor(Math.random()*CJ.length);var tenses=[0];if(wkMax>=5)tenses.push(3);if(wkMax>=11){tenses.push(1);tenses.push(2)}var ti=pick(tenses);var pi=Math.floor(Math.random()*6);var v=CJ[vi];var ans=v[2+ti][pi];
+ var pool=[];for(var t=0;t<4;t++)for(var p=0;p<6;p++){var f=v[2+t][p];if(f!==ans&&pool.indexOf(f)<0)pool.push(f)}pool=shuffle(pool).slice(0,3);var opts=shuffle([ans].concat(pool));
+ return{q:PERSONS[pi]+" + "+v[0]+" + "+pick(TENSE_CUES[ti]),opts:opts,a:opts.indexOf(ans),skill:"Gramática"}}
+function buildBossItems(ph){var wkMax=BOSSWK[ph-1];var pool=DECK.filter(function(c){return c.wk<=wkMax});var items=[];
+ shuffle(pool).slice(0,4).forEach(function(c){items.push(Object.assign(mcq(c),{skill:"Vocabulario"}))});
+ shuffle(pool).slice(0,2).forEach(function(c){items.push(Object.assign(listenQ(c),{skill:"Oído"}))});
+ shuffle(GQ.filter(function(g){return g.w<=wkMax})).slice(0,2).forEach(function(g){items.push({q:g.q,opts:g.o,a:g.a,skill:"Gramática"})});
+ if(wkMax>=5){for(var n=0;n<2;n++)items.push(bossConj(wkMax))}
+ shuffle(FF).slice(0,1).forEach(function(f){var opts=shuffle([f[2],f[1]].concat(shuffle(FF.filter(function(x){return x!==f})).slice(0,2).map(function(x){return x[2]}))).slice(0,4);if(opts.indexOf(f[2])<0)opts[0]=f[2];items.push({q:'¿Qué significa de verdad "'+f[0]+'"?',opts:opts,a:opts.indexOf(f[2]),skill:"Callejero"})});
+ if(wkMax>=19){shuffle(SL).slice(0,1).forEach(function(s){var opts=shuffle([s[1]].concat(shuffle(SL.filter(function(x){return x!==s})).slice(0,3).map(function(x){return x[1]})));items.push({q:'En México, "'+s[0].split(" / ")[0]+'" quiere decir...',opts:opts,a:opts.indexOf(s[1]),skill:"Callejero"})})}
+ items=shuffle(items).slice(0,10);
+ while(items.length<10){items.push(Object.assign(mcq(pick(pool)),{skill:"Vocabulario"}))}
+ return items}
+function bossBars(z){var b=BOSSES[z.ph-1];
+ return '<div class="bar-row"><div class="bl"><span>Tú</span><b>'+z.php+'</b></div><div class="bar"><i style="width:'+z.php+'%;background:var(--lima)"></i></div></div>'
+ +'<div class="bar-row"><div class="bl"><span>'+esc(b.name)+'</span><b>'+z.bhp+'</b></div><div class="bar"><i style="width:'+z.bhp+'%;background:var(--rojo)"></i></div></div>'}
+function startBoss(ph){if(!bossUnlocked(ph))return toast("Este jefe aún está sellado.");var b=BOSSES[ph-1];BOSS={ph:ph,items:buildBossItems(ph),i:0,score:0,php:100,bhp:100,tmax:15,t:15};buddy("⚔ "+b.intro);bossQ()}
+function bossTick(){if(!BOSS)return;BOSS.t--;var bar=$("#btbar");if(bar)bar.style.width=(BOSS.t/BOSS.tmax*100)+"%";if(BOSS.t<=0){clearInterval(BOSST);bossHit(-1)}}
+function bossQ(){var z=BOSS;if(!z)return;if(z.i>=z.items.length||z.bhp<=0||z.php<=0)return bossEnd();
+ var it=z.items[z.i],b=BOSSES[z.ph-1];z.t=z.tmax;clearInterval(BOSST);
+ $("#view").innerHTML='<div class="q-meta"><span>JEFE · '+esc(b.name)+'</span><span>'+(z.i+1)+'/'+z.items.length+' · '+z.score+' aciertos</span></div>'
+ +bossBars(z)
+ +'<div class="timerbar" style="margin-top:10px"><i id="btbar" style="width:100%"></i></div>'
+ +'<div class="tag">'+esc(it.skill||"reto")+'</div>'
+ +'<div class="q-word es">'+esc(it.q)+(it.say?' <button class="speak-ico" onclick="speak(BOSS.items[BOSS.i].say)">♪</button>':"")+'</div>'
+ +it.opts.map(function(o,j){return '<button class="opt" onclick="window.__boss('+j+')">'+esc(o)+'</button>'}).join("");
+ if(it.listen)speak(it.say);BOSST=setInterval(bossTick,1000)}
+window.__boss=function(j){bossHit(j)};
+function bossHit(j){var z=BOSS;if(!z)return;clearInterval(BOSST);var it=z.items[z.i],b=BOSSES[z.ph-1];
+ var btns=document.querySelectorAll(".opt");btns.forEach(function(x){x.onclick=null});
+ if(j===it.a){z.score++;z.bhp=Math.max(0,z.bhp-13);if(it.id&&S.miss[it.id])S.miss[it.id]=Math.max(0,S.miss[it.id]-1);if(j>=0&&btns[j])btns[j].classList.add("right");if(Math.random()<0.5)buddy(pick(b.taunt))}
+ else{z.php=Math.max(0,z.php-34);if(it.id)S.miss[it.id]=(S.miss[it.id]||0)+1;if(j>=0&&btns[j])btns[j].classList.add("wrong");if(btns[it.a])btns[it.a].classList.add("right");buddy(pick(b.taunt))}
+ z.i++;setTimeout(bossQ,750)}
+function bossEnd(){var z=BOSS;if(!z)return;clearInterval(BOSST);var b=BOSSES[z.ph-1],total=z.items.length,pct=z.score/total,win=pct>=0.8;
+ if(win){S.bossDone=S.bossDone||[];if(!S.bossDone.includes(z.ph))S.bossDone.push(z.ph);S.bossBest=S.bossBest||{};S.bossBest[z.ph]=Math.max(S.bossBest[z.ph]||0,z.score);addXP(z.score*10+40);addPesos(50);buddy("⚔ "+b.defeat);checkAch()}
+ else buddy(pick(AN.fail)+" El jefe sigue en pie. Repara tus zonas débiles y vuelve.");
+ $("#view").innerHTML='<div class="card" style="text-align:center;padding:26px 16px;border-color:'+(win?"var(--lima)":"var(--rojo)")+'"><div class="bigscore" style="color:'+(win?"var(--lima)":"var(--rojo)")+'">'+(win?"¡VICTORIA!":"DERROTA")+'</div><h3>'+esc(b.name)+'</h3><p class="muted">'+z.score+'/'+total+' aciertos · '+Math.round(pct*100)+'%'+(win?" · insignia obtenida":" · necesitas 80%")+'</p>'+bossBars(z)+'<div class="grid2" style="margin-top:14px"><button class="btn ghost" onclick="renderBossList()">Jefes</button><button class="btn" onclick="startBoss('+z.ph+')">Otra vez</button></div></div>';
+ renderHeader();save();BOSS=null}
+function knownSlang(){return knownCards().filter(function(c){return c.cat==="Jerga"||c.cat==="Dichos"}).length}
+function skillTree(){var mast=masteredCards().length;
+ var branches=[
+  {k:"Vocabulario",g:"◆",v:mast,u:"palabras dominadas",th:[0,10,40,100,200,350]},
+  {k:"Oído",g:"♪",v:(S.stats.dlg||0)+(S.stats.story||0),u:"diálogos + historias",th:[0,1,4,10,18,26]},
+  {k:"Voz",g:"◎",v:(S.stats.shadow||0),u:"reps de sombra",th:[0,5,20,50,100,180]},
+  {k:"Gramática",g:"✎",v:(S.stats.conj||0),u:"conjugaciones",th:[0,10,50,120,250,400]},
+  {k:"Callejero",g:"⚑",v:knownSlang(),u:"jerga y dichos",th:[0,3,10,20,35,50]}
+ ];
+ branches.forEach(function(b){var lv=0;for(var i=0;i<b.th.length;i++){if(b.v>=b.th[i])lv=i}b.lv=Math.min(lv,5);b.nextAt=b.th[Math.min(b.lv+1,5)]});
+ return branches}
+function renderSkillTree(){var br=skillTree();var totalLv=br.reduce(function(a,b){return a+b.lv},0);
+ var html='<h2 class="sect"><small>Árbol de Habilidades</small>Tus cinco ramas de poder</h2>'
+ +'<div class="card"><div class="spread"><span class="muted">Poder total del héroe</span><b style="font-family:var(--ff-mono);color:var(--mari);font-size:1.1rem">'+totalLv+'/25</b></div></div>'
+ +'<div class="sktree">'+br.map(function(b){var nodes="";for(var i=1;i<=5;i++)nodes+='<span class="node'+(i<=b.lv?" on":"")+'"></span>';
+   return '<div class="branch"><div class="br-h"><span class="br-ico">'+b.g+'</span><span class="br-name">'+b.k+'</span><span class="br-lv">nivel '+b.lv+'/5</span></div><div class="nodes">'+nodes+'</div><div class="br-sub muted">'+b.v+' '+b.u+(b.lv<5?' · próximo nivel a '+b.nextAt:' · ¡rama máxima!')+'</div></div>'}).join("")+'</div>'
+ +'<div class="marginalia" style="margin-top:12px">Anselmo: no se sube de nivel estudiando el árbol, sino regando sus raíces — repasa, escucha, habla, conjuga y callejea.</div>'
+ +'<button class="btn ghost wide" style="margin-top:12px" onclick="renderArena()">Volver a la Arena</button>';
+ $("#view").innerHTML=html}
+/* ================= VIEW: CODEX ================= */
+function renderCodex(){let html='<h2 class="sect"><small>Códice</small>El plan de campaña</h2><div class="codex">'
+ +'<h2>El Método</h2><p style="font-size:.9rem;line-height:1.6">Una hora al día, seis días por semana, ~170 horas en 26 semanas. La distribución diaria: <b>25 min</b> de audio (Language Transfer semanas 1-12, luego Dreaming Spanish), <b>20 min</b> en esta app (repaso SRS + nuevas), <b>10 min</b> de cabina de sombra hablando en voz alta, <b>5 min</b> de Cantina (jerga y datos). Domingo: examen semanal + un episodio de serie. La regla de oro: <em>todo lo que aprendas, dilo en voz alta el mismo día.</em></p>'
+ +'<div class="marginalia">Anselmo dice: la gramática se adquiere por el oído y se confirma por la boca. El papel es para los monjes. Tú vas a hablar.</div>';
+ PHASES.forEach(p=>{const done=W.filter(w=>w.ph===p[0]&&S.weeksDone.includes(w.n)).length;const tot=W.filter(w=>w.ph===p[0]).length;
+  html+='<div class="phase" id="ph'+p[0]+'"><button onclick="document.getElementById(\'ph'+p[0]+'\').classList.toggle(\'open\')"><span>Fase '+p[0]+' · '+p[1]+'</span><span style="font-size:.75rem">'+done+'/'+tot+' ▾</span></button><div class="ph-body"><p style="font-size:.8rem;opacity:.8">'+p[2]+'</p>';
+  W.filter(w=>w.ph===p[0]).forEach(w=>{html+='<div class="wk'+(S.weeksDone.includes(w.n)?" done":"")+'"><div class="wk-t"><span>Semana '+w.n+' · '+w.t+'</span><span class="tag">'+(w.n<=S.week?"abierta":"cerrada")+'</span></div><p>'+w.g+'</p><p class="mission">Misión hablada: '+w.m+'</p><ul>'+w.r.map(r=>'<li><a href="'+r[1]+'" target="_blank" rel="noopener">'+r[0]+'</a></li>').join("")+'</ul>'+(w.n<=S.week?'<button class="btn sm" onclick="weekTest('+w.n+')">'+(S.weeksDone.includes(w.n)?"Repetir examen":"Examen de la semana")+'</button>':"")+'</div>'});
+  html+='</div></div>'});
+ html+='<div class="marginalia" style="margin-top:14px"><b>Meses 7-12 · La Maestría:</b> '+EXT+'</div></div>';
+ $("#view").innerHTML=html;
+ const cur=W.find(w=>w.n===S.week);if(cur)document.getElementById("ph"+cur.ph).classList.add("open")}
+/* ================= VIEW: CANTINA ================= */
+let CTAB="jerga";
+function renderCantina(){const tabs=[["jerga","Jerga"],["dichos","Dichos"],["trampas","Trampas"],["gratis","Gratis"],["datos","Datos"],["media","Biblioteca"]];
+ let html='<h2 class="sect"><small>La Cantina</small>Donde vive el español de verdad</h2><div class="subtabs">'+tabs.map(t=>'<button class="'+(CTAB===t[0]?"on":"")+'" onclick="CTAB=\''+t[0]+'\';renderCantina()">'+t[1]+'</button>').join("")+'</div>';
+ if(CTAB==="jerga")html+='<p class="muted" style="margin-bottom:10px">Jerga mexicana esencial. Estas cartas entran a tu mazo SRS en la semana 19 — pero léelas desde hoy.</p>'+SL.map(s=>'<div class="slang-card"><div class="spread"><span class="sw">'+esc(s[0])+'</span><button class="speak-ico" onclick="speak('+JSON.stringify(s[0].split(" / ")[0]).replace(/"/g,"&quot;")+')">♪</button></div><div class="sm">'+esc(s[1])+'</div><div class="sx">'+esc(s[2])+'</div></div>').join("");
+ if(CTAB==="dichos")html+='<p class="muted" style="margin-bottom:10px">Modismos y refranes: úsalos y dejarás de sonar a libro de texto.</p>'+ID.map(s=>'<div class="slang-card"><div class="spread"><span class="sw">'+esc(s[0])+'</span><button class="speak-ico" onclick="speak('+JSON.stringify(s[0]).replace(/"/g,"&quot;")+')">♪</button></div><div class="sx">literal: '+esc(s[1])+'</div><div class="sm">→ '+esc(s[2])+'</div></div>').join("");
+ if(CTAB==="trampas")html+='<p class="muted" style="margin-bottom:10px">Falsos amigos: parecen inglés, no lo son. La palabra más peligrosa es la que crees conocer.</p><div class="ff-row" style="font-family:var(--ff-mono);font-size:.66rem;color:var(--dim)"><span>PALABRA</span><span>PARECE</span><span>SIGNIFICA</span></div>'+FF.map(f=>'<div class="ff-row"><b>'+esc(f[0])+'</b><span class="no">'+esc(f[1])+'</span><span class="si">'+esc(f[2])+'</span></div>').join("");
+ if(CTAB==="gratis")html+='<p class="muted" style="margin-bottom:10px">Cognados: vocabulario que ya tienes gratis. Pronúncialos a la española y listo.</p>'+CG.map(c=>'<span class="chip">'+esc(c)+'</span>').join("")+'<p class="muted" style="margin-top:14px">Regla extra: casi todo lo que termina en -ción, -al, -ble o -or viaja gratis entre idiomas: nación, animal, posible, actor.</p>';
+ if(CTAB==="datos")html+='<p class="muted" style="margin-bottom:10px">Curiosidades del idioma. Una por día cae del cofre; aquí está el archivo completo.</p>'+FX.map((f,i)=>'<div class="fact"'+(i>=S.factIdx?' style="opacity:.45"':"")+'>'+(i<S.factIdx?esc(f):"Dato #"+(i+1)+" — todavía bajo llave. Completa misiones diarias para abrir cofres.")+'</div>').join("");
+ if(CTAB==="media"){html+='<div class="card"><h3>Canales y motores (gratis)</h3>'+MED.channels.map(c=>'<p style="margin:7px 0;font-size:.87rem"><a href="'+c[1]+'" target="_blank" rel="noopener"><b>'+esc(c[0])+'</b></a><br><span class="muted">'+esc(c[2])+'</span></p>').join("")+'</div>';
+  html+='<div class="card"><h3>Canciones (empieza aquí)</h3>'+MED.songs.map(s=>'<p style="margin:7px 0;font-size:.87rem"><a href="'+yt(s[0]+" "+s[1]+" letra")+'" target="_blank" rel="noopener"><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</a><br><span class="muted">'+esc(s[2])+'</span></p>').join("")+'<p class="muted">Truco: busca siempre con la palabra "letra" (lyrics) y canta en voz alta. Es sombra disfrazada de karaoke.</p></div>';
+  html+='<div class="card"><h3>Series</h3>'+MED.series.map(s=>'<p style="margin:7px 0;font-size:.87rem"><b>'+esc(s[0])+'</b> <span class="tag">'+esc(s[1])+'</span><br><span class="muted">'+esc(s[2])+'</span></p>').join("")+'<p class="muted">Protocolo: meses 1-2 con subtítulos en inglés → meses 3-4 en español → mes 5+ sin nada.</p></div>';
+  html+='<div class="card"><h3>Películas</h3>'+MED.movies.map(s=>'<p style="margin:7px 0;font-size:.87rem"><b>'+esc(s[0])+'</b> <span class="tag">'+esc(s[1])+'</span><br><span class="muted">'+esc(s[2])+'</span></p>').join("")+'</div>'}
+ $("#view").innerHTML=html}
+/* ================= SETTINGS ================= */
+$("#btn-settings").addEventListener("click",()=>{const vops=VOICES.map(v=>'<option value="'+esc(v.name)+'"'+(S.voice===v.name?" selected":"")+'>'+esc(v.name)+' ('+v.lang+')</option>').join("");
+ modal('<h3>Ajustes</h3><label class="fl">Tu nombre</label><input type="text" id="st-name" value="'+esc(S.name)+'"><label class="fl">Voz en español</label><select id="st-voice"><option value="">Automática (busca es-MX)</option>'+vops+'</select><label class="fl">Semana actual (1-26)</label><select id="st-week">'+Array.from({length:26},(_,i)=>'<option '+(S.week===i+1?"selected":"")+'>'+(i+1)+'</option>').join("")+'</select><label class="fl">Respaldo</label><div class="grid2"><button class="btn ghost sm" onclick="exportData()">Exportar datos</button><button class="btn ghost sm" onclick="importData()">Importar</button></div><div class="grid2" style="margin-top:14px"><button class="btn ghost" onclick="if(confirm(\'¿Borrar todo el progreso?\')){localStorage.removeItem(KEY);location.reload()}">Reiniciar todo</button><button class="btn" onclick="saveSettings()">Guardar</button></div>')});
+function saveSettings(){S.name=$("#st-name").value||"Escudero";S.voice=$("#st-voice").value;S.week=parseInt($("#st-week").value);save();closeModal();go(VIEW);toast("Guardado")}
+function exportData(){const t=JSON.stringify(S);navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast("Datos copiados al portapapeles")).catch(()=>prompt("Copia esto:",t))}
+function importData(){const t=prompt("Pega tus datos exportados:");if(t){try{S=Object.assign(fresh(),JSON.parse(t));save();location.reload()}catch(e){toast("Datos inválidos")}}}
+/* ================= TUTORIAL (English) ================= */
+const APP_VERSION="1.12.1";
+const TUT=[
+["Welcome to ¡ÓRALE!","This app is your complete Mexican Spanish training system: a 26-week curriculum, a smart flashcard engine, speaking drills, games, tests and a progress dashboard — all in one offline file.<br><br>The interface is deliberately in Spanish (that is part of the immersion), but this tutorial explains every single word and feature in English. You can reopen it any time with the <b>?</b> button in the top bar."],
+["The top bar (your character sheet)","Think of it as an RPG HUD:<br><br><b>✦ number</b> — your <i>racha</i> (streak): consecutive days with activity. Do not break it.<br><b>$ number</b> — <i>pesos</i>, the in-app currency you earn from achievements and daily chests.<br><b>Nivel X · Title</b> — your level (1-12) and rank, from Peregrino (Pilgrim) to Leyenda del Barrio (Neighborhood Legend).<br><b>XP bar</b> — everything you do earns XP: reviews, games, tests, shadowing."],
+["The 5 tabs (bottom navigation)","<b>◆ Panel</b> = Dashboard. Stats, daily missions, charts, weak spots.<br><b>✎ Estudiar</b> = Study. Flashcards, new words, repair drills, shadowing booth.<br><b>⚔ Arena</b> = Games. Six fast mini-games for low-time days.<br><b>❧ Códice</b> = Codex. The full 26-week curriculum, weekly exams, external resources and the method itself.<br><b>♪ Cantina</b> = The fun stuff. Slang, idioms, false friends, free cognate vocabulary, fun facts and the media library (songs, series, movies, channels)."],
+["Panel — your dashboard","Top numbers: <i>palabras vistas</i> = words you have seen, <i>dominadas</i> = mastered (long-term memory), <i>total invertido</i> = total hours logged (the app tracks time automatically while open).<br><br><b>Misiones de hoy</b> = today's 4 missions. Complete all four and a reward chest opens (random pesos, bonus XP or a locked fun fact).<br><br>Below: a 14-day minutes chart (orange bar = you hit the 60-min target), mastery by category, <i>Zonas débiles</i> (your most-missed words) and your achievement wall (<i>Logros</i>).<br><br><b>Análisis</b> (Ver análisis completo) opens the deep-dive stats room: a 90-day retention curve, a 14-day forecast of upcoming reviews, a week-by-week mastery heatmap, your projected finish date for the 170-hour goal, and a CSV export of your full review log. A demo button fills it with sample data so you can see what the charts will look like."],
+["Estudiar — the memory workshop","Six tools:<br><br><b>Repaso (SRS)</b> — spaced repetition review. The system schedules each card right before you would forget it. This is the engine of the whole app.<br><b>Tarjetas nuevas</b> — learn new cards, capped at 15/day so retention stays high.<br><b>Reparación</b> — a targeted drill built from your own mistakes.<br><b>Cabina de sombra</b> — the shadowing booth (next page).<br><b>Conjugación</b> — the verb trainer (two pages from now).<br><b>Diálogos</b> — the Listening Lab: two-voice mini-dialogues with comprehension questions, unlocked as you advance weeks."],
+["Conjugación — the verb trainer","Twelve of the highest-value Spanish verbs (ser, estar, tener, ir, querer, poder, hacer, decir, saber, poner, venir, dar), drilled across four tenses: present, preterite, imperfect, and the ir + a + infinitive future (voy a + verb — the same trick from week 5).<br><br>Each prompt gives you a person, a verb and a time cue — for example <i>yo + tener + ayer</i>. Say the conjugated form out loud first (<i>tuve</i>), then either type it or tap <b>No sé, dame opciones</b> for multiple choice.<br><br>Mistakes are tracked just like flashcards and bias future rounds toward your weak spots. A finished round counts toward your daily missions and earns XP."],
+["How to review a flashcard","1. A Spanish word appears and is spoken aloud. <b>Say it out loud</b>, then say the English meaning from memory.<br>2. Tap the card to flip and check.<br>3. Grade yourself honestly:<br><b>Otra vez</b> (Again) = forgot; card returns in minutes.<br><b>Difícil</b> (Hard) = barely got it; ~1 day.<br><b>Bien</b> (Good) = got it; interval grows (2 days, then ~5, ~12, ~30...).<br><b>Fácil</b> (Easy) = instant recall; interval grows faster.<br><br>The ♪ button replays the audio. Honest grading is what makes the algorithm work."],
+["Cabina de sombra — the speaking engine","This is the Pimsleur technique, at home: listen to a phrase (<b>♪ Escuchar</b>), then immediately imitate it out loud, matching speed and rhythm. Use <b>− lento / + rápido</b> to slow down or speed up the voice. When you can match the phrase, press <b>Rep lograda ✓</b> to log it (+8 XP).<br><br><b>🎙 Grabar mi voz</b> lets you record yourself saying the phrase, then <b>▶ Escuchar mi grabación</b> plays it back so you can A/B compare against <b>♪ Comparar con nativo</b>. <b>🗑 Descartar</b> clears it so you can try again — recordings never leave your browser's memory (no upload, nothing saved to disk), and the feature quietly disables itself if your browser or setup doesn't support microphone access.<br><br>Ten minutes of this daily does more for your accent and fluency than any other exercise in the app."],
+["Arena — six mini-games","<b>Rayo</b> (Lightning) — 45 seconds of rapid-fire translation.<br><b>Oído</b> (Ear) — hear a word, pick the meaning.<br><b>Trampa</b> (Trap) — false friends: words that look English but betray you.<br><b>Constructor</b> — rebuild a Mexican phrase from shuffled word tiles.<br><b>¿Amigo o Traidor?</b> (Friend or Traitor) — instant call: free cognate or false friend?<br><b>Asalto de Memoria</b> (Memory Raid) — 5 random old cards; fail them and they return to your review queue. The app also launches surprise raids on its own — that randomness is deliberate, it forces long-term retention."],
+["Códice — the campaign plan","The parchment section. <b>El Método</b> explains the daily hour: 25 min audio course (Language Transfer, then Dreaming Spanish), 20 min in this app, 10 min shadowing, 5 min Cantina.<br><br>Six phases contain 26 weeks. Each week has: a grammar note (spoken-Spanish only), a <i>Misión hablada</i> (speaking mission — do it out loud, always), and curated free links.<br><br><b>Examen de la semana</b> = the weekly test: score 75%+ to conquer the week and unlock the next one. Failing feeds your mistakes into the Repair drill. Weeks marked <i>cerrada</i> are still locked."],
+["Cantina — street Spanish and media","Tabs:<br><b>Jerga</b> = Mexican slang (güey, órale, no manches...). Readable from day one; they join your flashcards at week 19.<br><b>Dichos</b> = idioms and sayings with literal translations.<br><b>Trampas</b> = the false-friend table (embarazada ≠ embarrassed...).<br><b>Gratis</b> = cognates — hundreds of words you already own for free.<br><b>Datos</b> = fun facts about Spanish, unlocked one at a time via daily chests.<br><b>Biblioteca</b> = the full media library: songs, series, movies and the free channels that power the method."],
+["Historias — Story Mode (the campaign)","<b>Estudiar &rarr; Historias</b> is your campaign mode: six graded audio-stories, one per phase, that follow Mateo &mdash; a newcomer to Mexico, much like you. Each unlocks when you reach its week (4, 8, 13, 18, 22, 26).<br><br>Read and listen paragraph by paragraph (tap <b>&#9834; Escuchar</b>; adjust speed with <b>&minus; lento / + r&aacute;pido</b>), then answer <b>5 comprehension questions</b>. About 90% of each story uses vocabulary you have already unlocked, so it doubles as review. Finishing a story earns XP and marks it <i>le&iacute;da</i> &mdash; collect all six to become Cronista de &Oacute;ralelandia."],
+["Jefes de Fase y el Árbol de Habilidades","<b>Arena &rarr; Jefes de Fase</b> turns each phase-end into a boss fight: a timed, mixed-skill duel (vocabulary, listening, grammar, conjugation and slang) with a health bar for you and one for the boss. Each correct answer damages the boss; each miss (or letting the timer run out) damages you. Land enough hits to reach <b>80%+</b> and you win the fight and its badge &mdash; three misses and the boss wins. There are six bosses, one per phase, unlocking at weeks 4, 8, 13, 18, 22 and 26.<br><br><b>Arena &rarr; &Aacute;rbol de Habilidades</b> is your RPG character sheet: five branches &mdash; Vocabulario, O&iacute;do, Voz, Gram&aacute;tica and Callejero &mdash; that level up on their own from what you already do (mastered cards, dialogues and stories, shadowing reps, conjugation rounds, and slang learned). Aim to push all five to level 5."],
+["Install it like a real app","ÓRALE is now a PWA (progressive web app). Opened from a web address — GitHub Pages once published, or locally with <i>npx serve app</i> — Chrome and Edge show an <b>install icon</b> in the address bar. Installing gives you a standalone window, its own icon, and full offline operation via a version-aware cache (updates arrive automatically when the app version changes).<br><br>Nothing is required, though: double-clicking <i>orale.html</i> from disk works exactly as it always has, and your progress stays in whichever browser profile you use. One caveat — the installed app and the double-clicked file count as different origins, so keep using one or move progress across with <b>Exportar/Importar datos</b> in ⚙ Ajustes."],
+["Your first week, concretely","Day 1 (today): finish this tutorial, then <b>Estudiar → Aprender nuevas</b> and do your first 15 cards. Open the Códice, read Week 1, and start Language Transfer track 1 from the link.<br><br>Daily: clear the 4 missions (15 reviews, 1 game, 1 shadow rep, 1 conjugation round). Sunday: take the Week 1 exam in the Códice.<br><br>That is the whole system. One hour a day, honestly graded, spoken out loud. Anselmo — the scribe who comments from the parchment note — will keep you company. ¡Vámonos!"]
+];
+let TUTI=0;
+function openTutorial(){TUTI=0;tutPage()}
+function tutPage(){const last=TUTI===TUT.length-1;
+ modal('<div class="q-meta"><span>TUTORIAL</span><span>'+(TUTI+1)+' / '+TUT.length+'</span></div><h3>'+TUT[TUTI][0]+'</h3><p class="muted" style="font-size:.88rem;line-height:1.6">'+TUT[TUTI][1]+'</p><div class="grid2" style="margin-top:16px"><button class="btn ghost" '+(TUTI===0?"disabled":"")+' onclick="TUTI--;tutPage()">Back</button><button class="btn" onclick="'+(last?"tutDone()":"TUTI++;tutPage()")+'">'+(last?"Start learning":"Next")+'</button></div>'+(last?"":'<button class="btn sm ghost wide" style="margin-top:8px" onclick="tutDone()">Skip tutorial</button>'))}
+function tutDone(){if(!S.tut){S.tut=true;addXP(25);toast("+25 XP · Tutorial complete")}S.tut=true;save();closeModal();go("panel")}
+
+/* ================= PWA (S10) ================= */
+function pwaInit(){/* Register the service worker ONLY when it can actually work: needs browser support
+ and an http(s) origin. Double-clicked from disk (file://) this is a silent no-op — the
+ single-file offline path stays exactly as it always was. */
+ if(!("serviceWorker" in navigator))return false;
+ if(typeof location==="undefined"||(location.protocol!=="https:"&&location.protocol!=="http:"))return false;
+ navigator.serviceWorker.register("sw.js?v="+APP_VERSION).catch(()=>{});return true}
+/* ================= INIT ================= */
+setInterval(()=>{if(document.visibilityState==="visible"){day().min+=0.5;save()}},30000);
+pwaInit();
+document.querySelector("#btn-help").addEventListener("click",openTutorial);
+renderHeader();go("panel");
+if(!S.tut){setTimeout(openTutorial,500)}else{setTimeout(()=>{buddy(pick(AN.greet))},900);}
+if(Math.random()<0.3)setTimeout(()=>memoryRaid(false),4000);
+</script>
+</body>
+</html>
