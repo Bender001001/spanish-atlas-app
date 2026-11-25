@@ -28,6 +28,11 @@
 - **Commit the built `app/orale.html` together with the `src/` change.** `npm run check-build` fails if they disagree, so a stale build can't slip through.
 - The "banner" sections referenced elsewhere in these docs are the `src/js/*.js` files; the INIT marker is `/*! INIT */` (the `!` keeps esbuild from stripping it — tests cut the script there).
 
+## Recorded audio
+- `speak(text)` plays a recording when `app/audio/manifest.json` has one for that text, otherwise falls back to `speechSynthesis` (also on any playback error). An explicit voice override (settings voice preview) always uses TTS.
+- Manifest: `{ "hola": "audio/hola.mp3" }` — key = text trimmed, single-spaced, lower-case (accents significant); value = `audio/<file>.mp3|ogg|m4a|wav` placed in `app/audio/`. The build validates keys/paths/file existence, inlines the map into the app, and writes every path into the service-worker precache list (between the `audio:start`/`audio:end` markers in `app/sw.js`, generated — never hand-edit). Run `npm run build` and commit all of it.
+- `node tools/audio-test.js` tests this with SAMPLE files in `tools/fixtures/audio-app/audio/`; the shipped manifest is empty until real recordings exist.
+
 ## 4. Testing gates
 ```
 node tools/validate-data.js   # data integrity: shapes, dup detection, week ranges, GQ answers, link formats

@@ -3048,7 +3048,51 @@ function bestVoice() {
   }
   return VOICES.find((v) => /MX/i.test(v.lang)) || VOICES.find((v) => /US|419/i.test(v.lang)) || VOICES[0];
 }
+const AUDIO_MAP = {};
+function audioKey(t) {
+  return String(t).trim().replace(/\s+/g, " ").toLowerCase();
+}
+let CUR_AUDIO = null;
+function stopAudio() {
+  if (CUR_AUDIO) {
+    try {
+      CUR_AUDIO.pause();
+    } catch (e) {
+    }
+    CUR_AUDIO = null;
+    document.body.classList.remove("tts");
+  }
+}
 function speak(t, rate, pitch, voiceOverride) {
+  stopAudio();
+  const f = voiceOverride ? null : AUDIO_MAP[audioKey(t)];
+  if (f && typeof Audio !== "undefined") {
+    try {
+      const a = new Audio(f);
+      a.playbackRate = rate || S.rate;
+      CUR_AUDIO = a;
+      a.onplay = () => document.body.classList.add("tts");
+      a.onended = () => {
+        if (CUR_AUDIO === a) CUR_AUDIO = null;
+        document.body.classList.remove("tts");
+      };
+      const fall = () => {
+        if (CUR_AUDIO === a) {
+          CUR_AUDIO = null;
+          speakTTS(t, rate, pitch, voiceOverride);
+        }
+      };
+      a.onerror = fall;
+      const p = a.play();
+      if (p && p.catch) p.catch(fall);
+      return;
+    } catch (e) {
+      CUR_AUDIO = null;
+    }
+  }
+  speakTTS(t, rate, pitch, voiceOverride);
+}
+function speakTTS(t, rate, pitch, voiceOverride) {
   if (!("speechSynthesis" in window)) return toast("No hay voz disponible en este navegador");
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(t);

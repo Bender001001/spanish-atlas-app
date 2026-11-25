@@ -39,6 +39,9 @@ if(CJ.length!==12)errs.push("CJ must have exactly 12 verbs");
  if(Object.keys(LEGACY_IDS).length!==968)errs.push("LEGACY_IDS must have 968 entries, has "+Object.keys(LEGACY_IDS).length);
  want.forEach(([pos,id])=>{if(LEGACY_IDS[pos]!==id)errs.push("LEGACY_IDS["+pos+"]="+LEGACY_IDS[pos]+" but data row has "+id)});
  if(new Set(Object.values(LEGACY_IDS)).size!==968)errs.push("LEGACY_IDS values must be unique")}
+// ---- recorded audio: AUDIO_MAP (inlined from app/audio/manifest.json) must be well-formed ----
+Object.keys(AUDIO_MAP).forEach(k=>{if(k!==audioKey(k))errs.push("AUDIO_MAP key not normalized: "+JSON.stringify(k));
+ if(typeof AUDIO_MAP[k]!=="string"||!/^audio\\/[A-Za-z0-9._-]+\\.(mp3|ogg|m4a|wav)$/.test(AUDIO_MAP[k]))errs.push("AUDIO_MAP bad path for "+k)});
 const dlgTitles={};
 DLG.forEach((d,i)=>{if(!(d.wk>=1&&d.wk<=26))errs.push("DLG["+i+"] bad week "+d.wk);
  if(typeof d.t!=="string"||!d.t)errs.push("DLG["+i+"] missing title");
