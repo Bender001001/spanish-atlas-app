@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ÓRALE audio test</title>
+<style>
+body{font:16px/1.4 -apple-system,system-ui,sans-serif;margin:0;padding:16px;background:#111;color:#eee}
+h1{font-size:20px;margin:0 0 12px}
+.card{background:#1d1d1d;border-radius:12px;padding:12px;margin:0 0 12px}
+audio{width:100%;margin:8px 0}
+button{font:inherit;padding:10px 14px;border-radius:8px;border:0;background:#3a7;color:#fff;margin:4px 4px 4px 0}
+pre{white-space:pre-wrap;word-break:break-word;margin:8px 0 0;font-size:13px}
+.ok{color:#6d6}.bad{color:#f77}
+</style>
+</head>
+<body>
+<h1>ÓRALE audio test</h1>
+<div class="card">
+  <div id="sw">Service worker: checking…</div>
+  <div style="font-size:13px;opacity:.7">Open the main app once first so its service worker is installed, then reload this page. Then play both files, switch to airplane mode, reload, and play again.</div>
+</div>
+<div class="card">
+  <strong>MP3</strong> (sample/sample.mp3)
+  <audio id="a1" controls preload="auto" src="sample/sample.mp3"></audio>
+  <button data-range="sample/sample.mp3">Check Range (MP3)</button>
+</div>
+<div class="card">
+  <strong>M4A</strong> (sample/sample.m4a)
+  <audio id="a2" controls preload="auto" src="sample/sample.m4a"></audio>
+  <button data-range="sample/sample.m4a">Check Range (M4A)</button>
+</div>
+<div class="card"><strong>Log</strong><pre id="log"></pre></div>
+<script>
+"use strict";
+const log=m=>{document.getElementById("log").textContent+=m+"\n"};
+const sw=document.getElementById("sw");
+if("serviceWorker" in navigator){
+  sw.textContent="Service worker: "+(navigator.serviceWorker.controller?"controlling this page ✔":"NOT controlling this page (open the app, then reload)");
+  sw.className=navigator.serviceWorker.controller?"ok":"bad";
+}else{sw.textContent="Service worker: not supported (needs https or localhost)";sw.className="bad"}
+for(const id of ["a1","a2"]){
+  const a=document.getElementById(id);
+  a.addEventListener("error",()=>log(id+": ERROR code "+(a.error&&a.error.code)));
+  a.addEventListener("canplay",()=>log(id+": can play, duration "+a.duration.toFixed(2)+"s"));
+}
+document.querySelectorAll("button[data-range]").forEach(b=>b.addEventListener("click",async()=>{
+  const f=b.dataset.range;
+  try{
+    const r=await fetch(f,{headers:{Range:"bytes=0-99"}});
+    const n=(await r.arrayBuffer()).byteLength;
+    log(f+" -> "+r.status+" "+(r.headers.get("Content-Range")||"(no Content-Range)")+" type="+r.headers.get("Content-Type")+" body="+n+" bytes");
+  }catch(e){log(f+" -> "+e.message)}
+}));
+</script>
+</body>
+</html>
