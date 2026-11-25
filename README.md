@@ -1,5 +1,7 @@
 # ¡ÓRALE! — The Mexican Spanish Codex
 
+> **Fork notice:** this is a fork of [ayaan40000/Orale](https://github.com/ayaan40000/Orale), maintained by Bender001001. The original MIT notice is preserved in `LICENSE`.
+
 **Learn conversational Mexican Spanish in 26 weeks — one HTML file, zero dependencies, fully offline.**
 
 No server. No account. No subscription. No tracking. Download `app/orale.html`, open it in Chrome or Edge, and start. It also installs as a full offline PWA.
