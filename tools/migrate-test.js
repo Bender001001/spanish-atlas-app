@@ -45,6 +45,12 @@ assert.strictEqual(S.schema,1);assert.deepStrictEqual(S.cards[sid("p3")],old.car
 assert.strictEqual(new Set(DECK.map(c=>c.id)).size,DECK.length,"deck ids must be unique");
 assert.strictEqual(DECK.length,Object.keys(LEGACY_IDS).length,"every deck card needs a frozen LEGACY_IDS entry");
 assert.ok(DECK.every(c=>!/^(v|p|s|i|tr)\\d+$/.test(c.id)),"no positional ids may remain in DECK");
+/* 7. raw pre-migration save is backed up once, byte-for-byte, and never overwritten */
+assert.strictEqual(localStorage.getItem("orale_v1_premigrate"),fixtureText,"premigrate backup must hold the raw old value");
+localStorage.setItem("orale_v1",JSON.stringify({xp:1,cards:{v1:{e:2.5,iv:1,reps:1,lapses:0,due:0}}}));load();
+assert.strictEqual(localStorage.getItem("orale_v1_premigrate"),fixtureText,"backup must never be overwritten");
+localStorage.removeItem("orale_v1_premigrate");localStorage.setItem("orale_v1",JSON.stringify(migrate(JSON.parse(fixtureText))));load();
+assert.strictEqual(localStorage.getItem("orale_v1_premigrate"),null,"no backup when save is already schema 1");
 console.log("PASS: migration (old-format fixture -> schema 1, "+Object.keys(old.cards).length+" cards, miss, log, import path)");
 `;
 try{eval(code+tests)}catch(e){console.error("FAIL:",e.message);process.exit(1)}
