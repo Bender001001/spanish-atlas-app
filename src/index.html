@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#10141c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>ÓRALE — The Mexican Spanish Codex</title>
+<style>
+/*@STYLE*/</style>
+</head>
+<body data-zone="panel">
+<div id="app">
+  <header>
+    <div class="hd-row">
+      <div class="brand">¡ÓRA<em>LE</em>!</div>
+      <div class="hd-stats">
+        <div class="pill streak" id="pill-streak" title="Racha (streak)">✦ <b>0</b></div>
+        <div class="pill" id="pill-pesos" title="Pesos">$ <b>0</b></div>
+        <button class="pill" id="btn-help" title="Tutorial (English)">?</button>
+        <button class="pill" id="btn-settings" title="Ajustes">⚙</button>
+      </div>
+    </div>
+    <div class="xp-wrap">
+      <div class="xp-meta"><span id="xp-rank">Nivel 1 · Peregrino</span><b id="xp-num" aria-live="polite">0 XP</b></div>
+      <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    </div>
+  </header>
+  <main id="view" role="main"></main>
+  <nav role="navigation" aria-label="Navegación principal">
+    <button data-v="panel" class="on" aria-label="Panel"><span class="ico">◆</span>Panel</button>
+    <button data-v="learn" aria-label="Estudiar"><span class="ico">✎</span>Estudiar</button>
+    <button data-v="arena" aria-label="Arena"><span class="ico">⚔</span>Arena</button>
+    <button data-v="codex" aria-label="Códice"><span class="ico">❧</span>Códice</button>
+    <button data-v="cantina" aria-label="Cantina"><span class="ico">♪</span>Cantina</button>
+  </nav>
+  <div id="buddy" role="status"><span id="buddy-txt"></span><button class="bx" onclick="hideBuddy()">×</button></div>
+  <div id="modal-root"></div>
+</div>
+<script>
+/*@SCRIPT*/</script>
+</body>
+</html>

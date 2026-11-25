@@ -14,7 +14,7 @@ global.navigator={};global.scrollTo=()=>{};global.confirm=()=>true;global.prompt
 global.setTimeout=()=>0;global.setInterval=()=>0;global.clearTimeout=()=>{};
 const tests=`
 console.log("deck:",DECK.length,"V:"+V.length,"PH:"+PH.length,"SL:"+SL.length,"ID:"+ID.length,"FF:"+FF.length,"FX:"+FX.length,"GQ:"+GQ.length,"CJ:"+CJ.length,"DLG:"+DLG.length,"ST:"+ST.length,"W:"+W.length,"v"+APP_VERSION);
-grade("v0",2);grade("v1",0);grade("v0",3);
+grade(DECK[0].id,2);grade(DECK[1].id,0);grade(DECK[0].id,3);
 if(S.xp<=0)throw new Error("XP not accruing");
 S.week=26;if(unlocked().length!==DECK.length)throw new Error("unlock frontier broken");
 const q1=mcq(DECK[5]);if(!(q1.opts.length===4&&q1.a>=0))throw new Error("mcq broken");
@@ -74,7 +74,7 @@ const pj=hoursProjection(S);if(typeof pj.note!=="string"||typeof pj.eta!=="strin
 const csv=buildReviewCSV(S).trim().split("\\n");
 if(csv[0]!=="fecha,tarjeta_id,espanol,ingles,calificacion")throw new Error("CSV header broken");
 if(csv.length!==S.log.length+1)throw new Error("CSV row count mismatch");
-if(!/^\\d{4}-\\d{2}-\\d{2},v\\d+,/.test(csv[1]))throw new Error("CSV row format broken");
+if(!/^\\d{4}-\\d{2}-\\d{2},[a-z]+\\.[a-z0-9~-]+,/.test(csv[1]))throw new Error("CSV row format broken");
 exportReviewCSV();
 analyticsDemo();if(!ADEMO)throw new Error("demo data path did not activate");
 if(!(ADEMO.log.length>200&&Object.keys(ADEMO.cards).length>100))throw new Error("demo seed too small to exercise charts");
@@ -83,6 +83,15 @@ analyticsDemo();if(ADEMO)throw new Error("demo toggle-off broken");
 if(S.log.length>4500)throw new Error("log prune not applied");
 openTutorial();TUTI=TUT.length-1;tutPage();tutDone();
 if(!S.tut)throw new Error("tutorial flag not set");
+/* --- backup/persistence (fork) --- */
+if(persistStorage()!==false)throw new Error("persistStorage must be a silent no-op without navigator.storage");
+var _pc=0;navigator.storage={persist:()=>{_pc++;return Promise.resolve(true)}};
+if(persistStorage()!==true||_pc!==1)throw new Error("persistStorage must call navigator.storage.persist()");
+var _dl=null;URL.createObjectURL=function(b){_dl=b;return "blob:mock"};exportData();
+if(!_dl||_dl.type!=="application/json")throw new Error("exportData must build a JSON Blob download");
+var _loc=global.location;global.location={reload(){global.__reloaded=1}};var _before=S.xp;importText(JSON.stringify({xp:777}));
+if(S.xp!==777||!global.__reloaded)throw new Error("importText (paste/file shared path) must load exported JSON");
+global.__reloaded=0;importText("not json");if(global.__reloaded)throw new Error("importText must reject invalid data");global.location=_loc;S.xp=_before;
 /* --- S9 Boss Battles & Skill Tree --- */
 if(BOSSES.length!==6)throw new Error("boss roster must be 6 (one per phase)");
 renderArena();var _av=document.querySelector("#view").innerHTML;if(_av.indexOf("renderBossList")<0||_av.indexOf("renderSkillTree")<0)throw new Error("Arena missing boss/skill-tree launchers");

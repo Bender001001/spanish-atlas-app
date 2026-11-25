@@ -8,17 +8,17 @@ global.window=global;global.document={addEventListener(){},querySelector:()=>({a
 global.localStorage={getItem:()=>null,setItem(){},removeItem(){}};global.speechSynthesis={getVoices:()=>[],cancel(){},speak(){}};global.SpeechSynthesisUtterance=function(){};
 global.navigator={};global.scrollTo=()=>{};global.setTimeout=()=>0;global.setInterval=()=>0;global.clearTimeout=()=>{};
 let code=m[1].replace('"use strict";','');
-code=code.slice(0,code.indexOf("/* ================= INIT"));
+code=code.slice(0,code.indexOf("/*! INIT"));
 const checks=`
 const errs=[],warn=[],seen={};
-V.forEach((r,i)=>{if(!(Array.isArray(r)&&r.length===3))errs.push("V["+i+"] bad shape");
+V.forEach((r,i)=>{if(!(Array.isArray(r)&&r.length===4))errs.push("V["+i+"] bad shape");
  else{if(!((r[0]>=1&&r[0]<=26)||r[0]===99))errs.push("V["+i+"] week "+r[0]);
   if(typeof r[1]!=="string"||typeof r[2]!=="string")errs.push("V["+i+"] non-string");
   const k=r[1].toLowerCase();if(seen[k]!==undefined)errs.push('V dup es "'+r[1]+'" at '+seen[k]+" and "+i);seen[k]=i}});
-PH.forEach((r,i)=>{if(!(r.length===3&&r[0]>=1&&r[0]<=26))errs.push("PH["+i+"] bad")});
-SL.forEach((r,i)=>{if(r.length!==3)errs.push("SL["+i+"] needs [word,meaning,example]")});
-ID.forEach((r,i)=>{if(r.length!==3)errs.push("ID["+i+"] needs [expr,literal,meaning]")});
-TR.forEach((r,i)=>{if(!(Array.isArray(r)&&r.length===2))errs.push("TR["+i+"] bad shape");
+PH.forEach((r,i)=>{if(!(r.length===4&&r[0]>=1&&r[0]<=26))errs.push("PH["+i+"] bad")});
+SL.forEach((r,i)=>{if(r.length!==4)errs.push("SL["+i+"] needs [word,meaning,example,id]")});
+ID.forEach((r,i)=>{if(r.length!==4)errs.push("ID["+i+"] needs [expr,literal,meaning,id]")});
+TR.forEach((r,i)=>{if(!(Array.isArray(r)&&r.length===3))errs.push("TR["+i+"] bad shape");
  else if(typeof r[0]!=="string"||typeof r[1]!=="string")errs.push("TR["+i+"] non-string")});
 FF.forEach((r,i)=>{if(r.length!==3)errs.push("FF["+i+"] needs 3 fields")});
 GQ.forEach((g,i)=>{if(!(g.o&&g.o.length===4))errs.push("GQ["+i+"] needs 4 options");
@@ -27,6 +27,21 @@ GQ.forEach((g,i)=>{if(!(g.o&&g.o.length===4))errs.push("GQ["+i+"] needs 4 option
 CJ.forEach((r,i)=>{if(r.length!==6)errs.push("CJ["+i+"] needs [verb,en,pres,pret,imp,fut]");
  else [2,3,4,5].forEach(ti=>{if(!(Array.isArray(r[ti])&&r[ti].length===6))errs.push("CJ["+i+"] tense slot "+ti+" needs 6 person forms")})});
 if(CJ.length!==12)errs.push("CJ must have exactly 12 verbs");
+// ---- S14 stable-id checks: ids live IN the data; LEGACY_IDS only serves old saves ----
+{const src={v:V,p:PH,s:SL,i:ID,tr:TR},idx={v:3,p:3,s:3,i:3,tr:2};
+ const all=[];Object.keys(src).forEach(k=>src[k].forEach((r,i)=>{const id=r[idx[k]];
+  if(typeof id!=="string"||!/^[a-z]{2,4}\.[a-z0-9-]+(~[0-9]+)?$/.test(id))errs.push(k+"["+i+"] missing/invalid stable id "+JSON.stringify(id));else all.push(id)}));
+ const seenId={};all.forEach(id=>{if(seenId[id])errs.push("duplicate card id "+id);seenId[id]=1});
+ if(new Set(DECK.map(c=>c.id)).size!==DECK.length)errs.push("DECK ids not unique");
+ if(DECK.some((c,n)=>c.id!==all[n]))errs.push("DECK ids must equal the data ids, in order");
+ const want=[];Object.keys(src).forEach(k=>src[k].forEach((r,i)=>want.push([k+i,r[idx[k]]])));
+ if(want.length!==968)errs.push("expected 968 legacy positions, found "+want.length);
+ if(Object.keys(LEGACY_IDS).length!==968)errs.push("LEGACY_IDS must have 968 entries, has "+Object.keys(LEGACY_IDS).length);
+ want.forEach(([pos,id])=>{if(LEGACY_IDS[pos]!==id)errs.push("LEGACY_IDS["+pos+"]="+LEGACY_IDS[pos]+" but data row has "+id)});
+ if(new Set(Object.values(LEGACY_IDS)).size!==968)errs.push("LEGACY_IDS values must be unique")}
+// ---- recorded audio: AUDIO_MAP (inlined from app/audio/manifest.json) must be well-formed ----
+Object.keys(AUDIO_MAP).forEach(k=>{if(k!==audioKey(k))errs.push("AUDIO_MAP key not normalized: "+JSON.stringify(k));
+ if(typeof AUDIO_MAP[k]!=="string"||!/^audio\\/[A-Za-z0-9._-]+\\.(mp3|ogg|m4a|wav)$/.test(AUDIO_MAP[k]))errs.push("AUDIO_MAP bad path for "+k)});
 const dlgTitles={};
 DLG.forEach((d,i)=>{if(!(d.wk>=1&&d.wk<=26))errs.push("DLG["+i+"] bad week "+d.wk);
  if(typeof d.t!=="string"||!d.t)errs.push("DLG["+i+"] missing title");
