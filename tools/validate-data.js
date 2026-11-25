@@ -8,7 +8,7 @@ global.window=global;global.document={addEventListener(){},querySelector:()=>({a
 global.localStorage={getItem:()=>null,setItem(){},removeItem(){}};global.speechSynthesis={getVoices:()=>[],cancel(){},speak(){}};global.SpeechSynthesisUtterance=function(){};
 global.navigator={};global.scrollTo=()=>{};global.setTimeout=()=>0;global.setInterval=()=>0;global.clearTimeout=()=>{};
 let code=m[1].replace('"use strict";','');
-code=code.slice(0,code.indexOf("/* ================= INIT"));
+code=code.slice(0,code.indexOf("/*! INIT"));
 const checks=`
 const errs=[],warn=[],seen={};
 V.forEach((r,i)=>{if(!(Array.isArray(r)&&r.length===4))errs.push("V["+i+"] bad shape");

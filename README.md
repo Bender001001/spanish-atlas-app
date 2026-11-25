@@ -35,7 +35,9 @@ No server. No account. No subscription. No tracking. Download `app/orale.html`, 
 
 ```
 orale-project/
-├── app/orale.html           # the entire application (works standalone from disk)
+├── src/                     # sources: index.html shell, style.css, js/NN-*.js modules
+├── app/orale.html           # BUILT entire application (npm run build; works standalone from disk)
+├── tools/build.js           # esbuild step: src/ -> app/orale.html
 ├── app/manifest.webmanifest # PWA manifest
 ├── app/sw.js                # service worker — network-first shell, version-aware cache
 ├── app/icon.svg             # app icon
@@ -52,11 +54,11 @@ orale-project/
 
 ## Contributing
 
-The single-file architecture is a **deliberate design constraint**, not technical debt: the entire app must keep working when `orale.html` is double-clicked from disk. PRs that introduce build steps, frameworks, or split the file will be declined — everything else is fair game. Before opening a PR:
+The single-file **deliverable** is a **deliberate design constraint**, not technical debt: the shipped `app/orale.html` must keep working when double-clicked from disk, offline, with no server. Source is split into modules under `src/` and a pinned esbuild step (`npm run build`) inlines it into that one file; the built file is committed. PRs that add frameworks, runtime dependencies, or break the one-self-contained-file output will be declined — everything else is fair game. Before opening a PR:
 
 1. Read `docs/DEV-GUIDE.md` (rules of engagement) and pick an item from `ROADMAP.md`.
 2. Make your change additively — don't rename or restructure existing engine functions.
-3. Run both gates and confirm they print PASS: `node tools/validate-data.js` and `node tools/smoke-test.js`.
+3. Run `npm ci && npm test` (builds, checks the committed build is current, runs validate-data, smoke-test, migrate-test) and confirm every script prints PASS.
 4. Bump `APP_VERSION` one level and add a `docs/CHANGELOG.md` entry (newest at top, match the existing format).
 
 Spanish content PRs must use Mexican register (carro not coche, platicar not charlar) — see the QA checklist in `docs/QA-REPORT.md`.

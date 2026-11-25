@@ -11,7 +11,7 @@ global.window=global;global.document={addEventListener(){},querySelector:()=>({a
 global.localStorage={_s:{orale_v1:fixtureText},getItem(k){return this._s[k]||null},setItem(k,v){this._s[k]=v},removeItem(k){delete this._s[k]}};
 global.speechSynthesis={getVoices:()=>[],cancel(){},speak(){}};global.SpeechSynthesisUtterance=function(){};
 global.navigator={};global.scrollTo=()=>{};global.setTimeout=()=>0;global.setInterval=()=>0;global.clearTimeout=()=>{};
-let code=m[1].replace('"use strict";','');code=code.slice(0,code.indexOf("/* ================= INIT"));
+let code=m[1].replace('"use strict";','');code=code.slice(0,code.indexOf("/*! INIT"));
 const tests=`
 const old=JSON.parse(fixtureText);
 assert.strictEqual(old.schema,undefined,"fixture must be old-format (no schema)");
