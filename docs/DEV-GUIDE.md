@@ -10,7 +10,7 @@
 ## 2. Workflow rules (all models)
 1. One session = one ROADMAP entry. Do not exceed scope; log discovered ideas in the ROADMAP backlog instead.
 2. Read before write: `view` the relevant section of orale.html; the file is one HTML document — CSS block, HTML skeleton, then one `<script>` organized by banner comments (`/* ==== DATA/ENGINE/VIEW: X ==== */`). Insert new code under the matching banner.
-3. Append-only data (see DESIGN.md §5): card ids are positional.
+3. Append-only data (see DESIGN.md §5): card ids are explicit stable strings stored as the LAST field of every V/PH/SL/ID/TR row (e.g. `"voc.hola"`). Never derive ids from text or position, never change or reuse an id, and give every new row a unique one. `LEGACY_IDS` is frozen (old positional save keys only); validate-data enforces unique ids and full 968-position coverage.
 4. State schema changes: additive with defaults in `fresh()` only.
 5. Every session ends with: both tools passing, a manual browser sanity check (open app, run tutorial or a review), a CHANGELOG entry with version bump, and — if the next session is Qwen's — a packet written to `/handoff/`.
 6. Backwards compatibility with existing user state is non-negotiable. If unsure, write a tiny migration in `load()`.
