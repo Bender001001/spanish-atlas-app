@@ -3049,6 +3049,7 @@ function bestVoice() {
   return VOICES.find((v) => /MX/i.test(v.lang)) || VOICES.find((v) => /US|419/i.test(v.lang)) || VOICES[0];
 }
 const AUDIO_MAP = {};
+const AUDIO_SLOW_MAP = {};
 function audioKey(t) {
   return String(t).trim().replace(/\s+/g, " ").toLowerCase();
 }
@@ -3063,13 +3064,13 @@ function stopAudio() {
     document.body.classList.remove("tts");
   }
 }
-function speak(t, rate, pitch, voiceOverride) {
+function speak(t, rate, pitch, voiceOverride, slow) {
   stopAudio();
-  const f = voiceOverride ? null : AUDIO_MAP[audioKey(t)];
+  const k = audioKey(t), fs_ = voiceOverride || !slow ? null : AUDIO_SLOW_MAP[k], f = fs_ || (voiceOverride ? null : AUDIO_MAP[k]);
   if (f && typeof Audio !== "undefined") {
     try {
       const a = new Audio(f);
-      a.playbackRate = rate || S.rate;
+      a.playbackRate = fs_ ? 1 : rate || S.rate;
       CUR_AUDIO = a;
       a.onplay = () => document.body.classList.add("tts");
       a.onended = () => {

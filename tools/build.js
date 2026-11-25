@@ -21,12 +21,12 @@ const rd=f=>fs.readFileSync(f,"utf8").split("\r\n").join("\n");
 /* must match audioKey() in src/js/07-engine.js */
 const audioKey=t=>String(t).trim().replace(/\s+/g," ").toLowerCase();
 
-function audioMap(appDir){
-  const f=path.join(appDir,"audio","manifest.json");
+function audioMap(appDir,name){
+  const f=path.join(appDir,"audio",name||"manifest.json");
   const map=fs.existsSync(f)?JSON.parse(rd(f)):{};
   Object.keys(map).forEach(k=>{
     if(!k||k!==audioKey(k))throw new Error('audio manifest key "'+k+'" must be trimmed, single-spaced, lower-case');
-    if(!/^audio\/[A-Za-z0-9._-]+\.(mp3|ogg|m4a|wav)$/.test(map[k]))throw new Error('audio manifest path for "'+k+'" must be audio/<file>.mp3|ogg|m4a|wav, got '+map[k]);
+    if(!/^audio\/(slow\/)?[A-Za-z0-9._-]+\.(mp3|ogg|m4a|wav)$/.test(map[k]))throw new Error('audio manifest path for "'+k+'" must be audio/[slow/]<file>.mp3|ogg|m4a|wav, got '+map[k]);
     if(!fs.existsSync(path.join(appDir,map[k])))throw new Error("audio file missing: "+map[k]);
   });
   return map;
@@ -41,6 +41,9 @@ function render(o){
   let src='"use strict";\n'+files.map(f=>rd(path.join(SRC,"js",f))).join("");
   if(src.split(AUD).length!==2)throw new Error("AUDIO_MAP placeholder must appear exactly once in src/js");
   src=src.replace(AUD,()=>JSON.stringify(audioMap(appDir)));
+  const SLOW="/*@AUDIO_SLOW_MAP*/{}";
+  if(src.split(SLOW).length!==2)throw new Error("AUDIO_SLOW_MAP placeholder must appear exactly once in src/js");
+  src=src.replace(SLOW,()=>JSON.stringify(audioMap(appDir,"manifest-slow.json")));
   const js=esbuild.transformSync(src,{loader:"js",target:"es2020"}).code;
   for(const ph of ["/*@STYLE*/","/*@SCRIPT*/"])if(shell.split(ph).length!==2)throw new Error("placeholder "+ph+" must appear exactly once in src/index.html");
   return shell.replace("/*@STYLE*/",()=>css).replace("/*@SCRIPT*/",()=>js);
@@ -52,7 +55,7 @@ function renderSw(o){
   const a="/*audio:start*/",b="/*audio:end*/";
   const i=sw.indexOf(a),j=sw.indexOf(b);
   if(i<0||j<i)throw new Error("sw.js must contain the audio:start / audio:end markers");
-  const list=[...new Set(Object.values(audioMap(appDir)))].sort().map(f=>'  "./'+f+'",\n').join("");
+  const list=[...new Set([...Object.values(audioMap(appDir)),...Object.values(audioMap(appDir,"manifest-slow.json"))])].sort().map(f=>'  "./'+f+'",\n').join("");
   return sw.slice(0,i+a.length)+"\n"+list+sw.slice(j);
 }
 
