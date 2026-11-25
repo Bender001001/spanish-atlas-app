@@ -83,6 +83,15 @@ analyticsDemo();if(ADEMO)throw new Error("demo toggle-off broken");
 if(S.log.length>4500)throw new Error("log prune not applied");
 openTutorial();TUTI=TUT.length-1;tutPage();tutDone();
 if(!S.tut)throw new Error("tutorial flag not set");
+/* --- backup/persistence (fork) --- */
+if(persistStorage()!==false)throw new Error("persistStorage must be a silent no-op without navigator.storage");
+var _pc=0;navigator.storage={persist:()=>{_pc++;return Promise.resolve(true)}};
+if(persistStorage()!==true||_pc!==1)throw new Error("persistStorage must call navigator.storage.persist()");
+var _dl=null;URL.createObjectURL=function(b){_dl=b;return "blob:mock"};exportData();
+if(!_dl||_dl.type!=="application/json")throw new Error("exportData must build a JSON Blob download");
+var _loc=global.location;global.location={reload(){global.__reloaded=1}};var _before=S.xp;importText(JSON.stringify({xp:777}));
+if(S.xp!==777||!global.__reloaded)throw new Error("importText (paste/file shared path) must load exported JSON");
+global.__reloaded=0;importText("not json");if(global.__reloaded)throw new Error("importText must reject invalid data");global.location=_loc;S.xp=_before;
 /* --- S9 Boss Battles & Skill Tree --- */
 if(BOSSES.length!==6)throw new Error("boss roster must be 6 (one per phase)");
 renderArena();var _av=document.querySelector("#view").innerHTML;if(_av.indexOf("renderBossList")<0||_av.indexOf("renderSkillTree")<0)throw new Error("Arena missing boss/skill-tree launchers");

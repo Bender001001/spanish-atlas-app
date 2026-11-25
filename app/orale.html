@@ -1419,11 +1419,16 @@ function renderCantina(){const tabs=[["jerga","Jerga"],["dichos","Dichos"],["tra
  $("#view").innerHTML=html}
 /* ================= SETTINGS ================= */
 $("#btn-settings").addEventListener("click",()=>{const vops=VOICES.map(v=>'<option value="'+esc(v.name)+'"'+(S.voice===v.name?" selected":"")+'>'+esc(v.name)+' ('+v.lang+')</option>').join("");
- modal('<h3>Ajustes</h3><label class="fl">Tu nombre</label><input type="text" id="st-name" value="'+esc(S.name)+'"><label class="fl">Voz en español</label><select id="st-voice"><option value="">Automática (busca es-MX)</option>'+vops+'</select><label class="fl">Semana actual (1-26)</label><select id="st-week">'+Array.from({length:26},(_,i)=>'<option '+(S.week===i+1?"selected":"")+'>'+(i+1)+'</option>').join("")+'</select><label class="fl">Respaldo</label><div class="grid2"><button class="btn ghost sm" onclick="exportData()">Exportar datos</button><button class="btn ghost sm" onclick="importData()">Importar</button></div><div class="grid2" style="margin-top:14px"><button class="btn ghost" onclick="resetAll()">Reiniciar todo</button><button class="btn" onclick="saveSettings()">Guardar</button></div>')});
+ modal('<h3>Ajustes</h3><label class="fl">Tu nombre</label><input type="text" id="st-name" value="'+esc(S.name)+'"><label class="fl">Voz en español</label><select id="st-voice"><option value="">Automática (busca es-MX)</option>'+vops+'</select><label class="fl">Semana actual (1-26)</label><select id="st-week">'+Array.from({length:26},(_,i)=>'<option '+(S.week===i+1?"selected":"")+'>'+(i+1)+'</option>').join("")+'</select><label class="fl">Respaldo</label><div class="grid2"><button class="btn ghost sm" onclick="exportData()">Exportar datos</button><button class="btn ghost sm" onclick="importData()">Importar archivo</button></div><button class="btn ghost sm" style="margin-top:8px;width:100%" onclick="importPaste()">Importar pegando texto</button><div class="grid2" style="margin-top:14px"><button class="btn ghost" onclick="resetAll()">Reiniciar todo</button><button class="btn" onclick="saveSettings()">Guardar</button></div>')});
 function resetAll(){if(confirm("¿Borrar todo el progreso?")){RESETTING=true;if(_saveT)clearTimeout(_saveT);localStorage.removeItem(KEY);location.reload()}}
 function saveSettings(){S.name=$("#st-name").value||"Escudero";S.voice=$("#st-voice").value;S.week=parseInt($("#st-week").value);saveNow();closeModal();go(VIEW);toast("Guardado")}
-function exportData(){const t=JSON.stringify(S);navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast("Datos copiados al portapapeles")).catch(()=>prompt("Copia esto:",t))}
-function importData(){const t=prompt("Pega tus datos exportados:");if(t){try{S=Object.assign(fresh(),JSON.parse(t));saveNow();location.reload()}catch(e){toast("Datos inválidos")}}}
+function exportData(){saveNow();const blob=new Blob([JSON.stringify(S)],{type:"application/json"});const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");a.href=url;a.download="orale-respaldo-"+today()+".json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);toast("Respaldo descargado (.json)")}
+function importText(t){try{const o=JSON.parse(t);if(!o||typeof o!=="object"||Array.isArray(o))throw 0;S=Object.assign(fresh(),o);saveNow();location.reload()}catch(e){toast("Datos inválidos")}}
+function importData(){const i=document.createElement("input");i.type="file";i.accept=".json,application/json";
+ i.addEventListener("change",()=>{const f=i.files&&i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>importText(String(r.result));r.onerror=()=>toast("No se pudo leer el archivo");r.readAsText(f)});i.click()}
+function importPaste(){const t=prompt("Pega tus datos exportados:");if(t)importText(t)}
+function persistStorage(){try{if(typeof navigator!=="undefined"&&navigator.storage&&navigator.storage.persist){const p=navigator.storage.persist();if(p&&p.catch)p.catch(()=>{});return true}}catch(e){}return false}
 /* ================= TUTORIAL (English) ================= */
 const APP_VERSION="2.0.0";
 const TUT=[
@@ -1459,7 +1464,7 @@ function pwaInit(){/* Register the service worker ONLY when it can actually work
 /* ================= INIT ================= */
 setInterval(()=>{if(document.visibilityState==="visible"){day().min+=0.5;save()}},30000);
 document.addEventListener("keydown",e=>{var fc=document.getElementById("fc");if(!fc)return;if(e.key===" "||e.code==="Space"){e.preventDefault();fc.classList.toggle("flip")}else if(e.key>="1"&&e.key<="4"){ans(+e.key-1)}});
-pwaInit();
+pwaInit();persistStorage();
 document.querySelector("#btn-help").addEventListener("click",openTutorial);
 renderHeader();go("panel");
 if(!S.tut){setTimeout(openTutorial,500)}else{setTimeout(()=>{buddy(pick(AN.greet))},900);}
