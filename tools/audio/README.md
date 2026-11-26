@@ -1,6 +1,6 @@
 # Recorded audio pipeline (MACHINE-GENERATED, UNVERIFIED)
 
-Everything in `app/audio/` was synthesized with [Piper](https://github.com/OHF-Voice/piper1-gpl) TTS. **No human has listened to it.** See `docs/AUDIO-SPOTCHECK.md` for what to listen to first.
+Everything in `app/audio/` was synthesized with Piper TTS (`piper-tts` on PyPI). **No human has listened to it.** See `docs/AUDIO-SPOTCHECK.md` for what to listen to first.
 
 | File | Purpose |
 |---|---|
