@@ -32,6 +32,18 @@ function audioMap(appDir,name){
   return map;
 }
 
+/* file -> "male"|"female", from audio/manifest-meta.json (sidecar written by tools/audio/assemble-audio.js).
+   The manifests themselves are unchanged. speak() uses it so a dialogue speaker only gets a recording in their own voice. */
+const VOICE_KIND={"es_MX-ald-medium":"male","es_MX-claude-high":"female"};
+function audioVoice(appDir){
+  const f=path.join(appDir,"audio","manifest-meta.json");if(!fs.existsSync(f))return {};
+  const ent=JSON.parse(rd(f)).entries||{},m=audioMap(appDir),ms=audioMap(appDir,"manifest-slow.json"),out={};
+  Object.keys(ent).forEach(k=>{const v=ent[k].voice,kind=VOICE_KIND[v];
+    if(!kind)throw new Error('manifest-meta.json: unknown voice "'+v+'" for "'+k+'" (known: '+Object.keys(VOICE_KIND).join(", ")+")");
+    [m[k],ms[k]].forEach(p=>{if(p)out[p]=kind})});
+  Object.keys(m).concat(Object.keys(ms)).forEach(k=>{if(!(k in ent))throw new Error('manifest-meta.json has no voice for "'+k+'"')});
+  return out}
+
 function render(o){
   const appDir=(o&&o.appDir)||APP;
   const shell=rd(path.join(SRC,"index.html"));
@@ -44,6 +56,9 @@ function render(o){
   const SLOW="/*@AUDIO_SLOW_MAP*/{}";
   if(src.split(SLOW).length!==2)throw new Error("AUDIO_SLOW_MAP placeholder must appear exactly once in src/js");
   src=src.replace(SLOW,()=>JSON.stringify(audioMap(appDir,"manifest-slow.json")));
+  const VOI="/*@AUDIO_VOICE*/{}";
+  if(src.split(VOI).length!==2)throw new Error("AUDIO_VOICE placeholder must appear exactly once in src/js");
+  src=src.replace(VOI,()=>JSON.stringify(audioVoice(appDir)));
   const js=esbuild.transformSync(src,{loader:"js",target:"es2020"}).code;
   for(const ph of ["/*@STYLE*/","/*@SCRIPT*/"])if(shell.split(ph).length!==2)throw new Error("placeholder "+ph+" must appear exactly once in src/index.html");
   return shell.replace("/*@STYLE*/",()=>css).replace("/*@SCRIPT*/",()=>js);

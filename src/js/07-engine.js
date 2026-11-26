@@ -65,11 +65,17 @@ function bestVoice(){if(S.voice){const v=VOICES.find(v=>v.name===S.voice);if(v)r
 const AUDIO_MAP=/*@AUDIO_MAP*/{};
 /* AUDIO_SLOW_MAP: same shape, from app/audio/manifest-slow.json (slow-speed recordings, optional per text). */
 const AUDIO_SLOW_MAP=/*@AUDIO_SLOW_MAP*/{};
+/* AUDIO_VOICE: recording path -> "male"|"female" (which voice recorded it), from app/audio/manifest-meta.json. */
+const AUDIO_VOICE=/*@AUDIO_VOICE*/{};
 function audioKey(t){return String(t).trim().replace(/\s+/g," ").toLowerCase()}
 let CUR_AUDIO=null;
 function stopAudio(){if(CUR_AUDIO){try{CUR_AUDIO.pause()}catch(e){}CUR_AUDIO=null;document.body.classList.remove("tts")}}
 /* slow=true: prefer the slow recording (already slow, so played at 1x); no slow file -> the normal recording at the usual rate -> TTS. */
-function speak(t,rate,pitch,voiceOverride,slow){stopAudio();if(slow===undefined)slow=!!S.slow;const k=audioKey(t),fs_=voiceOverride||!slow?null:AUDIO_SLOW_MAP[k],f=fs_||(voiceOverride?null:AUDIO_MAP[k]);
+/* speakerVoice ("male"|"female", optional, for dialogue lines): a recording is used only if AUDIO_VOICE says it was recorded in that voice; otherwise device TTS (with voiceOverride).
+   A voiceOverride WITHOUT speakerVoice still means "I want this exact device voice": no recording. */
+function speak(t,rate,pitch,voiceOverride,slow,speakerVoice){stopAudio();if(slow===undefined)slow=!!S.slow;
+ const no=voiceOverride&&!speakerVoice,okv=p=>p&&(!speakerVoice||AUDIO_VOICE[p]===speakerVoice),k=audioKey(t),
+  fs_=no||!slow?null:(okv(AUDIO_SLOW_MAP[k])?AUDIO_SLOW_MAP[k]:null),f=fs_||(no?null:(okv(AUDIO_MAP[k])?AUDIO_MAP[k]:null));
  if(f&&typeof Audio!=="undefined"){try{const a=new Audio(f);a.playbackRate=fs_?1:(rate||S.rate);CUR_AUDIO=a;
   a.onplay=()=>document.body.classList.add("tts");a.onended=()=>{if(CUR_AUDIO===a)CUR_AUDIO=null;document.body.classList.remove("tts")};
   const fall=()=>{if(CUR_AUDIO===a){CUR_AUDIO=null;speakTTS(t,rate,pitch,voiceOverride)}};a.onerror=fall;

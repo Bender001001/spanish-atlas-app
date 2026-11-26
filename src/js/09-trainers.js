@@ -86,7 +86,7 @@ function renderDlgList(){const items=dlgUnlocked();
  +(items.length?items.map(x=>'<div class="card"><h3>'+esc(x.d.t)+' <span class="tag">sem '+x.d.wk+'</span>'+((S.dlgDone||[]).includes(x.i)?' <span class="tag" style="border-color:var(--lima);color:var(--lima)">✓ hecho</span>':"")+'</h3><p class="muted">'+esc(x.d.note)+'</p><button class="btn ghost wide" style="margin-top:8px" onclick="dlgPlay('+x.i+')">Escuchar diálogo</button></div>').join(""):'<p class="muted">Todavía no hay diálogos desbloqueados. Sigue avanzando de semana.</p>')}
 function dlgPlay(i){DLGQ={i:i,li:0};dlgLine()}
 function dlgVoiceFor(ch){if(ch===1&&VOICES.length>1){const alt=VOICES.find(v=>v!==bestVoice());if(alt)return alt}return bestVoice()}
-function dlgSpeakLine(li){const d=DLG[DLGQ.i];const ln=d.lines[li];speak(ln[1],DLR,li%2===0?1:1.3,dlgVoiceFor(li%2))}
+function dlgSpeakLine(li){const d=DLG[DLGQ.i];const ln=d.lines[li];speak(ln[1],DLR,li%2===0?1:1.3,dlgVoiceFor(li%2),undefined,li%2===0?"male":"female")}
 function dlgLine(){const z=DLGQ,d=DLG[z.i];
  if(z.li>=d.lines.length)return dlgMCQ();
  const ln=d.lines[z.li];

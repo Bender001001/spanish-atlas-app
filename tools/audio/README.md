@@ -61,3 +61,7 @@ npm test
 ## Checking the real files
 
 `npm test` runs `tools/audio-files-test.js`, which uses `ffprobe` to confirm every file in `app/audio/` decodes with a duration above zero and that each manifest entry points at a real file. Without `ffprobe` on PATH it prints a SKIP line and passes; set `REQUIRE_FFPROBE=1` to make that a failure. (`tools/audio-test.js` only exercises the small fixture in `tools/fixtures/audio-app`.)
+
+## Voice per recording (dialogue lines)
+
+`manifest-meta.json` is now read by `tools/build.js` (the two manifests keep their format): each entry's `voice` becomes `AUDIO_VOICE` in the app (recording path -> `male` for ald / `female` for claude-high). `speak(..., speakerVoice)` uses a recording only if it was made in that voice; dialogue lines pass `male` for even lines and `female` for odd lines (the same alternation the device voices already use). The build fails if a manifest entry has no voice in the sidecar, so rerunning `assemble-audio.js` is the way to keep them in step.

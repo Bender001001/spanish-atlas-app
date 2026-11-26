@@ -61,6 +61,22 @@ reset();speak("Buenos días",0.8);assert.strictEqual(audios[0].src,"audio/buenos
 reset();speak("¿Cómo te llamas?");assert.deepStrictEqual(tts,["¿Cómo te llamas?"]);
 reset();speak("hola",null,null,null,false);assert.strictEqual(audios[0].src,"audio/hola.wav");
 S.slow=false;reset();speak("hola");assert.strictEqual(audios[0].src,"audio/hola.wav");
+/* 13. speakerVoice (dialogue lines): the recording is used only if its voice matches; else device TTS with the given voice. */
+const dv={name:"dev",lang:"es-MX"};
+S.slow=false;
+reset();speak("hola",0.9,1,dv,undefined,"male");assert.strictEqual(audios.length,1);assert.strictEqual(audios[0].src,"audio/hola.wav");assert.deepStrictEqual(tts,[]);
+reset();speak("hola",0.9,1,dv,undefined,"female");assert.strictEqual(audios.length,0,"male recording must not play for a female speaker");assert.deepStrictEqual(tts,["hola"]);
+reset();speak("Buenos días",0.9,1,dv,undefined,"female");assert.strictEqual(audios.length,1);assert.strictEqual(audios[0].src,"audio/buenos-dias.wav");
+reset();speak("Buenos días",0.9,1,dv,undefined,"male");assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["Buenos días"]);
+reset();speak("¿Cómo te llamas?",0.9,1,dv,undefined,"male");assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["¿Cómo te llamas?"]);
+/* a voiceOverride with no speakerVoice keeps the old meaning: exact device voice, no recording */
+reset();speak("hola",0.9,1,dv);assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["hola"]);
+/* Slow works for dialogue lines: matching voice -> slow file at 1x; mismatched voice -> TTS (never the other voice's slow file) */
+S.slow=true;
+reset();speak("hola",0.9,1,dv,undefined,"male");assert.strictEqual(audios[0].src,"audio/slow/hola.wav");assert.strictEqual(audios[0].playbackRate,1);
+reset();speak("hola",0.9,1,dv,undefined,"female");assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["hola"]);
+reset();speak("Buenos días",0.9,1,dv,undefined,"female");assert.strictEqual(audios[0].src,"audio/buenos-dias.wav");assert.strictEqual(audios[0].playbackRate,0.9);
+S.slow=false;
 })()`;
 (async()=>{
  await eval(code+";"+tests);

@@ -1,5 +1,5 @@
 {
- "status": "MACHINE-GENERATED (Piper TTS) and UNVERIFIED: no human has listened to these files. Not read by the app or the build.",
+ "status": "MACHINE-GENERATED (Piper TTS) and UNVERIFIED: no human has listened to these files. The build reads only each entry's voice (to tell the app which recordings are male/ald and female/claude-high).",
  "voices": {
   "male_mx": "es_MX-ald-medium",
   "female_mx": "es_MX-claude-high",
