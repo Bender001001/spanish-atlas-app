@@ -6,7 +6,8 @@
    - male PHRASE line in weak-lines.json         -> claude-high file from --fallback  (fallbackVoice:true)
    - male dialogue/listening line in weak-lines  -> no file (device TTS), listed under ttsOnly
    - female line                                 -> claude-high file from --normal (flagged ones still ship)
-   - a text that appears in more than one row    -> held out, BOTH rows (no duplicate handling decided yet)
+   - a text that appears in more than one row    -> duplicates.json names the row to keep (null = none, TTS);
+                                                    a text not listed there is held out (all its rows)
    Writes app/audio/manifest.json, manifest-slow.json (what the build reads) and manifest-meta.json (sidecar). */
 const fs=require("fs"),path=require("path");
 const arg=n=>{const i=process.argv.indexOf("--"+n);return i>0?process.argv[i+1]:null};
@@ -19,12 +20,21 @@ const P=parse(fs.readFileSync(path.join(HERE,"audio_script.csv"),"utf8").replace
 const rows=P.filter(r=>r.length>=4).map(r=>{const o=Object.fromEntries(h.map((k,i)=>[k,r[i]]));o.stem=o.file.slice(0,-4);return o});
 const flagged=new Set(JSON.parse(fs.readFileSync(path.join(HERE,"weak-lines.json"),"utf8")).map(k=>k.split(":")[0]));
 const g={};rows.forEach(r=>(g[key(r.text)]=g[key(r.text)]||[]).push(r));
-const heldOut=new Set();Object.values(g).forEach(v=>{if(v.length>1)v.forEach(r=>heldOut.add(r.stem))});
-const M={},MS={},meta={},ttsOnly=[],held=[];
+const DUP=JSON.parse(fs.readFileSync(path.join(HERE,"duplicates.json"),"utf8"));delete DUP._note;
+const heldOut=new Set(),dropped=new Set(),nullDup=new Set();
+Object.entries(g).forEach(([t,v])=>{if(v.length<2)return;
+ if(!(t in DUP)){v.forEach(r=>heldOut.add(r.stem));return}
+ if(DUP[t]===null){v.forEach(r=>nullDup.add(r.stem));return}
+ if(!v.some(r=>r.stem===DUP[t]))throw new Error("duplicates.json: "+DUP[t]+" is not a row of "+JSON.stringify(t));
+ v.forEach(r=>{if(r.stem!==DUP[t])dropped.add(r.stem)})});
+Object.keys(DUP).forEach(t=>{if(!g[t]||g[t].length<2)throw new Error("duplicates.json lists a text that is not duplicated: "+t)});
+const M={},MS={},meta={},ttsOnly=[],held=[],droppedDup=[];
 fs.mkdirSync(path.join(APP,"slow"),{recursive:true});
 for(const r of rows){
  const k=key(r.text);
  if(heldOut.has(r.stem)){held.push({file:r.file,text:r.text,voice:r.voice});continue}
+ if(dropped.has(r.stem)){droppedDup.push({file:r.file,text:r.text,voice:r.voice,keptInstead:DUP[k]+".mp3"});continue}
+ if(nullDup.has(r.stem)){ttsOnly.push({file:r.file,text:r.text,kind:r.kind,reason:"duplicate text; decision: ship neither row, device TTS"});continue}
  const weak=r.voice=="male_mx"&&flagged.has(r.stem);
  let src,voice,fallback=false;
  if(weak&&r.kind=="phrase"){src=fbDir;voice="es_MX-claude-high";fallback=true}
@@ -37,5 +47,5 @@ for(const r of rows){
 const sort=o=>Object.fromEntries(Object.keys(o).sort().map(k=>[k,o[k]]));
 fs.writeFileSync(path.join(APP,"manifest.json"),JSON.stringify(sort(M),null,1)+"\n");
 fs.writeFileSync(path.join(APP,"manifest-slow.json"),JSON.stringify(sort(MS),null,1)+"\n");
-fs.writeFileSync(path.join(APP,"manifest-meta.json"),JSON.stringify({status:"MACHINE-GENERATED (Piper TTS) and UNVERIFIED: no human has listened to these files. Not read by the app or the build.",voices:{male_mx:"es_MX-ald-medium",female_mx:"es_MX-claude-high",fallback:"es_MX-claude-high (male phrase lines that failed the Whisper screen with ald)"},slowLengthScale:"x1.25",entries:sort(meta),ttsOnly,heldOutDuplicates:held},null,1)+"\n");
-console.log({shipped:Object.keys(M).length,fallback:Object.values(meta).filter(m=>m.fallbackVoice).length,ttsOnly:ttsOnly.length,heldOut:held.length});
+fs.writeFileSync(path.join(APP,"manifest-meta.json"),JSON.stringify({status:"MACHINE-GENERATED (Piper TTS) and UNVERIFIED: no human has listened to these files. Not read by the app or the build.",voices:{male_mx:"es_MX-ald-medium",female_mx:"es_MX-claude-high",fallback:"es_MX-claude-high (male phrase lines that failed the Whisper screen with ald)"},slowLengthScale:"x1.25",entries:sort(meta),ttsOnly,droppedDuplicates:droppedDup,heldOutDuplicates:held},null,1)+"\n");
+console.log({shipped:Object.keys(M).length,fallback:Object.values(meta).filter(m=>m.fallbackVoice).length,ttsOnly:ttsOnly.length,droppedDuplicates:droppedDup.length,heldOut:held.length});

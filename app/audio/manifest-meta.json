@@ -55,6 +55,14 @@
    "whisperFlagged": true,
    "verified": false
   },
+  "bien, gracias. ¿y tú?": {
+   "file": "L01_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
   "buenas noches": {
    "file": "L01_phrase_04.mp3",
    "kind": "phrase",
@@ -170,6 +178,14 @@
   "con gusto": {
    "file": "L05_phrase_04.mp3",
    "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "con gusto.": {
+   "file": "L10_dialogue_06.mp3",
+   "kind": "dialogue",
    "voice": "es_MX-claude-high",
    "fallbackVoice": false,
    "whisperFlagged": false,
@@ -1479,6 +1495,14 @@
    "whisperFlagged": true,
    "verified": false
   },
+  "¿algo más?": {
+   "file": "L06_phrase_16.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
   "¿algo más? ... nada más, gracias.": {
    "file": "L06_listen_02.mp3",
    "kind": "listening",
@@ -1583,6 +1607,14 @@
    "whisperFlagged": false,
    "verified": false
   },
+  "¿cómo te llamas?": {
+   "file": "L02_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
   "¿de dónde eres, luis?": {
    "file": "L03_dialogue_01.mp3",
    "kind": "dialogue",
@@ -1593,6 +1625,22 @@
   },
   "¿de dónde eres?": {
    "file": "L03_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿de dónde es usted?": {
+   "file": "L03_phrase_14.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿de qué parte de méxico?": {
+   "file": "L03_phrase_07.mp3",
    "kind": "phrase",
    "voice": "es_MX-ald-medium",
    "fallbackVoice": false,
@@ -1631,6 +1679,14 @@
    "whisperFlagged": false,
    "verified": false
   },
+  "¿dónde vives?": {
+   "file": "L09_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
   "¿eres nuevo?": {
    "file": "L02_dialogue_04.mp3",
    "kind": "dialogue",
@@ -1647,6 +1703,14 @@
    "whisperFlagged": false,
    "verified": false
   },
+  "¿está lejos?": {
+   "file": "L10_phrase_15.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
   "¿hablas español? ... un poco.": {
    "file": "L09_listen_03.mp3",
    "kind": "listening",
@@ -1657,6 +1721,14 @@
   },
   "¿mande?": {
    "file": "L05_phrase_14.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿puedes repetir, por favor?": {
+   "file": "L05_phrase_08.mp3",
    "kind": "phrase",
    "voice": "es_MX-claude-high",
    "fallbackVoice": false,
@@ -1732,6 +1804,18 @@
    "reason": "ald line failed the Whisper screen; dialogue/listening line left to device TTS"
   },
   {
+   "file": "L04_dialogue_05.mp3",
+   "text": "Cinco, cinco, tres, cero, ocho, nueve.",
+   "kind": "dialogue",
+   "reason": "duplicate text; decision: ship neither row, device TTS"
+  },
+  {
+   "file": "L04_listen_03.mp3",
+   "text": "Cinco, cinco, tres, cero, ocho, nueve.",
+   "kind": "listening",
+   "reason": "duplicate text; decision: ship neither row, device TTS"
+  },
+  {
    "file": "L05_dialogue_04.mp3",
    "text": "Ah, sí. Gracias.",
    "kind": "dialogue",
@@ -1744,106 +1828,61 @@
    "reason": "ald line failed the Whisper screen; dialogue/listening line left to device TTS"
   }
  ],
- "heldOutDuplicates": [
+ "droppedDuplicates": [
   {
    "file": "L01_dialogue_02.mp3",
    "text": "Bien, gracias. ¿Y tú?",
-   "voice": "female_mx"
-  },
-  {
-   "file": "L01_phrase_06.mp3",
-   "text": "Bien, gracias. ¿Y tú?",
-   "voice": "female_mx"
+   "voice": "female_mx",
+   "keptInstead": "L01_phrase_06.mp3"
   },
   {
    "file": "L02_listen_03.mp3",
    "text": "¿Cómo te llamas?",
-   "voice": "male_mx"
-  },
-  {
-   "file": "L02_phrase_02.mp3",
-   "text": "¿Cómo te llamas?",
-   "voice": "female_mx"
+   "voice": "male_mx",
+   "keptInstead": "L02_phrase_02.mp3"
   },
   {
    "file": "L03_dialogue_03.mp3",
    "text": "¿De qué parte de México?",
-   "voice": "male_mx"
+   "voice": "male_mx",
+   "keptInstead": "L03_phrase_07.mp3"
   },
   {
    "file": "L03_listen_03.mp3",
    "text": "¿De dónde es usted?",
-   "voice": "male_mx"
-  },
-  {
-   "file": "L03_phrase_07.mp3",
-   "text": "¿De qué parte de México?",
-   "voice": "male_mx"
-  },
-  {
-   "file": "L03_phrase_14.mp3",
-   "text": "¿De dónde es usted?",
-   "voice": "female_mx"
-  },
-  {
-   "file": "L04_dialogue_05.mp3",
-   "text": "Cinco, cinco, tres, cero, ocho, nueve.",
-   "voice": "male_mx"
-  },
-  {
-   "file": "L04_listen_03.mp3",
-   "text": "Cinco, cinco, tres, cero, ocho, nueve.",
-   "voice": "male_mx"
+   "voice": "male_mx",
+   "keptInstead": "L03_phrase_14.mp3"
   },
   {
    "file": "L05_dialogue_05.mp3",
    "text": "Con gusto.",
-   "voice": "male_mx"
+   "voice": "male_mx",
+   "keptInstead": "L10_dialogue_06.mp3"
   },
   {
    "file": "L05_listen_03.mp3",
    "text": "¿Puedes repetir, por favor?",
-   "voice": "male_mx"
-  },
-  {
-   "file": "L05_phrase_08.mp3",
-   "text": "¿Puedes repetir, por favor?",
-   "voice": "female_mx"
+   "voice": "male_mx",
+   "keptInstead": "L05_phrase_08.mp3"
   },
   {
    "file": "L06_dialogue_05.mp3",
    "text": "¿Algo más?",
-   "voice": "male_mx"
-  },
-  {
-   "file": "L06_phrase_16.mp3",
-   "text": "¿Algo más?",
-   "voice": "female_mx"
+   "voice": "male_mx",
+   "keptInstead": "L06_phrase_16.mp3"
   },
   {
    "file": "L09_dialogue_04.mp3",
    "text": "¿Dónde vives?",
-   "voice": "male_mx"
-  },
-  {
-   "file": "L09_phrase_06.mp3",
-   "text": "¿Dónde vives?",
-   "voice": "female_mx"
+   "voice": "male_mx",
+   "keptInstead": "L09_phrase_06.mp3"
   },
   {
    "file": "L10_dialogue_03.mp3",
    "text": "¿Está lejos?",
-   "voice": "male_mx"
-  },
-  {
-   "file": "L10_dialogue_06.mp3",
-   "text": "Con gusto.",
-   "voice": "female_mx"
-  },
-  {
-   "file": "L10_phrase_15.mp3",
-   "text": "¿Está lejos?",
-   "voice": "male_mx"
+   "voice": "male_mx",
+   "keptInstead": "L10_phrase_15.mp3"
   }
- ]
+ ],
+ "heldOutDuplicates": []
 }

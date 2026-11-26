@@ -1,0 +1,13 @@
+{
+ "_note": "Decision for every text that appears in more than one row of audio_script.csv: the row id to keep (a manifest maps one text to one file), or null = ship no recording, device TTS for all rows. Keys are normalised like audioKey(). Texts not listed here are held out (all rows).",
+ "bien, gracias. ¿y tú?": "L01_phrase_06",
+ "¿cómo te llamas?": "L02_phrase_02",
+ "¿de qué parte de méxico?": "L03_phrase_07",
+ "¿de dónde es usted?": "L03_phrase_14",
+ "cinco, cinco, tres, cero, ocho, nueve.": null,
+ "con gusto.": "L10_dialogue_06",
+ "¿puedes repetir, por favor?": "L05_phrase_08",
+ "¿algo más?": "L06_phrase_16",
+ "¿dónde vives?": "L09_phrase_06",
+ "¿está lejos?": "L10_phrase_15"
+}
