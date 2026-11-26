@@ -57,3 +57,7 @@ npm test
 - **Provenance of `weak-lines.json`:** it is the recorded outcome of the earlier screen (about 95 entries). The exact rule that produced it was not saved, so it is committed as data and cannot be regenerated from `screen-audio.py` alone.
 - The original generation run may have turned `" / "` into `" , "` instead of `", "` (a regex that lost its backslashes); this script uses the intended `", "`. No text in the script has a letter touching a slash, so the spoken difference is at most a slightly different pause.
 - Duplicate texts (10 of them) are deliberately left out of the manifests until a decision is made; see `docs/AUDIO-SPOTCHECK.md`.
+
+## Checking the real files
+
+`npm test` runs `tools/audio-files-test.js`, which uses `ffprobe` to confirm every file in `app/audio/` decodes with a duration above zero and that each manifest entry points at a real file. Without `ffprobe` on PATH it prints a SKIP line and passes; set `REQUIRE_FFPROBE=1` to make that a failure. (`tools/audio-test.js` only exercises the small fixture in `tools/fixtures/audio-app`.)
