@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node tools/build.js",
     "check-build": "node tools/build.js --check",
-    "test": "node tools/build.js && node tools/build.js --check && node tools/validate-data.js && node tools/smoke-test.js && node tools/migrate-test.js && node tools/audio-test.js && node tools/sw-range-test.js"
+    "test": "node tools/build.js && node tools/build.js --check && node tools/validate-data.js && node tools/smoke-test.js && node tools/migrate-test.js && node tools/audio-test.js && node tools/audio-files-test.js && node tools/sw-range-test.js"
   },
   "devDependencies": {
     "esbuild": "0.28.2"

@@ -37,6 +37,23 @@ startListening();dlgPlay(0);dlgSpeakLine(0);DLGQ.li=DLG[0].lines.length;dlgLine(
 QZ.i=QZ.items.length;quizQ();
 if(!(S.stats.dlg>=1))throw new Error("dialogue stats not tracked");
 if(!(S.dlgDone||[]).includes(0))throw new Error("dlgDone not tracked");
+/* --- dialogue lines: a recording plays only in the speaker's own voice (even line = male/ald, odd line = female/claude-high); else device TTS --- */
+(function(){
+ var mk=Object.keys(AUDIO_MAP).find(function(k){return AUDIO_VOICE[AUDIO_MAP[k]]==="male"}),fk=Object.keys(AUDIO_MAP).find(function(k){return AUDIO_VOICE[AUDIO_MAP[k]]==="female"});
+ if(!mk||!fk)throw new Error("real manifest must contain both a male (ald) and a female (claude-high) recording");
+ var oA=global.Audio,oSp=speechSynthesis.speak,oL=DLG[0].lines.map(function(l){return l[1]}),au=[],tts=0,oSlow=S.slow;
+ global.Audio=function(u){au.push(u);this.play=function(){};this.pause=function(){}};speechSynthesis.speak=function(){tts++};
+ function line(li,text){DLG[0].lines[li][1]=text;DLGQ={i:0,li:li};au.length=0;tts=0;dlgSpeakLine(li)}
+ S.slow=false;
+ line(0,mk);if(au.join()!==AUDIO_MAP[mk]||tts!==0)throw new Error("matching voice (male line, ald file) must play the recording");
+ line(1,mk);if(au.length!==0||tts!==1)throw new Error("mismatched voice (female line, ald file) must fall back to device TTS");
+ line(1,fk);if(au.join()!==AUDIO_MAP[fk]||tts!==0)throw new Error("matching voice (female line, claude-high file) must play the recording");
+ line(0,fk);if(au.length!==0||tts!==1)throw new Error("mismatched voice (male line, claude-high file) must fall back to device TTS");
+ line(0,"zzz no recording zzz");if(au.length!==0||tts!==1)throw new Error("a dialogue line with no recording must use device TTS");
+ S.slow=true;line(0,mk);if(au.join()!==AUDIO_SLOW_MAP[mk])throw new Error("Slow toggle must pick the slow file for a matching dialogue voice");
+ line(1,mk);if(au.length!==0||tts!==1)throw new Error("Slow toggle must not override the voice check");
+ S.slow=oSlow;global.Audio=oA;speechSynthesis.speak=oSp;DLG[0].lines.forEach(function(l,i){l[1]=oL[i]});
+})();
 /* --- S6 Story Mode --- */
 if(ST.length!==6)throw new Error("ST must have exactly 6 stories");
 S.week=3;if(storyUnlocked().length!==0)throw new Error("no story should be unlocked before week 4");
@@ -92,6 +109,12 @@ if(!_dl||_dl.type!=="application/json")throw new Error("exportData must build a 
 var _loc=global.location;global.location={reload(){global.__reloaded=1}};var _before=S.xp;importText(JSON.stringify({xp:777}));
 if(S.xp!==777||!global.__reloaded)throw new Error("importText (paste/file shared path) must load exported JSON");
 global.__reloaded=0;importText("not json");if(global.__reloaded)throw new Error("importText must reject invalid data");global.location=_loc;S.xp=_before;
+/* --- Slow toggle: default off, round-trips through Ajustes save --- */
+if(S.slow!==false)throw new Error("S.slow must default to false");
+var _sv=VOICES;var _els={"#st-name":{value:"X"},"#st-voice":{value:""},"#st-week":{value:"1"},"#st-slow":{checked:true}};var _q=document.querySelector;document.querySelector=function(s){return _els[s]||_q.call(document,s)};
+saveSettings();if(S.slow!==true)throw new Error("saveSettings must store the Slow checkbox");
+_els["#st-slow"].checked=false;saveSettings();if(S.slow!==false)throw new Error("saveSettings must clear Slow");
+document.querySelector=_q;
 /* --- S9 Boss Battles & Skill Tree --- */
 if(BOSSES.length!==6)throw new Error("boss roster must be 6 (one per phase)");
 renderArena();var _av=document.querySelector("#view").innerHTML;if(_av.indexOf("renderBossList")<0||_av.indexOf("renderSkillTree")<0)throw new Error("Arena missing boss/skill-tree launchers");

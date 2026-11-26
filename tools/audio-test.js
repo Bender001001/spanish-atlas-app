@@ -8,6 +8,7 @@ const fs=require("fs"),path=require("path"),assert=require("assert");
 const build=require("./build.js");
 const FIX=path.join(__dirname,"fixtures","audio-app");
 const manifest=JSON.parse(fs.readFileSync(path.join(FIX,"audio","manifest.json"),"utf8"));
+const slowManifest=JSON.parse(fs.readFileSync(path.join(FIX,"audio","manifest-slow.json"),"utf8"));
 const html=build.render({appDir:FIX});
 const m=html.match(/<script>([\s\S]*)<\/script>/);
 if(!m){console.error("FAIL: no script block");process.exit(1)}
@@ -41,17 +42,53 @@ assert.deepStrictEqual(tts,["hola"],"play() rejection must fall back to TTS");
 reset();speak("hola",null,null,{name:"x",lang:"es-MX"});assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["hola"]);
 /* 6. recorded playback honours the speed setting */
 reset();speak("hola",0.6);assert.strictEqual(audios[0].playbackRate,0.6);
+/* 7. slow=true with a slow recording plays the slow file at 1x (the file itself is slow), no TTS */
+reset();speak("hola",0.6,null,null,true);
+assert.strictEqual(audios.length,1);assert.strictEqual(audios[0].src,"audio/slow/hola.wav");assert.strictEqual(audios[0].playbackRate,1);assert.deepStrictEqual(tts,[]);
+/* 8. slow=true but no slow file -> falls back to the NORMAL recording at the usual rate */
+reset();speak("Buenos días",0.8,null,null,true);
+assert.strictEqual(audios.length,1);assert.strictEqual(audios[0].src,"audio/buenos-dias.wav");assert.strictEqual(audios[0].playbackRate,0.8);
+/* 9. slow=true with neither file -> TTS; slow not requested never uses the slow file; voice override still TTS */
+reset();speak("¿Cómo te llamas?",null,null,null,true);assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["¿Cómo te llamas?"]);
+reset();speak("hola");assert.strictEqual(audios[0].src,"audio/hola.wav");
+reset();speak("hola",null,null,{name:"x",lang:"es-MX"},true);assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["hola"]);
+/* 10. a slow file that fails to play falls back to TTS (same guard as the normal file) */
+reset();setPlay("fail");speak("hola",null,null,null,true);await sleep();await sleep();assert.deepStrictEqual(tts,["hola"]);
+/* 12. the saved "Slow" toggle (S.slow) drives speak() when no explicit slow arg is given; explicit arg wins */
+assert.strictEqual(S.slow,false,"Slow defaults to off");
+S.slow=true;reset();speak("hola");assert.strictEqual(audios[0].src,"audio/slow/hola.wav");assert.strictEqual(audios[0].playbackRate,1);
+reset();speak("Buenos días",0.8);assert.strictEqual(audios[0].src,"audio/buenos-dias.wav");assert.strictEqual(audios[0].playbackRate,0.8);
+reset();speak("¿Cómo te llamas?");assert.deepStrictEqual(tts,["¿Cómo te llamas?"]);
+reset();speak("hola",null,null,null,false);assert.strictEqual(audios[0].src,"audio/hola.wav");
+S.slow=false;reset();speak("hola");assert.strictEqual(audios[0].src,"audio/hola.wav");
+/* 13. speakerVoice (dialogue lines): the recording is used only if its voice matches; else device TTS with the given voice. */
+const dv={name:"dev",lang:"es-MX"};
+S.slow=false;
+reset();speak("hola",0.9,1,dv,undefined,"male");assert.strictEqual(audios.length,1);assert.strictEqual(audios[0].src,"audio/hola.wav");assert.deepStrictEqual(tts,[]);
+reset();speak("hola",0.9,1,dv,undefined,"female");assert.strictEqual(audios.length,0,"male recording must not play for a female speaker");assert.deepStrictEqual(tts,["hola"]);
+reset();speak("Buenos días",0.9,1,dv,undefined,"female");assert.strictEqual(audios.length,1);assert.strictEqual(audios[0].src,"audio/buenos-dias.wav");
+reset();speak("Buenos días",0.9,1,dv,undefined,"male");assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["Buenos días"]);
+reset();speak("¿Cómo te llamas?",0.9,1,dv,undefined,"male");assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["¿Cómo te llamas?"]);
+/* a voiceOverride with no speakerVoice keeps the old meaning: exact device voice, no recording */
+reset();speak("hola",0.9,1,dv);assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["hola"]);
+/* Slow works for dialogue lines: matching voice -> slow file at 1x; mismatched voice -> TTS (never the other voice's slow file) */
+S.slow=true;
+reset();speak("hola",0.9,1,dv,undefined,"male");assert.strictEqual(audios[0].src,"audio/slow/hola.wav");assert.strictEqual(audios[0].playbackRate,1);
+reset();speak("hola",0.9,1,dv,undefined,"female");assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["hola"]);
+reset();speak("Buenos días",0.9,1,dv,undefined,"female");assert.strictEqual(audios[0].src,"audio/buenos-dias.wav");assert.strictEqual(audios[0].playbackRate,0.9);
+S.slow=false;
 })()`;
 (async()=>{
  await eval(code+";"+tests);
- /* 7. the service worker precaches every recorded file (run the real install handler) */
+ /* 11. the service worker precaches every recorded file (normal and slow) (run the real install handler) */
  const h={};let added=null;
  const self={location:{href:"http://localhost/sw.js?v=9"},addEventListener(ev,fn){h[ev]=fn},skipWaiting(){return Promise.resolve()},clients:{claim(){}}};
  const caches={open:()=>Promise.resolve({addAll(l){added=l;return Promise.resolve()}}),keys:()=>Promise.resolve([])};
  new Function("self","caches",build.renderSw({appDir:FIX}))(self,caches);
  let installed;h.install({waitUntil:p=>{installed=p}});await installed;
  assert.ok(added,"install handler must precache");
+ Object.values(slowManifest).forEach(f=>{assert.ok(added.includes("./"+f),"sw CORE must list slow ./"+f);assert.ok(fs.existsSync(path.join(FIX,f)),"sample slow file "+f+" must exist")});
  Object.values(manifest).forEach(f=>{assert.ok(added.includes("./"+f),"sw CORE must list ./"+f);assert.ok(fs.existsSync(path.join(FIX,f)),"sample file "+f+" must exist")});
  ["./","./orale.html","./manifest.webmanifest","./icon.svg"].forEach(f=>assert.ok(added.includes(f),"shell entry kept: "+f));
- console.log("PASS: audio lookup (recording first, TTS fallback, SW precache of "+Object.keys(manifest).length+" sample files)");
+ console.log("PASS: audio lookup (recording first, slow file -> normal file -> TTS fallback, SW precache of "+(Object.keys(manifest).length+Object.keys(slowManifest).length)+" sample files)");
 })().catch(e=>{console.error("FAIL:",e.message);process.exit(1)});

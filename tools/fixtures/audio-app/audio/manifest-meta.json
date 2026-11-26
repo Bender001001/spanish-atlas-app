@@ -1,0 +1,6 @@
+{
+ "entries": {
+  "hola": {"file": "hola.wav", "voice": "es_MX-ald-medium"},
+  "buenos días": {"file": "buenos-dias.wav", "voice": "es_MX-claude-high"}
+ }
+}

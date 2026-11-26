@@ -1,0 +1,239 @@
+file,voice,text,kind
+L01_dialogue_01.mp3,male_mx,"Buenos días, Ana. ¿Cómo estás?",dialogue
+L01_dialogue_02.mp3,female_mx,"Bien, gracias. ¿Y tú?",dialogue
+L01_dialogue_03.mp3,male_mx,Más o menos. Hasta luego.,dialogue
+L01_dialogue_04.mp3,female_mx,"Hasta luego, Carlos.",dialogue
+L01_listen_01.mp3,male_mx,Buenas tardes.,listening
+L01_listen_02.mp3,female_mx,¿Cómo estás? ... Más o menos.,listening
+L01_listen_03.mp3,male_mx,"Hasta mañana, Ana.",listening
+L01_phrase_01.mp3,male_mx,Hola,phrase
+L01_phrase_02.mp3,female_mx,Buenos días,phrase
+L01_phrase_03.mp3,male_mx,Buenas tardes,phrase
+L01_phrase_04.mp3,female_mx,Buenas noches,phrase
+L01_phrase_05.mp3,male_mx,¿Cómo estás?,phrase
+L01_phrase_06.mp3,female_mx,"Bien, gracias. ¿Y tú?",phrase
+L01_phrase_07.mp3,male_mx,Más o menos,phrase
+L01_phrase_08.mp3,female_mx,Hasta luego,phrase
+L01_phrase_09.mp3,male_mx,Hasta mañana,phrase
+L01_phrase_10.mp3,female_mx,Adiós,phrase
+L02_dialogue_01.mp3,male_mx,"Hola, me llamo Tom. ¿Cómo te llamas?",dialogue
+L02_dialogue_02.mp3,male_mx,Me llamo Luis. Mucho gusto.,dialogue
+L02_dialogue_03.mp3,male_mx,Igualmente.,dialogue
+L02_dialogue_04.mp3,male_mx,¿Eres nuevo?,dialogue
+L02_dialogue_05.mp3,male_mx,"Sí, soy nuevo.",dialogue
+L02_listen_01.mp3,male_mx,Me llamo Sofía. Mucho gusto.,listening
+L02_listen_02.mp3,female_mx,"¿Eres nuevo? ... Sí, soy nuevo.",listening
+L02_listen_03.mp3,male_mx,¿Cómo te llamas?,listening
+L02_phrase_01.mp3,male_mx,Me llamo...,phrase
+L02_phrase_02.mp3,female_mx,¿Cómo te llamas?,phrase
+L02_phrase_03.mp3,male_mx,Mucho gusto,phrase
+L02_phrase_04.mp3,female_mx,Igualmente,phrase
+L02_phrase_05.mp3,male_mx,Soy...,phrase
+L02_phrase_06.mp3,female_mx,Eres...,phrase
+L02_phrase_07.mp3,male_mx,Sí,phrase
+L02_phrase_08.mp3,female_mx,No,phrase
+L02_phrase_09.mp3,male_mx,nuevo / nueva,phrase
+L03_dialogue_01.mp3,male_mx,"¿De dónde eres, Luis?",dialogue
+L03_dialogue_02.mp3,male_mx,Soy de México.,dialogue
+L03_dialogue_03.mp3,male_mx,¿De qué parte de México?,dialogue
+L03_dialogue_04.mp3,male_mx,De Jalisco. ¿Y tú?,dialogue
+L03_dialogue_05.mp3,male_mx,Soy de Estados Unidos.,dialogue
+L03_listen_01.mp3,male_mx,Soy de Veracruz.,listening
+L03_listen_02.mp3,female_mx,Ella es de Guatemala.,listening
+L03_listen_03.mp3,male_mx,¿De dónde es usted?,listening
+L03_phrase_01.mp3,male_mx,¿De dónde eres?,phrase
+L03_phrase_02.mp3,female_mx,Soy de...,phrase
+L03_phrase_03.mp3,male_mx,Él es de... / Ella es de...,phrase
+L03_phrase_04.mp3,female_mx,Estados Unidos,phrase
+L03_phrase_05.mp3,male_mx,México,phrase
+L03_phrase_06.mp3,female_mx,Guatemala,phrase
+L03_phrase_07.mp3,male_mx,¿De qué parte de México?,phrase
+L03_phrase_08.mp3,female_mx,Jalisco,phrase
+L03_phrase_09.mp3,male_mx,Michoacán,phrase
+L03_phrase_10.mp3,female_mx,Oaxaca,phrase
+L03_phrase_11.mp3,male_mx,Veracruz,phrase
+L03_phrase_12.mp3,female_mx,Puebla,phrase
+L03_phrase_13.mp3,male_mx,Guanajuato,phrase
+L03_phrase_14.mp3,female_mx,¿De dónde es usted?,phrase
+L04_dialogue_01.mp3,male_mx,"Luis, ¿cuántos años tienes?",dialogue
+L04_dialogue_02.mp3,male_mx,Tengo treinta y cuatro años. ¿Y tú?,dialogue
+L04_dialogue_03.mp3,male_mx,Tengo cuarenta y dos.,dialogue
+L04_dialogue_04.mp3,male_mx,¿Cuál es tu número?,dialogue
+L04_dialogue_05.mp3,male_mx,"Cinco, cinco, tres, cero, ocho, nueve.",dialogue
+L04_listen_01.mp3,male_mx,"Siete, doce, quince.",listening
+L04_listen_02.mp3,female_mx,Tengo treinta y cinco años.,listening
+L04_listen_03.mp3,male_mx,"Cinco, cinco, tres, cero, ocho, nueve.",listening
+L04_phrase_01.mp3,male_mx,cero,phrase
+L04_phrase_02.mp3,female_mx,uno,phrase
+L04_phrase_03.mp3,male_mx,dos,phrase
+L04_phrase_04.mp3,female_mx,tres,phrase
+L04_phrase_05.mp3,male_mx,cuatro,phrase
+L04_phrase_06.mp3,female_mx,cinco,phrase
+L04_phrase_07.mp3,male_mx,seis,phrase
+L04_phrase_08.mp3,female_mx,siete,phrase
+L04_phrase_09.mp3,male_mx,ocho,phrase
+L04_phrase_10.mp3,female_mx,nueve,phrase
+L04_phrase_11.mp3,male_mx,diez,phrase
+L04_phrase_12.mp3,female_mx,once,phrase
+L04_phrase_13.mp3,male_mx,doce,phrase
+L04_phrase_14.mp3,female_mx,trece,phrase
+L04_phrase_15.mp3,male_mx,catorce,phrase
+L04_phrase_16.mp3,female_mx,quince,phrase
+L04_phrase_17.mp3,male_mx,dieciséis,phrase
+L04_phrase_18.mp3,female_mx,diecisiete,phrase
+L04_phrase_19.mp3,male_mx,dieciocho,phrase
+L04_phrase_20.mp3,female_mx,diecinueve,phrase
+L04_phrase_21.mp3,male_mx,veinte,phrase
+L04_phrase_22.mp3,female_mx,treinta,phrase
+L04_phrase_23.mp3,male_mx,cuarenta,phrase
+L04_phrase_24.mp3,female_mx,cincuenta,phrase
+L04_phrase_25.mp3,male_mx,¿Cuántos años tienes?,phrase
+L04_phrase_26.mp3,female_mx,Tengo... años,phrase
+L04_phrase_27.mp3,male_mx,Tiene... años,phrase
+L05_dialogue_01.mp3,male_mx,"Oye, Tom, ¿puedes venir mañana a las ocho?",dialogue
+L05_dialogue_02.mp3,male_mx,"Perdón, no entiendo. Más despacio, por favor.",dialogue
+L05_dialogue_03.mp3,male_mx,Claro. ¿Puedes... venir... mañana... a las ocho?,dialogue
+L05_dialogue_04.mp3,male_mx,"Ah, sí. Gracias.",dialogue
+L05_dialogue_05.mp3,male_mx,Con gusto.,dialogue
+L05_listen_01.mp3,male_mx,Gracias. ... Con gusto.,listening
+L05_listen_02.mp3,female_mx,"Perdón, no entiendo.",listening
+L05_listen_03.mp3,male_mx,"¿Puedes repetir, por favor?",listening
+L05_phrase_01.mp3,male_mx,Por favor,phrase
+L05_phrase_02.mp3,female_mx,Gracias / Muchas gracias,phrase
+L05_phrase_03.mp3,male_mx,De nada,phrase
+L05_phrase_04.mp3,female_mx,Con gusto,phrase
+L05_phrase_05.mp3,male_mx,Perdón,phrase
+L05_phrase_06.mp3,female_mx,Con permiso,phrase
+L05_phrase_07.mp3,male_mx,No entiendo,phrase
+L05_phrase_08.mp3,female_mx,"¿Puedes repetir, por favor?",phrase
+L05_phrase_09.mp3,male_mx,"Más despacio, por favor",phrase
+L05_phrase_10.mp3,female_mx,Hablo un poco de español,phrase
+L05_phrase_11.mp3,male_mx,¿Cómo se dice... en español?,phrase
+L05_phrase_12.mp3,female_mx,¿Qué significa...?,phrase
+L05_phrase_13.mp3,male_mx,No sé,phrase
+L05_phrase_14.mp3,female_mx,¿Mande?,phrase
+L06_dialogue_01.mp3,male_mx,Buenas tardes. ¿Qué le sirvo?,dialogue
+L06_dialogue_02.mp3,male_mx,"Me da tres tacos, por favor.",dialogue
+L06_dialogue_03.mp3,male_mx,¿Con todo?,dialogue
+L06_dialogue_04.mp3,male_mx,"Sí, con todo. Y un refresco.",dialogue
+L06_dialogue_05.mp3,male_mx,¿Algo más?,dialogue
+L06_dialogue_06.mp3,male_mx,"Nada más, gracias. ¿Cuánto es?",dialogue
+L06_dialogue_07.mp3,male_mx,Son cincuenta pesos.,dialogue
+L06_listen_01.mp3,male_mx,"Me da una torta sin cebolla, por favor.",listening
+L06_listen_02.mp3,female_mx,"¿Algo más? ... Nada más, gracias.",listening
+L06_listen_03.mp3,male_mx,Son cuarenta pesos.,listening
+L06_phrase_01.mp3,male_mx,Quiero...,phrase
+L06_phrase_02.mp3,female_mx,"Me da... , por favor",phrase
+L06_phrase_03.mp3,male_mx,un taco / unos tacos,phrase
+L06_phrase_04.mp3,female_mx,una torta,phrase
+L06_phrase_05.mp3,male_mx,un refresco,phrase
+L06_phrase_06.mp3,female_mx,un café,phrase
+L06_phrase_07.mp3,male_mx,agua,phrase
+L06_phrase_08.mp3,female_mx,con / sin,phrase
+L06_phrase_09.mp3,male_mx,con queso,phrase
+L06_phrase_10.mp3,female_mx,sin cebolla,phrase
+L06_phrase_11.mp3,male_mx,¿Cuánto es?,phrase
+L06_phrase_12.mp3,female_mx,¿Cuánto cuesta?,phrase
+L06_phrase_13.mp3,male_mx,"La cuenta, por favor",phrase
+L06_phrase_14.mp3,female_mx,Para llevar,phrase
+L06_phrase_15.mp3,male_mx,Tengo hambre / Tengo sed,phrase
+L06_phrase_16.mp3,female_mx,¿Algo más?,phrase
+L06_phrase_17.mp3,male_mx,"Nada más, gracias",phrase
+L06_phrase_18.mp3,female_mx,¿Qué le sirvo?,phrase
+L07_dialogue_01.mp3,male_mx,"¿Tienes hijos, Tom?",dialogue
+L07_dialogue_02.mp3,male_mx,"Sí, tengo dos hijos.",dialogue
+L07_dialogue_03.mp3,male_mx,¿Cómo se llaman?,dialogue
+L07_dialogue_04.mp3,male_mx,Mi hijo se llama Leo y mi hija se llama Sofía.,dialogue
+L07_dialogue_05.mp3,male_mx,¿Cuántos años tienen?,dialogue
+L07_dialogue_06.mp3,male_mx,Leo tiene siete años y Sofía tiene nueve.,dialogue
+L07_dialogue_07.mp3,male_mx,Yo tengo una hija. Tiene cinco años.,dialogue
+L07_listen_01.mp3,male_mx,Tengo dos hijos y una hija.,listening
+L07_listen_02.mp3,female_mx,Mi esposa se llama Ana.,listening
+L07_listen_03.mp3,male_mx,Mi hijo tiene doce años.,listening
+L07_phrase_01.mp3,male_mx,mi familia,phrase
+L07_phrase_02.mp3,female_mx,mi esposa / mi esposo,phrase
+L07_phrase_03.mp3,male_mx,mi hijo / mi hija,phrase
+L07_phrase_04.mp3,female_mx,mis hijos,phrase
+L07_phrase_05.mp3,male_mx,mi mamá / mi papá,phrase
+L07_phrase_06.mp3,female_mx,mi hermano / mi hermana,phrase
+L07_phrase_07.mp3,male_mx,tu / tus,phrase
+L07_phrase_08.mp3,female_mx,¿Tienes hijos?,phrase
+L07_phrase_09.mp3,male_mx,Tengo dos hijos.,phrase
+L07_phrase_10.mp3,female_mx,¿Cómo se llama tu hijo?,phrase
+L07_phrase_11.mp3,male_mx,Mi hija se llama...,phrase
+L07_phrase_12.mp3,female_mx,¿Cuántos años tiene?,phrase
+L07_phrase_13.mp3,male_mx,Tiene... años.,phrase
+L08_dialogue_01.mp3,male_mx,"Luis, ¿a qué hora es la junta?",dialogue
+L08_dialogue_02.mp3,male_mx,Mañana a las diez de la mañana.,dialogue
+L08_dialogue_03.mp3,male_mx,¿Qué día es mañana?,dialogue
+L08_dialogue_04.mp3,male_mx,"Hoy es miércoles, entonces mañana es jueves.",dialogue
+L08_dialogue_05.mp3,male_mx,Perfecto. ¿Qué hora es ahora?,dialogue
+L08_dialogue_06.mp3,male_mx,Son las ocho y cuarto.,dialogue
+L08_listen_01.mp3,male_mx,Son las tres y cuarto.,listening
+L08_listen_02.mp3,female_mx,La junta es el viernes a las nueve.,listening
+L08_listen_03.mp3,male_mx,Hoy es lunes. Mañana es martes.,listening
+L08_phrase_01.mp3,male_mx,¿Qué hora es?,phrase
+L08_phrase_02.mp3,female_mx,Es la una.,phrase
+L08_phrase_03.mp3,male_mx,Son las dos / tres / cuatro...,phrase
+L08_phrase_04.mp3,female_mx,y media,phrase
+L08_phrase_05.mp3,male_mx,y cuarto,phrase
+L08_phrase_06.mp3,female_mx,menos cuarto,phrase
+L08_phrase_07.mp3,male_mx,¿A qué hora es...?,phrase
+L08_phrase_08.mp3,female_mx,A las ocho,phrase
+L08_phrase_09.mp3,male_mx,de la mañana / de la tarde / de la noche,phrase
+L08_phrase_10.mp3,female_mx,lunes,phrase
+L08_phrase_11.mp3,male_mx,martes,phrase
+L08_phrase_12.mp3,female_mx,miércoles,phrase
+L08_phrase_13.mp3,male_mx,jueves,phrase
+L08_phrase_14.mp3,female_mx,viernes,phrase
+L08_phrase_15.mp3,male_mx,sábado,phrase
+L08_phrase_16.mp3,female_mx,domingo,phrase
+L08_phrase_17.mp3,male_mx,hoy / mañana,phrase
+L08_phrase_18.mp3,female_mx,la junta,phrase
+L09_dialogue_01.mp3,male_mx,"¿Dónde trabajas, Tom?",dialogue
+L09_dialogue_02.mp3,male_mx,Trabajo en una oficina grande. ¿Y tú?,dialogue
+L09_dialogue_03.mp3,male_mx,Trabajo en construcción con mi hermano.,dialogue
+L09_dialogue_04.mp3,male_mx,¿Dónde vives?,dialogue
+L09_dialogue_05.mp3,male_mx,Vivo en el centro. ¿Hablas español?,dialogue
+L09_dialogue_06.mp3,male_mx,Hablo un poco de español.,dialogue
+L09_listen_01.mp3,male_mx,Trabajo con mi jefe todos los días.,listening
+L09_listen_02.mp3,female_mx,Ella vive en el centro.,listening
+L09_listen_03.mp3,male_mx,¿Hablas español? ... Un poco.,listening
+L09_phrase_01.mp3,male_mx,trabajo / trabajas / trabaja,phrase
+L09_phrase_02.mp3,female_mx,hablo / hablas / habla,phrase
+L09_phrase_03.mp3,male_mx,vivo / vives / vive,phrase
+L09_phrase_04.mp3,female_mx,¿Dónde trabajas?,phrase
+L09_phrase_05.mp3,male_mx,Trabajo en...,phrase
+L09_phrase_06.mp3,female_mx,¿Dónde vives?,phrase
+L09_phrase_07.mp3,male_mx,Vivo en...,phrase
+L09_phrase_08.mp3,female_mx,con,phrase
+L09_phrase_09.mp3,male_mx,una oficina,phrase
+L09_phrase_10.mp3,female_mx,el centro,phrase
+L09_phrase_11.mp3,male_mx,mi jefe / mi jefa,phrase
+L09_phrase_12.mp3,female_mx,mi compañero de trabajo / mi compañera de trabajo,phrase
+L09_phrase_13.mp3,male_mx,mucho / poco,phrase
+L09_phrase_14.mp3,female_mx,todos los días,phrase
+L10_dialogue_01.mp3,male_mx,"Disculpe, ¿dónde está el banco?",dialogue
+L10_dialogue_02.mp3,female_mx,"Está en la esquina, a la derecha.",dialogue
+L10_dialogue_03.mp3,male_mx,¿Está lejos?,dialogue
+L10_dialogue_04.mp3,female_mx,"No, queda cerca.",dialogue
+L10_dialogue_05.mp3,male_mx,Muchas gracias.,dialogue
+L10_dialogue_06.mp3,female_mx,Con gusto.,dialogue
+L10_listen_01.mp3,male_mx,La farmacia está a la izquierda.,listening
+L10_listen_02.mp3,female_mx,Sigue todo derecho y está en la esquina.,listening
+L10_listen_03.mp3,male_mx,El baño está allá.,listening
+L10_phrase_01.mp3,male_mx,Disculpe,phrase
+L10_phrase_02.mp3,female_mx,¿Dónde está...?,phrase
+L10_phrase_03.mp3,male_mx,¿Dónde queda...?,phrase
+L10_phrase_04.mp3,female_mx,Está... / Queda...,phrase
+L10_phrase_05.mp3,male_mx,a la derecha,phrase
+L10_phrase_06.mp3,female_mx,a la izquierda,phrase
+L10_phrase_07.mp3,male_mx,todo derecho,phrase
+L10_phrase_08.mp3,female_mx,cerca / lejos,phrase
+L10_phrase_09.mp3,male_mx,aquí / allá,phrase
+L10_phrase_10.mp3,female_mx,en la esquina,phrase
+L10_phrase_11.mp3,male_mx,el baño,phrase
+L10_phrase_12.mp3,female_mx,el banco,phrase
+L10_phrase_13.mp3,male_mx,la farmacia,phrase
+L10_phrase_14.mp3,female_mx,la tienda,phrase
+L10_phrase_15.mp3,male_mx,¿Está lejos?,phrase
