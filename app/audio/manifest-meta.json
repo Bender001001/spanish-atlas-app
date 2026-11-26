@@ -1,0 +1,1849 @@
+{
+ "status": "MACHINE-GENERATED (Piper TTS) and UNVERIFIED: no human has listened to these files. Not read by the app or the build.",
+ "voices": {
+  "male_mx": "es_MX-ald-medium",
+  "female_mx": "es_MX-claude-high",
+  "fallback": "es_MX-claude-high (male phrase lines that failed the Whisper screen with ald)"
+ },
+ "slowLengthScale": "x1.25",
+ "entries": {
+  "a la derecha": {
+   "file": "L10_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "a la izquierda": {
+   "file": "L10_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "a las ocho": {
+   "file": "L08_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "adiós": {
+   "file": "L01_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "agua": {
+   "file": "L06_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "aquí / allá": {
+   "file": "L10_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "buenas noches": {
+   "file": "L01_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "buenas tardes": {
+   "file": "L01_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "buenas tardes.": {
+   "file": "L01_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "buenas tardes. ¿qué le sirvo?": {
+   "file": "L06_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "buenos días": {
+   "file": "L01_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "buenos días, ana. ¿cómo estás?": {
+   "file": "L01_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "catorce": {
+   "file": "L04_phrase_15.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "cerca / lejos": {
+   "file": "L10_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "cero": {
+   "file": "L04_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "cinco": {
+   "file": "L04_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "cincuenta": {
+   "file": "L04_phrase_24.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "claro. ¿puedes... venir... mañana... a las ocho?": {
+   "file": "L05_dialogue_03.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "con": {
+   "file": "L09_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "con / sin": {
+   "file": "L06_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "con gusto": {
+   "file": "L05_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "con permiso": {
+   "file": "L05_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "con queso": {
+   "file": "L06_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "cuarenta": {
+   "file": "L04_phrase_23.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "cuatro": {
+   "file": "L04_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "de jalisco. ¿y tú?": {
+   "file": "L03_dialogue_04.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "de la mañana / de la tarde / de la noche": {
+   "file": "L08_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "de nada": {
+   "file": "L05_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "diecinueve": {
+   "file": "L04_phrase_20.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "dieciocho": {
+   "file": "L04_phrase_19.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "diecisiete": {
+   "file": "L04_phrase_18.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "dieciséis": {
+   "file": "L04_phrase_17.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "diez": {
+   "file": "L04_phrase_11.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "disculpe": {
+   "file": "L10_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "disculpe, ¿dónde está el banco?": {
+   "file": "L10_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "doce": {
+   "file": "L04_phrase_13.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "domingo": {
+   "file": "L08_phrase_16.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "dos": {
+   "file": "L04_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "el banco": {
+   "file": "L10_phrase_12.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "el baño": {
+   "file": "L10_phrase_11.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "el baño está allá.": {
+   "file": "L10_listen_03.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "el centro": {
+   "file": "L09_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "ella es de guatemala.": {
+   "file": "L03_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "ella vive en el centro.": {
+   "file": "L09_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "en la esquina": {
+   "file": "L10_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "eres...": {
+   "file": "L02_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "es la una.": {
+   "file": "L08_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "estados unidos": {
+   "file": "L03_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "está en la esquina, a la derecha.": {
+   "file": "L10_dialogue_02.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "está... / queda...": {
+   "file": "L10_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "gracias / muchas gracias": {
+   "file": "L05_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "gracias. ... con gusto.": {
+   "file": "L05_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "guanajuato": {
+   "file": "L03_phrase_13.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "guatemala": {
+   "file": "L03_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hablo / hablas / habla": {
+   "file": "L09_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hablo un poco de español": {
+   "file": "L05_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hablo un poco de español.": {
+   "file": "L09_dialogue_06.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hasta luego": {
+   "file": "L01_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hasta luego, carlos.": {
+   "file": "L01_dialogue_04.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hasta mañana": {
+   "file": "L01_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hola": {
+   "file": "L01_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "hola, me llamo tom. ¿cómo te llamas?": {
+   "file": "L02_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hoy / mañana": {
+   "file": "L08_phrase_17.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hoy es lunes. mañana es martes.": {
+   "file": "L08_listen_03.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "hoy es miércoles, entonces mañana es jueves.": {
+   "file": "L08_dialogue_04.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "igualmente": {
+   "file": "L02_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "igualmente.": {
+   "file": "L02_dialogue_03.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "jalisco": {
+   "file": "L03_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "jueves": {
+   "file": "L08_phrase_13.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "la cuenta, por favor": {
+   "file": "L06_phrase_13.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "la farmacia": {
+   "file": "L10_phrase_13.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "la farmacia está a la izquierda.": {
+   "file": "L10_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "la junta": {
+   "file": "L08_phrase_18.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "la junta es el viernes a las nueve.": {
+   "file": "L08_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "la tienda": {
+   "file": "L10_phrase_14.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "leo tiene siete años y sofía tiene nueve.": {
+   "file": "L07_dialogue_06.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "luis, ¿a qué hora es la junta?": {
+   "file": "L08_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "luis, ¿cuántos años tienes?": {
+   "file": "L04_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "lunes": {
+   "file": "L08_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "martes": {
+   "file": "L08_phrase_11.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "mañana a las diez de la mañana.": {
+   "file": "L08_dialogue_02.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "me da tres tacos, por favor.": {
+   "file": "L06_dialogue_02.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "me da una torta sin cebolla, por favor.": {
+   "file": "L06_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "me da... , por favor": {
+   "file": "L06_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "me llamo luis. mucho gusto.": {
+   "file": "L02_dialogue_02.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "me llamo sofía. mucho gusto.": {
+   "file": "L02_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "me llamo...": {
+   "file": "L02_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "menos cuarto": {
+   "file": "L08_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi compañero de trabajo / mi compañera de trabajo": {
+   "file": "L09_phrase_12.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi esposa / mi esposo": {
+   "file": "L07_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi esposa se llama ana.": {
+   "file": "L07_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi familia": {
+   "file": "L07_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "mi hermano / mi hermana": {
+   "file": "L07_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi hija se llama...": {
+   "file": "L07_phrase_11.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi hijo / mi hija": {
+   "file": "L07_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "mi hijo se llama leo y mi hija se llama sofía.": {
+   "file": "L07_dialogue_04.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi hijo tiene doce años.": {
+   "file": "L07_listen_03.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi jefe / mi jefa": {
+   "file": "L09_phrase_11.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mi mamá / mi papá": {
+   "file": "L07_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "michoacán": {
+   "file": "L03_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mis hijos": {
+   "file": "L07_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "miércoles": {
+   "file": "L08_phrase_12.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "muchas gracias.": {
+   "file": "L10_dialogue_05.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "mucho / poco": {
+   "file": "L09_phrase_13.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "mucho gusto": {
+   "file": "L02_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "más despacio, por favor": {
+   "file": "L05_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "más o menos": {
+   "file": "L01_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "más o menos. hasta luego.": {
+   "file": "L01_dialogue_03.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "méxico": {
+   "file": "L03_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "nada más, gracias": {
+   "file": "L06_phrase_17.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "nada más, gracias. ¿cuánto es?": {
+   "file": "L06_dialogue_06.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "no": {
+   "file": "L02_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "no entiendo": {
+   "file": "L05_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "no sé": {
+   "file": "L05_phrase_13.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "no, queda cerca.": {
+   "file": "L10_dialogue_04.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "nueve": {
+   "file": "L04_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "nuevo / nueva": {
+   "file": "L02_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "oaxaca": {
+   "file": "L03_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "ocho": {
+   "file": "L04_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "once": {
+   "file": "L04_phrase_12.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "oye, tom, ¿puedes venir mañana a las ocho?": {
+   "file": "L05_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "para llevar": {
+   "file": "L06_phrase_14.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "perdón": {
+   "file": "L05_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "perdón, no entiendo.": {
+   "file": "L05_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "perdón, no entiendo. más despacio, por favor.": {
+   "file": "L05_dialogue_02.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "perfecto. ¿qué hora es ahora?": {
+   "file": "L08_dialogue_05.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "por favor": {
+   "file": "L05_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "puebla": {
+   "file": "L03_phrase_12.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "quiero...": {
+   "file": "L06_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "quince": {
+   "file": "L04_phrase_16.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "seis": {
+   "file": "L04_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "siete": {
+   "file": "L04_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "siete, doce, quince.": {
+   "file": "L04_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "sigue todo derecho y está en la esquina.": {
+   "file": "L10_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "sin cebolla": {
+   "file": "L06_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "son cincuenta pesos.": {
+   "file": "L06_dialogue_07.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "son cuarenta pesos.": {
+   "file": "L06_listen_03.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "son las dos / tres / cuatro...": {
+   "file": "L08_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "son las ocho y cuarto.": {
+   "file": "L08_dialogue_06.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "son las tres y cuarto.": {
+   "file": "L08_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "soy de estados unidos.": {
+   "file": "L03_dialogue_05.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "soy de méxico.": {
+   "file": "L03_dialogue_02.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "soy de veracruz.": {
+   "file": "L03_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "soy de...": {
+   "file": "L03_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "soy...": {
+   "file": "L02_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "sábado": {
+   "file": "L08_phrase_15.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "sí": {
+   "file": "L02_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "sí, con todo. y un refresco.": {
+   "file": "L06_dialogue_04.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "sí, soy nuevo.": {
+   "file": "L02_dialogue_05.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "sí, tengo dos hijos.": {
+   "file": "L07_dialogue_02.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "tengo dos hijos y una hija.": {
+   "file": "L07_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "tengo dos hijos.": {
+   "file": "L07_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "tengo hambre / tengo sed": {
+   "file": "L06_phrase_15.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "tengo treinta y cinco años.": {
+   "file": "L04_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "tengo... años": {
+   "file": "L04_phrase_26.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "tiene... años": {
+   "file": "L04_phrase_27.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "tiene... años.": {
+   "file": "L07_phrase_13.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "todo derecho": {
+   "file": "L10_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "todos los días": {
+   "file": "L09_phrase_14.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "trabajo / trabajas / trabaja": {
+   "file": "L09_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "trabajo con mi jefe todos los días.": {
+   "file": "L09_listen_01.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "trabajo en construcción con mi hermano.": {
+   "file": "L09_dialogue_03.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "trabajo en una oficina grande. ¿y tú?": {
+   "file": "L09_dialogue_02.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "trabajo en...": {
+   "file": "L09_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "trece": {
+   "file": "L04_phrase_14.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "treinta": {
+   "file": "L04_phrase_22.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "tres": {
+   "file": "L04_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "tu / tus": {
+   "file": "L07_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "un café": {
+   "file": "L06_phrase_06.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "un refresco": {
+   "file": "L06_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "un taco / unos tacos": {
+   "file": "L06_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "una oficina": {
+   "file": "L09_phrase_09.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "una torta": {
+   "file": "L06_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "uno": {
+   "file": "L04_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "veinte": {
+   "file": "L04_phrase_21.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "veracruz": {
+   "file": "L03_phrase_11.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "viernes": {
+   "file": "L08_phrase_14.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "vivo / vives / vive": {
+   "file": "L09_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "vivo en el centro. ¿hablas español?": {
+   "file": "L09_dialogue_05.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "vivo en...": {
+   "file": "L09_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "y cuarto": {
+   "file": "L08_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "y media": {
+   "file": "L08_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "yo tengo una hija. tiene cinco años.": {
+   "file": "L07_dialogue_07.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿a qué hora es...?": {
+   "file": "L08_phrase_07.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "¿algo más? ... nada más, gracias.": {
+   "file": "L06_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿con todo?": {
+   "file": "L06_dialogue_03.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cuál es tu número?": {
+   "file": "L04_dialogue_04.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cuánto cuesta?": {
+   "file": "L06_phrase_12.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cuánto es?": {
+   "file": "L06_phrase_11.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cuántos años tiene?": {
+   "file": "L07_phrase_12.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cuántos años tienen?": {
+   "file": "L07_dialogue_05.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cuántos años tienes?": {
+   "file": "L04_phrase_25.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cómo estás?": {
+   "file": "L01_phrase_05.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  },
+  "¿cómo estás? ... más o menos.": {
+   "file": "L01_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cómo se dice... en español?": {
+   "file": "L05_phrase_11.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cómo se llama tu hijo?": {
+   "file": "L07_phrase_10.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿cómo se llaman?": {
+   "file": "L07_dialogue_03.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿de dónde eres, luis?": {
+   "file": "L03_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿de dónde eres?": {
+   "file": "L03_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿dónde está...?": {
+   "file": "L10_phrase_02.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿dónde queda...?": {
+   "file": "L10_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿dónde trabajas, tom?": {
+   "file": "L09_dialogue_01.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿dónde trabajas?": {
+   "file": "L09_phrase_04.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿eres nuevo?": {
+   "file": "L02_dialogue_04.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿eres nuevo? ... sí, soy nuevo.": {
+   "file": "L02_listen_02.mp3",
+   "kind": "listening",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿hablas español? ... un poco.": {
+   "file": "L09_listen_03.mp3",
+   "kind": "listening",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿mande?": {
+   "file": "L05_phrase_14.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿qué día es mañana?": {
+   "file": "L08_dialogue_03.mp3",
+   "kind": "dialogue",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿qué hora es?": {
+   "file": "L08_phrase_01.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-ald-medium",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿qué le sirvo?": {
+   "file": "L06_phrase_18.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿qué significa...?": {
+   "file": "L05_phrase_12.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "¿tienes hijos?": {
+   "file": "L07_phrase_08.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": false,
+   "whisperFlagged": false,
+   "verified": false
+  },
+  "él es de... / ella es de...": {
+   "file": "L03_phrase_03.mp3",
+   "kind": "phrase",
+   "voice": "es_MX-claude-high",
+   "fallbackVoice": true,
+   "whisperFlagged": true,
+   "verified": false
+  }
+ },
+ "ttsOnly": [
+  {
+   "file": "L01_listen_03.mp3",
+   "text": "Hasta mañana, Ana.",
+   "kind": "listening",
+   "reason": "ald line failed the Whisper screen; dialogue/listening line left to device TTS"
+  },
+  {
+   "file": "L04_dialogue_02.mp3",
+   "text": "Tengo treinta y cuatro años. ¿Y tú?",
+   "kind": "dialogue",
+   "reason": "ald line failed the Whisper screen; dialogue/listening line left to device TTS"
+  },
+  {
+   "file": "L04_dialogue_03.mp3",
+   "text": "Tengo cuarenta y dos.",
+   "kind": "dialogue",
+   "reason": "ald line failed the Whisper screen; dialogue/listening line left to device TTS"
+  },
+  {
+   "file": "L05_dialogue_04.mp3",
+   "text": "Ah, sí. Gracias.",
+   "kind": "dialogue",
+   "reason": "ald line failed the Whisper screen; dialogue/listening line left to device TTS"
+  },
+  {
+   "file": "L07_dialogue_01.mp3",
+   "text": "¿Tienes hijos, Tom?",
+   "kind": "dialogue",
+   "reason": "ald line failed the Whisper screen; dialogue/listening line left to device TTS"
+  }
+ ],
+ "heldOutDuplicates": [
+  {
+   "file": "L01_dialogue_02.mp3",
+   "text": "Bien, gracias. ¿Y tú?",
+   "voice": "female_mx"
+  },
+  {
+   "file": "L01_phrase_06.mp3",
+   "text": "Bien, gracias. ¿Y tú?",
+   "voice": "female_mx"
+  },
+  {
+   "file": "L02_listen_03.mp3",
+   "text": "¿Cómo te llamas?",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L02_phrase_02.mp3",
+   "text": "¿Cómo te llamas?",
+   "voice": "female_mx"
+  },
+  {
+   "file": "L03_dialogue_03.mp3",
+   "text": "¿De qué parte de México?",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L03_listen_03.mp3",
+   "text": "¿De dónde es usted?",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L03_phrase_07.mp3",
+   "text": "¿De qué parte de México?",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L03_phrase_14.mp3",
+   "text": "¿De dónde es usted?",
+   "voice": "female_mx"
+  },
+  {
+   "file": "L04_dialogue_05.mp3",
+   "text": "Cinco, cinco, tres, cero, ocho, nueve.",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L04_listen_03.mp3",
+   "text": "Cinco, cinco, tres, cero, ocho, nueve.",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L05_dialogue_05.mp3",
+   "text": "Con gusto.",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L05_listen_03.mp3",
+   "text": "¿Puedes repetir, por favor?",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L05_phrase_08.mp3",
+   "text": "¿Puedes repetir, por favor?",
+   "voice": "female_mx"
+  },
+  {
+   "file": "L06_dialogue_05.mp3",
+   "text": "¿Algo más?",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L06_phrase_16.mp3",
+   "text": "¿Algo más?",
+   "voice": "female_mx"
+  },
+  {
+   "file": "L09_dialogue_04.mp3",
+   "text": "¿Dónde vives?",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L09_phrase_06.mp3",
+   "text": "¿Dónde vives?",
+   "voice": "female_mx"
+  },
+  {
+   "file": "L10_dialogue_03.mp3",
+   "text": "¿Está lejos?",
+   "voice": "male_mx"
+  },
+  {
+   "file": "L10_dialogue_06.mp3",
+   "text": "Con gusto.",
+   "voice": "female_mx"
+  },
+  {
+   "file": "L10_phrase_15.mp3",
+   "text": "¿Está lejos?",
+   "voice": "male_mx"
+  }
+ ]
+}
