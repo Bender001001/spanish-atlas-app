@@ -12,7 +12,7 @@ function sid(k){return Object.prototype.hasOwnProperty.call(LEGACY_IDS,k)?LEGACY
 const KEY="orale_v1";
 const BACKUP_KEY="orale_v1_premigrate";
 let S=load();
-function fresh(){return{xp:0,pesos:0,week:1,streak:0,bestStreak:0,lastActive:null,cards:{},miss:{},days:{},stats:{reviews:0,games:0,shadow:0,tests:0,conj:0,dlg:0,story:0},weeksDone:[],ach:[],dlgDone:[],storyDone:[],bossDone:[],bossBest:{},log:[],factIdx:0,created:today(),voice:"",rate:0.95,name:"Escudero",tut:false,schema:SCHEMA}}
+function fresh(){return{xp:0,pesos:0,week:1,streak:0,bestStreak:0,lastActive:null,cards:{},miss:{},days:{},stats:{reviews:0,games:0,shadow:0,tests:0,conj:0,dlg:0,story:0},weeksDone:[],ach:[],dlgDone:[],storyDone:[],bossDone:[],bossBest:{},log:[],factIdx:0,created:today(),voice:"",rate:0.95,slow:false,name:"Escudero",tut:false,schema:SCHEMA}}
 function remapKeys(m){const n={};Object.keys(m||{}).forEach(k=>{const t=sid(k);if(t===k||!Object.prototype.hasOwnProperty.call(m,t))n[t]=m[k]});return n}
 function migrate(raw){if(!raw||typeof raw!=="object"||Array.isArray(raw))return fresh();const from=raw.schema|0;const o=Object.assign(fresh(),raw);
  if(from<1){o.cards=remapKeys(o.cards);o.miss=remapKeys(o.miss);o.log=(Array.isArray(o.log)?o.log:[]).map(r=>Array.isArray(r)?[r[0],sid(r[1]),r[2]]:r)}
@@ -69,7 +69,7 @@ function audioKey(t){return String(t).trim().replace(/\s+/g," ").toLowerCase()}
 let CUR_AUDIO=null;
 function stopAudio(){if(CUR_AUDIO){try{CUR_AUDIO.pause()}catch(e){}CUR_AUDIO=null;document.body.classList.remove("tts")}}
 /* slow=true: prefer the slow recording (already slow, so played at 1x); no slow file -> the normal recording at the usual rate -> TTS. */
-function speak(t,rate,pitch,voiceOverride,slow){stopAudio();const k=audioKey(t),fs_=voiceOverride||!slow?null:AUDIO_SLOW_MAP[k],f=fs_||(voiceOverride?null:AUDIO_MAP[k]);
+function speak(t,rate,pitch,voiceOverride,slow){stopAudio();if(slow===undefined)slow=!!S.slow;const k=audioKey(t),fs_=voiceOverride||!slow?null:AUDIO_SLOW_MAP[k],f=fs_||(voiceOverride?null:AUDIO_MAP[k]);
  if(f&&typeof Audio!=="undefined"){try{const a=new Audio(f);a.playbackRate=fs_?1:(rate||S.rate);CUR_AUDIO=a;
   a.onplay=()=>document.body.classList.add("tts");a.onended=()=>{if(CUR_AUDIO===a)CUR_AUDIO=null;document.body.classList.remove("tts")};
   const fall=()=>{if(CUR_AUDIO===a){CUR_AUDIO=null;speakTTS(t,rate,pitch,voiceOverride)}};a.onerror=fall;

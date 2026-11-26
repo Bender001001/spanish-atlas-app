@@ -54,6 +54,13 @@ reset();speak("hola");assert.strictEqual(audios[0].src,"audio/hola.wav");
 reset();speak("hola",null,null,{name:"x",lang:"es-MX"},true);assert.strictEqual(audios.length,0);assert.deepStrictEqual(tts,["hola"]);
 /* 10. a slow file that fails to play falls back to TTS (same guard as the normal file) */
 reset();setPlay("fail");speak("hola",null,null,null,true);await sleep();await sleep();assert.deepStrictEqual(tts,["hola"]);
+/* 12. the saved "Slow" toggle (S.slow) drives speak() when no explicit slow arg is given; explicit arg wins */
+assert.strictEqual(S.slow,false,"Slow defaults to off");
+S.slow=true;reset();speak("hola");assert.strictEqual(audios[0].src,"audio/slow/hola.wav");assert.strictEqual(audios[0].playbackRate,1);
+reset();speak("Buenos días",0.8);assert.strictEqual(audios[0].src,"audio/buenos-dias.wav");assert.strictEqual(audios[0].playbackRate,0.8);
+reset();speak("¿Cómo te llamas?");assert.deepStrictEqual(tts,["¿Cómo te llamas?"]);
+reset();speak("hola",null,null,null,false);assert.strictEqual(audios[0].src,"audio/hola.wav");
+S.slow=false;reset();speak("hola");assert.strictEqual(audios[0].src,"audio/hola.wav");
 })()`;
 (async()=>{
  await eval(code+";"+tests);

@@ -92,6 +92,12 @@ if(!_dl||_dl.type!=="application/json")throw new Error("exportData must build a 
 var _loc=global.location;global.location={reload(){global.__reloaded=1}};var _before=S.xp;importText(JSON.stringify({xp:777}));
 if(S.xp!==777||!global.__reloaded)throw new Error("importText (paste/file shared path) must load exported JSON");
 global.__reloaded=0;importText("not json");if(global.__reloaded)throw new Error("importText must reject invalid data");global.location=_loc;S.xp=_before;
+/* --- Slow toggle: default off, round-trips through Ajustes save --- */
+if(S.slow!==false)throw new Error("S.slow must default to false");
+var _sv=VOICES;var _els={"#st-name":{value:"X"},"#st-voice":{value:""},"#st-week":{value:"1"},"#st-slow":{checked:true}};var _q=document.querySelector;document.querySelector=function(s){return _els[s]||_q.call(document,s)};
+saveSettings();if(S.slow!==true)throw new Error("saveSettings must store the Slow checkbox");
+_els["#st-slow"].checked=false;saveSettings();if(S.slow!==false)throw new Error("saveSettings must clear Slow");
+document.querySelector=_q;
 /* --- S9 Boss Battles & Skill Tree --- */
 if(BOSSES.length!==6)throw new Error("boss roster must be 6 (one per phase)");
 renderArena();var _av=document.querySelector("#view").innerHTML;if(_av.indexOf("renderBossList")<0||_av.indexOf("renderSkillTree")<0)throw new Error("Arena missing boss/skill-tree launchers");

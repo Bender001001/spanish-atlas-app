@@ -2828,7 +2828,7 @@ const KEY = "orale_v1";
 const BACKUP_KEY = "orale_v1_premigrate";
 let S = load();
 function fresh() {
-  return { xp: 0, pesos: 0, week: 1, streak: 0, bestStreak: 0, lastActive: null, cards: {}, miss: {}, days: {}, stats: { reviews: 0, games: 0, shadow: 0, tests: 0, conj: 0, dlg: 0, story: 0 }, weeksDone: [], ach: [], dlgDone: [], storyDone: [], bossDone: [], bossBest: {}, log: [], factIdx: 0, created: today(), voice: "", rate: 0.95, name: "Escudero", tut: false, schema: SCHEMA };
+  return { xp: 0, pesos: 0, week: 1, streak: 0, bestStreak: 0, lastActive: null, cards: {}, miss: {}, days: {}, stats: { reviews: 0, games: 0, shadow: 0, tests: 0, conj: 0, dlg: 0, story: 0 }, weeksDone: [], ach: [], dlgDone: [], storyDone: [], bossDone: [], bossBest: {}, log: [], factIdx: 0, created: today(), voice: "", rate: 0.95, slow: false, name: "Escudero", tut: false, schema: SCHEMA };
 }
 function remapKeys(m) {
   const n = {};
@@ -3066,6 +3066,7 @@ function stopAudio() {
 }
 function speak(t, rate, pitch, voiceOverride, slow) {
   stopAudio();
+  if (slow === void 0) slow = !!S.slow;
   const k = audioKey(t), fs_ = voiceOverride || !slow ? null : AUDIO_SLOW_MAP[k], f = fs_ || (voiceOverride ? null : AUDIO_MAP[k]);
   if (f && typeof Audio !== "undefined") {
     try {
@@ -4337,7 +4338,7 @@ function renderCantina() {
 }
 $("#btn-settings").addEventListener("click", () => {
   const vops = VOICES.map((v) => '<option value="' + esc(v.name) + '"' + (S.voice === v.name ? " selected" : "") + ">" + esc(v.name) + " (" + v.lang + ")</option>").join("");
-  modal('<h3>Ajustes</h3><label class="fl">Tu nombre</label><input type="text" id="st-name" value="' + esc(S.name) + '"><label class="fl">Voz en espa\xF1ol</label><select id="st-voice"><option value="">Autom\xE1tica (busca es-MX)</option>' + vops + '</select><label class="fl">Semana actual (1-26)</label><select id="st-week">' + Array.from({ length: 26 }, (_, i) => "<option " + (S.week === i + 1 ? "selected" : "") + ">" + (i + 1) + "</option>").join("") + '</select><label class="fl">Respaldo</label><div class="grid2"><button class="btn ghost sm" onclick="exportData()">Exportar datos</button><button class="btn ghost sm" onclick="importData()">Importar archivo</button></div><button class="btn ghost sm" style="margin-top:8px;width:100%" onclick="importPaste()">Importar pegando texto</button><div class="grid2" style="margin-top:14px"><button class="btn ghost" onclick="resetAll()">Reiniciar todo</button><button class="btn" onclick="saveSettings()">Guardar</button></div>');
+  modal('<h3>Ajustes</h3><label class="fl">Tu nombre</label><input type="text" id="st-name" value="' + esc(S.name) + '"><label class="fl">Voz en espa\xF1ol</label><select id="st-voice"><option value="">Autom\xE1tica (busca es-MX)</option>' + vops + '</select><label class="fl"><input type="checkbox" id="st-slow"' + (S.slow ? " checked" : "") + '> Lento (usa la grabaci\xF3n lenta si existe)</label><label class="fl">Semana actual (1-26)</label><select id="st-week">' + Array.from({ length: 26 }, (_, i) => "<option " + (S.week === i + 1 ? "selected" : "") + ">" + (i + 1) + "</option>").join("") + '</select><label class="fl">Respaldo</label><div class="grid2"><button class="btn ghost sm" onclick="exportData()">Exportar datos</button><button class="btn ghost sm" onclick="importData()">Importar archivo</button></div><button class="btn ghost sm" style="margin-top:8px;width:100%" onclick="importPaste()">Importar pegando texto</button><div class="grid2" style="margin-top:14px"><button class="btn ghost" onclick="resetAll()">Reiniciar todo</button><button class="btn" onclick="saveSettings()">Guardar</button></div>');
 });
 function resetAll() {
   if (confirm("\xBFBorrar todo el progreso?")) {
@@ -4350,6 +4351,7 @@ function resetAll() {
 function saveSettings() {
   S.name = $("#st-name").value || "Escudero";
   S.voice = $("#st-voice").value;
+  S.slow = !!$("#st-slow").checked;
   S.week = parseInt($("#st-week").value);
   saveNow();
   closeModal();
